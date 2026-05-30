@@ -4,16 +4,41 @@ import { Login, Register } from "@/pages/auth";
 import MainLayout from "../layouts/MainLayout";
 import { Box, Flex } from "@mantine/core";
 import Feed from "@/pages/feed";
-import Error404Page from "@/pages/errors";
+import Error404 from "@/pages/errors";
+import { AuthGuard } from "../guards/AuthGuard";
+import Map from "@/pages/Map";
+import Profile from "@/pages/Profile";
 
 const router = createBrowserRouter([
+  {
+    path: "/",
+    element: (
+      <AuthGuard>
+        <MainLayout />
+      </AuthGuard>
+    ),
+    children: [
+      {
+        path: "/",
+        element: <Feed />,
+      },
+      {
+        path: "/map",
+        element: <Map />,
+      },
+      {
+        path: "/profile",
+        element: <Profile />,
+      },
+    ],
+  },
   {
     path: "/",
     element: <MainLayout />,
     children: [
       {
-        path: "/",
-        element: <Feed />,
+        path: "/profile/:username",
+        element: <Profile />,
       },
     ],
   },
@@ -32,7 +57,7 @@ const router = createBrowserRouter([
   },
   {
     path: "*",
-    element: <Error404Page />,
+    element: <Error404 />,
   },
 ]);
 

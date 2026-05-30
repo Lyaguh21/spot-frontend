@@ -8,17 +8,14 @@ import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
 import { store } from "./providers/store/store";
 import { Router } from "./providers/routes/Router";
-import { AuthGuard } from "./providers/guards/AuthGuard";
 import { theme } from "./theme";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <Provider store={store}>
       <MantineProvider theme={theme} defaultColorScheme="light">
-        <AuthGuard>
-          <Notifications />
-          <Router />
-        </AuthGuard>
+        <Notifications />
+        <Router />
       </MantineProvider>
     </Provider>
   </React.StrictMode>,
