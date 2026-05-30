@@ -1,7 +1,7 @@
 import { Button, Center, Flex, Text } from "@mantine/core";
 import { Link } from "react-router-dom";
 
-export default function Error404() {
+export default function Error404Page() {
   return (
     <Center h="100vh">
       <Flex direction="column">

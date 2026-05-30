@@ -4,17 +4,45 @@ export const theme = createTheme({
   primaryColor: "primary",
 
   colors: {
+    dimmedColor: [
+      "#e4ebff78",
+      "#d2dcfa78",
+      "#a0b5f778",
+      "#6c8df678",
+      "#446af678",
+      "#2e55f678",
+      "#254af778",
+      "#1b3cdc78",
+      "#1235c578",
+      "#002dad78",
+    ],
+
     primary: [
-      "#fdf2f4",
-      "#f5d5da",
-      "#e8a8b2",
-      "#d97a89",
-      "#c94d61",
-      "#b32d44",
-      "#8b1a2f",
-      "#721527",
-      "#59101e",
-      "#400b16",
+      //3
+      "#f9ebff",
+      "#ebd5fc",
+      "#d3a8f3",
+      "#b169e8",
+      "#a451e3",
+      "#9737df",
+      "#902ade",
+      "#7d1dc6",
+      "#6f18b1",
+      "#60109c",
+    ],
+
+    blue: [
+      //6
+      "#e5f5ff",
+      "#d0e5ff",
+      "#a1c8fa",
+      "#6faaf4",
+      "#4690f0",
+      "#2b80ee",
+      "#1170e8",
+      "#0766d5",
+      "#005bbf",
+      "#004eaa",
     ],
   },
 

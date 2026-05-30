@@ -8,18 +8,20 @@ import { IUserState } from "@/entities/user";
 
 export const authApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
-    register: build.mutation<IUserState, IRegisterRequest>({
+    register: build.mutation<{ user: IUserState }, IRegisterRequest>({
       query: (data) => ({
         url: "/auth/register",
         method: "POST",
         body: {
           email: data.email,
           password: data.password,
+          name: data.name,
+          username: data.username,
         },
       }),
     }),
 
-    login: build.mutation<IUserState, ILoginRequest>({
+    login: build.mutation<{ user: IUserState }, ILoginRequest>({
       query: (data) => ({
         url: "/auth/login",
         method: "POST",

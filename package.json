@@ -10,10 +10,10 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@mantine/core": "^8.3.2",
-    "@mantine/form": "^8.3.2",
-    "@mantine/hooks": "^8.3.2",
-    "@mantine/notifications": "^8.3.2",
+    "@mantine/core": "^9.2.2",
+    "@mantine/form": "^9.2.2",
+    "@mantine/hooks": "^9.2.2",
+    "@mantine/notifications": "^9.2.2",
     "@reduxjs/toolkit": "^2.11.2",
     "@tabler/icons-react": "^3.34.1",
     "react": "^19.1.0",

@@ -1,0 +1,13 @@
+.root {
+  color: #eaf1ff;
+  background: linear-gradient(90deg, #7b2cff 0%, #4b58ff 45%, #22b5ff 100%);
+  border: none;
+  box-shadow:
+    0 10px 26px rgba(10, 20, 60, 0.45),
+    0 0 18px rgba(90, 120, 255, 0.35);
+}
+
+.root:hover {
+  background: linear-gradient(90deg, #8a3bff 0%, #5a66ff 45%, #2ac3ff 100%);
+  border: none;
+}

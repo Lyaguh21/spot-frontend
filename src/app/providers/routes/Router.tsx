@@ -1,9 +1,10 @@
-import { Error404 } from "@/pages/errors/Error404";
-import { Main } from "@/pages/main";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import { Login, Register } from "@/pages/auth";
 import MainLayout from "../layouts/MainLayout";
+import { Box, Flex } from "@mantine/core";
+import Feed from "@/pages/feed";
+import Error404Page from "@/pages/errors";
 
 const router = createBrowserRouter([
   {
@@ -12,7 +13,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Main />,
+        element: <Feed />,
       },
     ],
   },
@@ -31,10 +32,22 @@ const router = createBrowserRouter([
   },
   {
     path: "*",
-    element: <Error404 />,
+    element: <Error404Page />,
   },
 ]);
 
 export function Router() {
-  return <RouterProvider router={router} />;
+  return (
+    <Flex w={"100%"} mih={"100vh"} justify={"center"}>
+      <Box
+        maw={500}
+        style={{
+          borderLeft: "1px solid white",
+          borderRight: "1px solid white",
+        }}
+      >
+        <RouterProvider router={router} />
+      </Box>
+    </Flex>
+  );
 }

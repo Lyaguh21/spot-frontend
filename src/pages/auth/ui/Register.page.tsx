@@ -2,19 +2,10 @@ import { useRegisterMutation } from "@/entities/auth";
 import { setUser } from "@/entities/user/model/userSlice";
 
 import { useAppDispatch, useNotifications } from "@/shared/lib";
-import {
-  Box,
-  Button,
-  Center,
-  Anchor,
-  PasswordInput,
-  Stack,
-  Text,
-  TextInput,
-  LoadingOverlay,
-  Paper,
-} from "@mantine/core";
+import { SpotTextInput, SpotPasswordInput, SpotButton } from "@/shared/ui";
+import { Box, Center, Anchor, Stack, Text } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { useState } from "react";
 
 import { useNavigate } from "react-router-dom";
 
@@ -22,19 +13,24 @@ interface RegisterFormValues {
   email: string;
   password: string;
   confirmPassword: string;
+  name: string;
+  username: string;
 }
 
 export default function Register() {
   const navigate = useNavigate();
-  const [register, { isLoading }] = useRegisterMutation();
+  const [register] = useRegisterMutation();
   const dispatch = useAppDispatch();
   const { showError, showSuccess } = useNotifications();
+  const [step, setStep] = useState<1 | 2>(1);
 
   const form = useForm<RegisterFormValues>({
     initialValues: {
       email: "",
       password: "",
       confirmPassword: "",
+      name: "",
+      username: "",
     },
     validate: {
       email: (v) =>
@@ -43,13 +39,60 @@ export default function Register() {
         v.length >= 4 ? null : "Пароль должен содержать минимум 4 символа",
       confirmPassword: (v, values) =>
         v === values.password ? null : "Пароли не совпадают",
+      name: (v) => (v.trim().length > 0 ? null : "Введите имя"),
+      username: (v) => (v.trim().length > 0 ? null : "Введите username"),
     },
   });
 
+  const validateStepOne = () => {
+    const errors: Partial<Record<keyof RegisterFormValues, string>> = {};
+
+    if (!/^\S+@\S+\.\S+$/.test(form.values.email)) {
+      errors.email = "Введите корректный email";
+    }
+
+    if (form.values.password.length < 4) {
+      errors.password = "Пароль должен содержать минимум 4 символа";
+    }
+
+    if (form.values.confirmPassword !== form.values.password) {
+      errors.confirmPassword = "Пароли не совпадают";
+    }
+
+    form.setErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const validateStepTwo = () => {
+    const errors: Partial<Record<keyof RegisterFormValues, string>> = {};
+
+    if (form.values.name.trim().length === 0) {
+      errors.name = "Введите имя";
+    }
+
+    if (form.values.username.trim().length === 0) {
+      errors.username = "Введите username";
+    }
+
+    form.setErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleNextStep = () => {
+    if (validateStepOne()) {
+      setStep(2);
+    }
+  };
+
   const handleSubmit = async () => {
     try {
-      const data = await register(form.values).unwrap();
-      dispatch(setUser(data));
+      if (!validateStepTwo()) {
+        return;
+      }
+
+      const { email, password, name, username } = form.values;
+      const data = await register({ email, password, name, username }).unwrap();
+      dispatch(setUser(data.user));
       showSuccess("Вы зарегистрировались в аккаунт");
       navigate("/");
       form.reset();
@@ -61,118 +104,127 @@ export default function Register() {
   return (
     <Box
       mih="100vh"
+      px="md"
       style={{
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: "var(--mantine-color-gray-0)",
       }}
     >
-      <Paper w={500} p="lg" radius="md" shadow="md">
-        <LoadingOverlay visible={isLoading} />
-        <Stack gap="xl">
-          {/* Лого */}
-          <Center>
-            <Text
-              ff="'Playfair Display', serif"
-              fw={400}
-              fz={36}
-              c="primary.6"
-              style={{ letterSpacing: "4px", textTransform: "uppercase" }}
-            >
-              La Maison
-            </Text>
-          </Center>
+      <Stack gap="xl">
+        <Center>
+          <img src="/icons/FullLogo.svg" alt="Logo" width={300} />
+        </Center>
 
-          <Box w={40} h={1} bg="primary.6" mx="auto" />
-
-          <Text
-            fz="sm"
-            c="dark.4"
-            ta="center"
-            style={{ letterSpacing: "1px", textTransform: "uppercase" }}
-          >
-            Регистрация
+        <Stack gap={0}>
+          <Text fz="28" c="white" ta="center" style={{ letterSpacing: "1px" }}>
+            Создание аккаунта
           </Text>
-
-          {/* Форма */}
-          <form onSubmit={form.onSubmit(handleSubmit)}>
-            <Stack gap="md">
-              <TextInput
-                label="Email"
-                placeholder="user@example.com"
-                radius={0}
-                styles={{
-                  label: {
-                    letterSpacing: "1px",
-                    textTransform: "uppercase",
-                    fontSize: 11,
-                    marginBottom: 6,
-                  },
-                  input: { borderColor: "var(--mantine-color-gray-4)" },
-                }}
-                {...form.getInputProps("email")}
-              />
-
-              <PasswordInput
-                label="Пароль"
-                placeholder="Минимум 4 символа"
-                radius={0}
-                styles={{
-                  label: {
-                    letterSpacing: "1px",
-                    textTransform: "uppercase",
-                    fontSize: 11,
-                    marginBottom: 6,
-                  },
-                  input: { borderColor: "var(--mantine-color-gray-4)" },
-                }}
-                {...form.getInputProps("password")}
-              />
-
-              <PasswordInput
-                label="Подтверждение пароля"
-                placeholder="Повторите пароль"
-                radius={0}
-                styles={{
-                  label: {
-                    letterSpacing: "1px",
-                    textTransform: "uppercase",
-                    fontSize: 11,
-                    marginBottom: 6,
-                  },
-                  input: { borderColor: "var(--mantine-color-gray-4)" },
-                }}
-                {...form.getInputProps("confirmPassword")}
-              />
-
-              <Button
-                type="submit"
-                fullWidth
-                radius={0}
-                color="primary.6"
-                mt="sm"
-                size="md"
-                style={{ letterSpacing: "2px", textTransform: "uppercase" }}
-              >
-                Создать аккаунт
-              </Button>
-            </Stack>
-          </form>
-
-          <Text fz="sm" c="dark.4" ta="center">
-            Уже есть аккаунт?{" "}
-            <Anchor
-              c="primary.6"
-              fw={500}
-              onClick={() => navigate("/auth/login")}
-              style={{ cursor: "pointer" }}
-            >
-              Войти
-            </Anchor>
+          <Text
+            fz="16"
+            fw={600}
+            c="dimmedColor.0"
+            ta="center"
+            style={{ letterSpacing: "1px" }}
+          >
+            Заполните данные для регистрации
           </Text>
         </Stack>
-      </Paper>
+
+        {/* Форма */}
+        <form onSubmit={form.onSubmit(handleSubmit)}>
+          <Stack gap="md">
+            {step === 1 ? (
+              <>
+                <SpotTextInput
+                  label="Почта"
+                  placeholder="Введите ваш email"
+                  size="lg"
+                  radius="lg"
+                  {...form.getInputProps("email")}
+                />
+
+                <SpotPasswordInput
+                  label="Пароль"
+                  placeholder="Введите ваш пароль"
+                  size="lg"
+                  radius="lg"
+                  {...form.getInputProps("password")}
+                />
+
+                <SpotPasswordInput
+                  label="Подтвердите пароль"
+                  placeholder="Введите ваш пароль еще раз"
+                  size="lg"
+                  radius="lg"
+                  {...form.getInputProps("confirmPassword")}
+                />
+
+                <SpotButton
+                  type="button"
+                  fullWidth
+                  size="lg"
+                  radius="lg"
+                  mt="md"
+                  onClick={handleNextStep}
+                >
+                  Далее
+                </SpotButton>
+              </>
+            ) : (
+              <>
+                <SpotTextInput
+                  label="Логин"
+                  placeholder="Введите логин"
+                  size="lg"
+                  radius="lg"
+                  {...form.getInputProps("username")}
+                />
+
+                <SpotTextInput
+                  label="Имя"
+                  placeholder="Введите ваше настоящее имя"
+                  size="lg"
+                  radius="lg"
+                  {...form.getInputProps("name")}
+                />
+
+                <SpotButton
+                  type="submit"
+                  fullWidth
+                  size="lg"
+                  radius="lg"
+                  mt="md"
+                >
+                  Зарегистрироваться
+                </SpotButton>
+
+                <Anchor
+                  c="dimmed"
+                  fw={600}
+                  ta="center"
+                  onClick={() => setStep(1)}
+                  style={{ cursor: "pointer" }}
+                >
+                  Назад
+                </Anchor>
+              </>
+            )}
+          </Stack>
+        </form>
+
+        <Text fz="md" fw={600} c="dimmedColor.0" ta="center">
+          Есть аккаунт?{" "}
+          <Anchor
+            c="primary"
+            fw={700}
+            onClick={() => navigate("/auth/login")}
+            style={{ cursor: "pointer" }}
+          >
+            Войти
+          </Anchor>
+        </Text>
+      </Stack>
     </Box>
   );
 }

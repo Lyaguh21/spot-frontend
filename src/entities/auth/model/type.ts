@@ -1,16 +1,19 @@
-import { UserRole } from "@/entities/user/model/type";
+import { IUserState } from "@/entities/user";
 
-export interface IRegisterRequest {
-  email: string;
+export interface ILoginRequest extends Pick<IUserState, "email"> {
   password: string;
 }
 
-export interface ILoginRequest extends IRegisterRequest {}
+export interface IRegisterRequest extends Pick<
+  IUserState,
+  "email" | "name" | "username"
+> {
+  password: string;
+}
 
 interface UserStatus {
   id: number;
   email: string;
-  role: UserRole;
 }
 
 export interface IStatusResponse {

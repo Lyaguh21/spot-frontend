@@ -1,5 +1,29 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
-
+@import url("https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap");
 * {
-  font-family: "Inter", sans-serif;
+  font-family: "Nunito", sans-serif;
+  z-index: 1;
+}
+
+html,
+body {
+  min-height: 100%;
+  margin: 0;
+
+  background: linear-gradient(180deg, #040b1a 0%, #051634 100%);
+
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+
+  background-image:
+    linear-gradient(rgba(111, 130, 169, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(111, 130, 169, 0.06) 1px, transparent 1px);
+
+  background-size: 64px 64px;
 }

@@ -4,12 +4,8 @@ import { IUserState } from "./type";
 const initialState: IUserState = {
   id: undefined,
   name: undefined,
+  username: undefined,
   email: undefined,
-  phone: undefined,
-  role: "CUSTOMER",
-  createdAt: undefined,
-  updatedAt: undefined,
-  userAllergens: [],
 };
 
 export const userSlice = createSlice({
@@ -20,22 +16,14 @@ export const userSlice = createSlice({
       state.id = action.payload.id;
       state.name = action.payload.name;
       state.email = action.payload.email;
-      state.phone = action.payload.phone;
-      state.role = action.payload.role;
-      state.createdAt = action.payload.createdAt;
-      state.updatedAt = action.payload.updatedAt;
-      state.userAllergens = action.payload.userAllergens;
+      state.username = action.payload.username;
     },
 
     userLogout: (state) => {
       state.id = undefined;
       state.name = undefined;
       state.email = undefined;
-      state.phone = undefined;
-      state.role = "CUSTOMER";
-      state.createdAt = undefined;
-      state.updatedAt = undefined;
-      state.userAllergens = [];
+      state.username = undefined;
     },
   },
 });
