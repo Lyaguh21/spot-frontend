@@ -11,12 +11,10 @@ type SpotNotificationProps = {
 
 const typeStyles = {
   success: {
-    borderColor: "rgba(56, 189, 248, 0.45)",
-    glow: "0 10px 26px rgba(16, 185, 129, 0.25)",
+    borderColor: "rgba(109, 238, 204, 0.17)",
   },
   error: {
-    borderColor: "rgba(248, 113, 113, 0.45)",
-    glow: "0 10px 26px rgba(248, 113, 113, 0.2)",
+    borderColor: "rgba(225, 169, 169, 0.17)",
   },
 } as const;
 
@@ -28,7 +26,7 @@ export default function SpotNotification({
 }: SpotNotificationProps) {
   const icon =
     type === "success" ? <IconCheck size={18} /> : <IconX size={18} />;
-  const { borderColor, glow } = typeStyles[type];
+  const { borderColor } = typeStyles[type];
 
   return (
     <Notification
@@ -42,7 +40,7 @@ export default function SpotNotification({
       title={title}
       withCloseButton
       onClose={onClose}
-      style={{ borderColor, boxShadow: glow }}
+      style={{ borderColor }}
     >
       {message}
     </Notification>

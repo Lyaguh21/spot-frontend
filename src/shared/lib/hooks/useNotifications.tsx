@@ -19,6 +19,7 @@ export const useNotifications = () => {
       ),
       position: "top-center",
       autoClose: 3000,
+      withCloseButton: false,
       styles: {
         root: {
           background: "transparent",

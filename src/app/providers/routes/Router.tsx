@@ -6,8 +6,8 @@ import { Box, Flex } from "@mantine/core";
 import Feed from "@/pages/feed";
 import Error404 from "@/pages/errors";
 import { AuthGuard } from "../guards/AuthGuard";
-import Map from "@/pages/Map";
-import Profile from "@/pages/Profile";
+import Map from "@/pages/map";
+import Profile from "@/pages/profile";
 
 const router = createBrowserRouter([
   {

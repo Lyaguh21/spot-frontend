@@ -1,11 +1,12 @@
 import { Outlet } from "react-router-dom";
-import Header from "./components/header/Header";
+import TabBar from "./components/TabBar/TabBar";
 
 export default function MainLayout() {
   return (
     <>
-      <Header />
       <Outlet />
+
+      <TabBar />
     </>
   );
 }
