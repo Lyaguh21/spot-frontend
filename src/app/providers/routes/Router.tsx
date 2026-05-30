@@ -27,21 +27,12 @@ const router = createBrowserRouter([
         element: <Map />,
       },
       {
-        path: "/profile",
-        element: <Profile />,
-      },
-    ],
-  },
-  {
-    path: "/",
-    element: <MainLayout />,
-    children: [
-      {
         path: "/profile/:username",
         element: <Profile />,
       },
     ],
   },
+
   {
     path: "/auth",
     children: [
@@ -65,8 +56,11 @@ export function Router() {
   return (
     <Flex w={"100%"} mih={"100vh"} justify={"center"}>
       <Box
+        w={"100%"}
         maw={500}
         style={{
+          display: "flex",
+          flexDirection: "column",
           borderLeft: "1px solid white",
           borderRight: "1px solid white",
         }}

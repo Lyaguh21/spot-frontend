@@ -4,15 +4,18 @@ import { setUser, userLogout } from "@/entities/user";
 import { useAppDispatch, useAppSelector } from "@/shared/lib";
 import { LoadingOverlay } from "@mantine/core";
 import { useEffect } from "react";
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate, matchPath, useLocation } from "react-router-dom";
+
+const PUBLIC_ROUTES = ["/auth/login", "/auth/register", "/profile/:username"];
 
 export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
   const dispatch = useAppDispatch();
   const location = useLocation();
   const userId = useAppSelector((state) => state.user.id);
-  const { data, isLoading, isError, isUninitialized } = useStatusQuery(
-    undefined,
-    { skip: Boolean(userId) },
+  const { data, isLoading, isError, isUninitialized } = useStatusQuery();
+
+  const isPublicRoute = PUBLIC_ROUTES.some((pattern) =>
+    matchPath({ path: pattern, end: false }, location.pathname),
   );
 
   useEffect(() => {
@@ -25,11 +28,11 @@ export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
     }
   }, [data]);
 
-  if (!userId && (isLoading || isUninitialized)) {
+  if (!isPublicRoute && !userId && (isLoading || isUninitialized)) {
     return <LoadingOverlay visible pos="fixed" />;
   }
 
-  if (!userId && (isError || !data?.authenticated)) {
+  if (!isPublicRoute && !userId && (isError || !data?.authenticated)) {
     return <Navigate to="/auth/login" replace state={{ from: location }} />;
   }
 

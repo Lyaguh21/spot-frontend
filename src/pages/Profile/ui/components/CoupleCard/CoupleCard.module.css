@@ -1,0 +1,9 @@
+.pairCard {
+  padding: 14px 16px;
+}
+
+.pairAvatar {
+  border-radius: 999px;
+  background: linear-gradient(135deg, #2b80ee 0%, #7b2cff 100%);
+  color: #eaf1ff;
+}

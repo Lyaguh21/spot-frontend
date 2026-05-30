@@ -52,7 +52,7 @@ export default function Login() {
     >
       <Stack gap="xl">
         <Center>
-          <img src="/icons/FullLogo.svg" alt="Logo" width={300} />
+          <img src="/icons/FullLogo.svg" alt="Logo" width={"80%"} />
         </Center>
 
         <Stack gap={0}>
@@ -71,7 +71,10 @@ export default function Login() {
         </Stack>
 
         {/* Форма */}
-        <form onSubmit={form.onSubmit(handleSubmit)}>
+        <form
+          onSubmit={form.onSubmit(handleSubmit)}
+          style={{ width: "90%", margin: "0 auto" }}
+        >
           <Stack gap="md">
             <SpotTextInput
               label="Почта"

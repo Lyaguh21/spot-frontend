@@ -6,22 +6,30 @@ import {
   IconMapPinFilled,
 } from "@tabler/icons-react";
 import styles from "./TabBar.module.css";
-
-const tabs = [
-  { key: "feed", label: "Лента", to: "/", icon: IconFileText },
-  {
-    key: "map",
-    label: "Карта",
-    to: "/map",
-    icon: IconMapPinFilled,
-    center: true,
-  },
-  { key: "profile", label: "Профиль", to: "/profile", icon: IconUser },
-];
+import { selectUser } from "@/entities/user/model/userSelectors";
+import { useAppSelector } from "@/shared/lib";
 
 export default function TabBar() {
+  const user = useAppSelector(selectUser);
   const location = useLocation();
   const pathname = location.pathname;
+
+  const tabs = [
+    { key: "feed", label: "Лента", to: "/", icon: IconFileText },
+    {
+      key: "map",
+      label: "Карта",
+      to: "/map",
+      icon: IconMapPinFilled,
+      center: true,
+    },
+    {
+      key: "profile",
+      label: "Профиль",
+      to: `/profile/${user?.username}`,
+      icon: IconUser,
+    },
+  ];
 
   return (
     <nav className={styles.wrapper}>
