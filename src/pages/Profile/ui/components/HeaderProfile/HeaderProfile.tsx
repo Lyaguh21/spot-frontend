@@ -24,6 +24,7 @@ import { IUserState, userLogout } from "@/entities/user";
 import { useDisclosure } from "@mantine/hooks";
 import EditProfileDrawer from "../EditProfileDrawer/EditProfileDrawer";
 import { useAppDispatch } from "@/shared/lib";
+import AddCoupleDrawer from "../AddCoupleDrawer/AddCoupleDrawer";
 
 export default function HeaderProfile({
   userData,
@@ -34,9 +35,9 @@ export default function HeaderProfile({
 }) {
   const dispatch = useAppDispatch();
   const statistics = [
-    { label: "Мест", value: 10 },
-    { label: "Подписчики", value: 100 },
-    { label: "Подписки", value: 50 },
+    { label: "Мест", value: userData?.stats.places ?? 0 },
+    { label: "Подписчики", value: userData?.stats.followers ?? 0 },
+    { label: "Подписки", value: userData?.stats.following ?? 0 },
   ];
 
   const [
@@ -47,6 +48,11 @@ export default function HeaderProfile({
   const [
     openedDrawerEditProfile,
     { open: openDrawerEditProfile, close: closeDrawerEditProfile },
+  ] = useDisclosure(false);
+
+  const [
+    openedCoupleDrawer,
+    { open: openCoupleDrawer, close: closeCoupleDrawer },
   ] = useDisclosure(false);
 
   const [logout] = useLogoutMutation();
@@ -61,7 +67,9 @@ export default function HeaderProfile({
     navigate("/auth/login");
     dispatch(userLogout());
   };
-  const handleCoupleClick = () => {};
+  const handleCoupleClick = () => {
+    openCoupleDrawer();
+  };
   const handleSubscribeClick = () => {};
 
   return (
@@ -76,6 +84,10 @@ export default function HeaderProfile({
       <EditProfileDrawer
         opened={openedDrawerEditProfile}
         onClose={closeDrawerEditProfile}
+      />
+      <AddCoupleDrawer
+        opened={openedCoupleDrawer}
+        onClose={closeCoupleDrawer}
       />
 
       <Box className={styles.header}>

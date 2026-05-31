@@ -9,6 +9,11 @@ export interface IUserState {
   createdAt: string;
   coupleId: number | null;
   partner: Pick<IUserState, "avatarUrl" | "name" | "username"> | null;
+  stats: {
+    places: number;
+    followers: number;
+    following: number;
+  };
 }
 
 export interface IUserProfileResponse extends IUserState {}

@@ -111,7 +111,11 @@ export default function SpotDrawer({
         <div className={styles.handle} />
         <div className={styles.topRow}>
           {title ? <Text className={styles.title}>{title}</Text> : <span />}
-          <CloseButton className={styles.close} onClick={onClose} />
+          <CloseButton
+            tabIndex={-1}
+            className={styles.close}
+            onClick={onClose}
+          />
         </div>
       </div>
       <div className={styles.scroll}>{children}</div>
