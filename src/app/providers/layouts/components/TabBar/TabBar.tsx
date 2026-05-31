@@ -26,7 +26,7 @@ export default function TabBar() {
     {
       key: "profile",
       label: "Профиль",
-      to: `/profile/${user?.username}`,
+      to: user.id ? `/profile/${user?.username}` : "/",
       icon: IconUser,
     },
   ];

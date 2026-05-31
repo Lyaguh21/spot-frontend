@@ -3,7 +3,7 @@ import { setUser, userLogout } from "@/entities/user";
 
 import { useAppDispatch, useAppSelector } from "@/shared/lib";
 import { LoadingOverlay } from "@mantine/core";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Navigate, matchPath, useLocation } from "react-router-dom";
 
 const PUBLIC_ROUTES = ["/auth/login", "/auth/register", "/profile/:username"];
@@ -13,6 +13,7 @@ export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();
   const userId = useAppSelector((state) => state.user.id);
   const { data, isLoading, isError, isUninitialized } = useStatusQuery();
+  const lastAuthUsernameRef = useRef<string | null>(null);
 
   const isPublicRoute = PUBLIC_ROUTES.some((pattern) =>
     matchPath({ path: pattern, end: false }, location.pathname),
@@ -21,6 +22,7 @@ export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     if (data?.authenticated) {
       dispatch(setUser(data.user));
+      lastAuthUsernameRef.current = data.user.username ?? null;
     }
 
     if (data && !data.authenticated) {
@@ -33,6 +35,19 @@ export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
   }
 
   if (!isPublicRoute && !userId && (isError || !data?.authenticated)) {
+    return <Navigate to="/auth/login" replace state={{ from: location }} />;
+  }
+
+  const profileMatch = matchPath(
+    { path: "/profile/:username", end: false },
+    location.pathname,
+  );
+
+  if (
+    profileMatch?.params?.username &&
+    profileMatch.params.username === lastAuthUsernameRef.current &&
+    (isError || data?.authenticated === false)
+  ) {
     return <Navigate to="/auth/login" replace state={{ from: location }} />;
   }
 

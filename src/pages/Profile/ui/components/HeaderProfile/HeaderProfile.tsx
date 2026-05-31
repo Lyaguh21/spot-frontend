@@ -3,7 +3,6 @@ import {
   SpotActionIcon,
   SpotButton,
   SpotConfirmActionModal,
-  SpotDrawer,
 } from "@/shared/ui";
 import {
   Avatar,
@@ -21,9 +20,10 @@ import { IconEdit, IconLock, IconLogout } from "@tabler/icons-react";
 import { Fragment } from "react";
 import { useNavigate } from "react-router-dom";
 import CoupleCard from "../CoupleCard/CoupleCard";
-import { IUserState } from "@/entities/user";
+import { IUserState, userLogout } from "@/entities/user";
 import { useDisclosure } from "@mantine/hooks";
 import EditProfileDrawer from "../EditProfileDrawer/EditProfileDrawer";
+import { useAppDispatch } from "@/shared/lib";
 
 export default function HeaderProfile({
   userData,
@@ -32,6 +32,7 @@ export default function HeaderProfile({
   userData?: IUserState;
   isOwnProfile: boolean;
 }) {
+  const dispatch = useAppDispatch();
   const statistics = [
     { label: "Мест", value: 10 },
     { label: "Подписчики", value: 100 },
@@ -58,6 +59,7 @@ export default function HeaderProfile({
   const handleLogout = () => {
     logout();
     navigate("/auth/login");
+    dispatch(userLogout());
   };
   const handleCoupleClick = () => {};
   const handleSubscribeClick = () => {};

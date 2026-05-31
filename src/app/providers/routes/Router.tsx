@@ -5,6 +5,7 @@ import MainLayout from "../layouts/MainLayout";
 import { Box, Flex } from "@mantine/core";
 import Feed from "@/pages/feed";
 import Error404 from "@/pages/errors";
+import ClosedProfile from "@/pages/errors/ui/ClosedProfile/ClosedProfile";
 import { AuthGuard } from "../guards/AuthGuard";
 import Map from "@/pages/map";
 import Profile from "@/pages/profile";
@@ -45,6 +46,10 @@ const router = createBrowserRouter([
         element: <Register />,
       },
     ],
+  },
+  {
+    path: "/closed-profile",
+    element: <ClosedProfile />,
   },
   {
     path: "/404",
