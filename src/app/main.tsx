@@ -13,10 +13,20 @@ import { theme } from "./theme";
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <Provider store={store}>
-      <MantineProvider theme={theme} defaultColorScheme="light">
+      <MantineProvider
+        theme={theme}
+        defaultColorScheme="dark"
+        forceColorScheme="dark"
+      >
         <Notifications position="top-center" />
         <Router />
       </MantineProvider>
     </Provider>
   </React.StrictMode>,
 );
+
+if ("serviceWorker" in navigator && import.meta.env.PROD) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/sw.js");
+  });
+}

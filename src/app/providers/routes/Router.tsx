@@ -47,6 +47,10 @@ const router = createBrowserRouter([
     ],
   },
   {
+    path: "/404",
+    element: <Error404 />,
+  },
+  {
     path: "*",
     element: <Error404 />,
   },
@@ -54,15 +58,15 @@ const router = createBrowserRouter([
 
 export function Router() {
   return (
-    <Flex w={"100%"} mih={"100vh"} justify={"center"}>
+    <Flex w={"100%"} justify={"center"}>
       <Box
         w={"100%"}
         maw={500}
         style={{
           display: "flex",
           flexDirection: "column",
-          borderLeft: "1px solid white",
-          borderRight: "1px solid white",
+          // borderLeft: "1px solid white",
+          // borderRight: "1px solid white",
         }}
       >
         <RouterProvider router={router} />

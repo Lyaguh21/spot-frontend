@@ -1,0 +1,86 @@
+.content {
+  background: linear-gradient(
+    180deg,
+    rgba(12, 20, 46, 0.98) 0%,
+    rgba(7, 12, 30, 0.96) 100%
+  );
+  border: 1px solid rgba(120, 140, 190, 0.2);
+  border-bottom: none;
+  box-shadow:
+    0 -24px 60px rgba(4, 10, 30, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-radius: 24px 24px 0 0;
+}
+
+.body {
+  padding: 14px 18px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 100%;
+}
+
+.handle {
+  width: 54px;
+  height: 5px;
+  margin: 0 auto 8px;
+  border-radius: 999px;
+  background: rgba(206, 218, 255, 0.35);
+  box-shadow: 0 2px 6px rgba(4, 10, 30, 0.35);
+  cursor: grab;
+  touch-action: none;
+}
+
+.dragArea {
+  padding-top: 6px;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.dragArea:active {
+  cursor: grabbing;
+}
+
+.topRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.title {
+  color: #eaf1ff;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.close {
+  color: rgba(206, 218, 255, 0.8);
+  background: rgba(18, 28, 54, 0.6);
+  border-radius: 999px;
+}
+
+.close:hover {
+  background: rgba(28, 40, 78, 0.8);
+}
+
+.scroll {
+  overflow-y: auto;
+  padding-right: 4px;
+  max-height: 100%;
+}
+
+@media (max-width: 420px) {
+  .body {
+    padding: 12px 16px 20px;
+  }
+
+  .title {
+    font-size: 16px;
+  }
+}

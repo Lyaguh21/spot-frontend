@@ -1,24 +1,24 @@
-import { Button, Center, Flex, Text } from "@mantine/core";
+import { Text } from "@mantine/core";
 import { Link } from "react-router-dom";
+import SpotButton from "@/shared/ui/SpotButton/SpotButton";
+import styles from "./Error404.module.css";
 
 export default function Error404() {
   return (
-    <Center h="100vh">
-      <Flex direction="column">
-        <Text
-          style={{ fontSize: "80px" }}
-          fw={900}
-          variant="gradient"
-          gradient={{ from: "primary.8", to: "primary.5", deg: 77 }}
-        >
-          ERROR 404
+    <div className={styles.page}>
+      <div className={styles.card}>
+        <div className={styles.code}>404</div>
+        <Text className={styles.title}>Страница не найдена</Text>
+        <Text className={styles.description}>
+          Такой страницы нет или ссылка устарела. Проверьте адрес или вернитесь
+          к ленте.
         </Text>
-        <Center>
-          <Link to="/">
-            <Button color="primary.6">Вернуться на главную</Button>
-          </Link>
-        </Center>
-      </Flex>
-    </Center>
+        <div className={styles.actions}>
+          <SpotButton component={Link} to="/" size="lg" radius="lg">
+            На главную
+          </SpotButton>
+        </div>
+      </div>
+    </div>
   );
 }

@@ -9,6 +9,7 @@ export default function SpotPasswordInput(
       {...props}
       classNames={{
         root: styles.root,
+        label: styles.label,
         input: styles.input,
         innerInput: styles.innerInput,
         section: styles.section,

@@ -1,7 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { IUserState } from "./type";
 
-const initialState: IUserState = {
+interface IUserSliceState extends Partial<
+  Pick<IUserState, "id" | "name" | "email" | "username">
+> {}
+
+const initialState: IUserSliceState = {
   id: undefined,
   name: undefined,
   username: undefined,

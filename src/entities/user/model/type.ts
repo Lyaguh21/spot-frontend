@@ -1,8 +1,3 @@
-enum Visibility {
-  PUBLIC = "PUBLIC",
-  PRIVATE = "PRIVATE",
-}
-
 export interface IUserState {
   id: number;
   name: string;
@@ -10,6 +5,14 @@ export interface IUserState {
   username: string;
   avatarUrl: string;
   bio: string;
-  visibility: Visibility;
+  visibility: "PUBLIC" | "PRIVATE";
   createdAt: string;
+  coupleId: number | null;
+  partner: Pick<IUserState, "avatarUrl" | "name" | "username"> | null;
 }
+
+export interface IUserProfileResponse extends IUserState {}
+
+export interface IUpdateProfileRequest extends Partial<
+  Pick<IUserState, "name" | "avatarUrl" | "bio" | "visibility">
+> {}

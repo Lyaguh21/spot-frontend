@@ -1,0 +1,21 @@
+{
+  "name": "SPOT",
+  "short_name": "SPOT",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#040b1a",
+  "theme_color": "#040b1a",
+  "icons": [
+    {
+      "src": "/icons/Logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/icons/FullLogo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

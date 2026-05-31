@@ -1,0 +1,94 @@
+.page {
+  position: relative;
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 48px 24px;
+  overflow: hidden;
+}
+
+.card {
+  width: min(100%, 420px);
+  padding: 32px 28px;
+  border-radius: 24px;
+  background: linear-gradient(
+    180deg,
+    rgba(18, 28, 54, 0.92) 0%,
+    rgba(8, 14, 33, 0.9) 100%
+  );
+  border: 1px solid rgba(109, 133, 190, 0.22);
+  box-shadow:
+    0 24px 60px rgba(4, 10, 30, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(18px);
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(90, 130, 255, 0.12);
+  color: rgba(206, 218, 255, 0.85);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+}
+
+.code {
+  margin-top: 18px;
+  font-size: clamp(72px, 16vw, 140px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -4px;
+  background: linear-gradient(120deg, #eaf1ff 0%, #7aa7ff 55%, #5b7cff 100%);
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.title {
+  margin-top: 10px;
+  font-size: 22px;
+  font-weight: 700;
+  color: #eaf1ff;
+}
+
+.description {
+  margin-top: 8px;
+  color: rgba(206, 218, 255, 0.75);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.actions {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.link {
+  text-align: center;
+  color: rgba(206, 218, 255, 0.8);
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 160ms ease;
+}
+
+.link:hover {
+  color: #eaf1ff;
+}
+
+@media (max-width: 420px) {
+  .card {
+    padding: 28px 22px;
+  }
+
+  .title {
+    font-size: 20px;
+  }
+}

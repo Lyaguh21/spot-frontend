@@ -6,8 +6,13 @@ import type {
 } from "@reduxjs/toolkit/query";
 import { userLogout } from "@/entities/user/model/userSlice";
 
+const runtimeBaseUrl =
+  typeof window !== "undefined"
+    ? `${window.location.protocol}//${window.location.hostname}:3000`
+    : "http://localhost:3000";
+
 const baseQuery = fetchBaseQuery({
-  baseUrl: "http://localhost:3000",
+  baseUrl: import.meta.env.VITE_API_URL ?? runtimeBaseUrl,
   credentials: "include",
 });
 

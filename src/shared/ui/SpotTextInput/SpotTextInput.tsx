@@ -9,6 +9,7 @@ export default function SpotInput(
       {...props}
       classNames={{
         root: styles.root,
+        label: styles.label,
         input: styles.input,
         section: styles.section,
       }}

@@ -97,13 +97,13 @@ export default function Register() {
       navigate("/");
       form.reset();
     } catch (error: any) {
-      showError(error.data.message);
+      showError(error?.data?.message ?? "Не удалось выполнить запрос");
     }
   };
 
   return (
     <Box
-      mih="100vh"
+      mih="100dvh"
       px="md"
       style={{
         display: "flex",
