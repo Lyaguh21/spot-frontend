@@ -3,7 +3,8 @@ import type { ButtonProps } from "@mantine/core";
 import type { ComponentPropsWithoutRef } from "react";
 import styles from "./SpotButton.module.css";
 
-type SpotButtonProps = ButtonProps & ComponentPropsWithoutRef<"button">;
+type SpotButtonProps = ButtonProps &
+  ComponentPropsWithoutRef<"button"> & { component?: any; to?: string };
 
 export default function SpotButton(props: SpotButtonProps) {
   return (
