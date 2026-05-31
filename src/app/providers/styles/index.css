@@ -40,9 +40,9 @@ body::after {
   pointer-events: none;
   z-index: 0;
   width: 620px;
-  height: 420px;
+  height: 620px;
   right: -140px;
-  top: -120px;
+  top: -200px;
   background: radial-gradient(
     circle,
     rgba(90, 130, 255, 0.15) 0%,

@@ -17,7 +17,7 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 import styles from "./HeaderProfile.module.css";
-import { IconEdit, IconLogout } from "@tabler/icons-react";
+import { IconEdit, IconLock, IconLogout } from "@tabler/icons-react";
 import { Fragment } from "react";
 import { useNavigate } from "react-router-dom";
 import CoupleCard from "../CoupleCard/CoupleCard";
@@ -114,9 +114,12 @@ export default function HeaderProfile({
           </Box>
 
           <Stack gap={0}>
-            <Text fz="32px" c="white" lh={1}>
-              {userData?.name}
-            </Text>
+            <Group gap={4} align="center">
+              <Text fz="32px" c="white" lh={1}>
+                {userData?.name}
+              </Text>
+              {userData?.visibility === "PRIVATE" && <IconLock />}
+            </Group>
             <Spoiler
               maxHeight={68}
               showLabel="Показать"

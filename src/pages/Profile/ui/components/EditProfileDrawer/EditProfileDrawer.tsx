@@ -78,6 +78,7 @@ export default function EditProfileDrawer({
 
   return (
     <SpotDrawer
+      size="80%"
       opened={opened}
       onClose={onClose}
       title="Редактирование профиля"

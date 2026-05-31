@@ -16,11 +16,12 @@ export default function SpotDrawer({
   onClose,
   children,
   title,
-  size = "70%",
+  size = "80%",
   closeOnSwipeDown = true,
 }: SpotDrawerProps) {
   const startYRef = useRef<number | null>(null);
   const closeThreshold = 90;
+  const maxHeight = typeof size === "number" ? `${size}px` : size;
 
   const beginDrag = (clientY: number | undefined) => {
     if (clientY === undefined) {
@@ -86,10 +87,16 @@ export default function SpotDrawer({
       position="bottom"
       withCloseButton={false}
       radius="lg"
-      size={size}
+      size="auto"
       transitionProps={{ transition: "slide-up", duration: 520 }}
       overlayProps={{ blur: 6, opacity: 0.65, color: "#040b1a" }}
       classNames={{ content: styles.content, body: styles.body }}
+      styles={{
+        content: {
+          maxHeight,
+          height: "auto",
+        },
+      }}
     >
       <div
         className={styles.dragArea}

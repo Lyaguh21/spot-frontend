@@ -19,7 +19,8 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  height: 100%;
+  height: auto;
+  max-height: 100%;
 }
 
 .handle {
@@ -73,6 +74,7 @@
   overflow-y: auto;
   padding-right: 4px;
   max-height: 100%;
+  flex: 1 1 auto;
 }
 
 @media (max-width: 420px) {
