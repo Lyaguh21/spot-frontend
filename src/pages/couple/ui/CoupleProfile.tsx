@@ -120,7 +120,7 @@ export default function CoupleProfile() {
             {couple?.isFollowing ? "Отписаться" : "Подписаться"}
           </SpotButton>
         )}
-        {currentUser.username && (
+        {isOwnCouple && currentUser.username && (
           <BackToProfileCard username={currentUser.username} />
         )}
       </Box>

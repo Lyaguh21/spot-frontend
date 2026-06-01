@@ -55,14 +55,26 @@ export const userApi = baseApi.injectEndpoints({
     }),
 
     // Подписчики
-    getFollowers: build.query<IFollowersResponse, { username: string }>({
-      query: ({ username }) => `/users/${username}/followers`,
+    getFollowers: build.query<
+      IFollowersResponse,
+      { username: string; page?: number; limit?: number; search?: string }
+    >({
+      query: ({ username, page = 1, limit = 20, search }) => ({
+        url: `/users/${username}/followers`,
+        params: { page, limit, ...(search ? { search } : {}) },
+      }),
       providesTags: [{ type: "User", id: "FOLLOWERS" }],
     }),
 
     // Подписки
-    getFollowings: build.query<IFollowingResponse, { username: string }>({
-      query: ({ username }) => `/users/${username}/following`,
+    getFollowings: build.query<
+      IFollowingResponse,
+      { username: string; page?: number; limit?: number; search?: string }
+    >({
+      query: ({ username, page = 1, limit = 20, search }) => ({
+        url: `/users/${username}/following`,
+        params: { page, limit, ...(search ? { search } : {}) },
+      }),
       providesTags: [{ type: "User", id: "FOLLOWING" }],
     }),
   }),

@@ -32,7 +32,13 @@ export interface IFollowersResponse {
   limit: number;
 }
 
+export type IFollowingItem =
+  | (IUserState & { type: "USER" })
+  | (ICoupleState & { type: "COUPLE" });
+
 export interface IFollowingResponse {
-  users: IUserState[];
-  couples: ICoupleState[];
+  items: IFollowingItem[];
+  total: number;
+  page: number;
+  limit: number;
 }

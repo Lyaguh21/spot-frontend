@@ -18,6 +18,7 @@ export const coupleApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: (_result, _error, arg) => [
         { type: "Couple", id: arg.id },
+        { type: "User", id: "PROFILE" },
       ],
     }),
 
@@ -28,6 +29,7 @@ export const coupleApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: (_result, _error, arg) => [
         { type: "Couple", id: arg.id },
+        { type: "User", id: "PROFILE" },
       ],
     }),
 

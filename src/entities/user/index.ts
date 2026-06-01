@@ -13,5 +13,6 @@ export {
 export type {
   IUserState,
   IFollowersResponse,
+  IFollowingItem,
   IFollowingResponse,
 } from "./model/type";

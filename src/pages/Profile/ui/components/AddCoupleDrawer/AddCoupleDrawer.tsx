@@ -154,17 +154,24 @@ export default function AddCoupleDrawer({
             <Text c="white" fz="xl" ta="center" mb="lg">
               Ввести код пары
             </Text>
-            <Flex gap="md" align="center" mb="md">
+            <Flex gap="md" align="center" mb="20">
               <Box flex={1}>
                 <SpotCodeInput value={pastedCode} onChange={setPastedCode} />
               </Box>
-              <SpotActionIcon radius="md" size="56" onClick={handlePasteCode}>
-                <IconClipboard size={16} />
-              </SpotActionIcon>
             </Flex>
-            <Text c="dimmed" fz="sm" ta="center" mb="lg">
+            <Text c="dimmed" fz="sm" ta="center" mb="md">
               Код состоит из 5 символов: цифры и буквы
             </Text>
+            <SpotButton
+              fullWidth
+              mb="md"
+              kind="glass"
+              size="md"
+              radius="lg"
+              onClick={handlePasteCode}
+            >
+              Вставить из буфера обмена
+            </SpotButton>
             <SpotButton
               fullWidth
               size="lg"

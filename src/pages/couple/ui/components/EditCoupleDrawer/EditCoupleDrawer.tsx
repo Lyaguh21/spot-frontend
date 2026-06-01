@@ -1,8 +1,12 @@
 import { SpotButton, SpotDrawer } from "@/shared/ui";
-import { SegmentedControl, Stack, Textarea } from "@mantine/core";
+import { Button, SegmentedControl, Stack, Textarea } from "@mantine/core";
 import { useEffect, useState } from "react";
 import styles from "./EditCoupleDrawer.module.css";
-import { useUpdateCoupleMutation } from "@/entities/couple";
+import {
+  useLeaveCoupleMutation,
+  useUpdateCoupleMutation,
+} from "@/entities/couple";
+import { useNotifications } from "@/shared/lib";
 
 export default function EditCoupleDrawer({
   opened,
@@ -18,6 +22,8 @@ export default function EditCoupleDrawer({
   initialIsPrivate?: boolean;
 }) {
   const [updateCouple, { isLoading }] = useUpdateCoupleMutation();
+  const [leaveCouple, { isLoading: isLeaving }] = useLeaveCoupleMutation();
+  const { showSuccess, showError } = useNotifications();
 
   const [bio, setBio] = useState("");
   const [isPrivate, setIsPrivate] = useState(initialIsPrivate ?? false);
@@ -47,6 +53,16 @@ export default function EditCoupleDrawer({
       await updateCouple(payload).unwrap();
       onClose();
     } catch {}
+  };
+
+  const handleLeaveCouple = async () => {
+    try {
+      leaveCouple({ id: coupleId ?? "" }).unwrap();
+      showSuccess("Вы покинули пару");
+      onClose();
+    } catch (e) {
+      showError("Ошибка при покидании пары");
+    }
   };
 
   return (
@@ -85,6 +101,17 @@ export default function EditCoupleDrawer({
               indicator: styles.segmentedIndicator,
             }}
           />
+          <Button
+            type="submit"
+            color="red.5"
+            variant="outline"
+            size="lg"
+            radius="lg"
+            loading={isLeaving}
+            onClick={handleLeaveCouple}
+          >
+            Покинуть пару
+          </Button>
           <SpotButton type="submit" size="lg" radius="lg" loading={isLoading}>
             Сохранить
           </SpotButton>

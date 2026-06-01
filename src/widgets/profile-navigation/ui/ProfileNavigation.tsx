@@ -2,7 +2,7 @@ import { useAppDispatch } from "@/shared/lib";
 import { SpotActionIcon, SpotConfirmActionModal } from "@/shared/ui";
 import { Flex, Text, useMantineTheme } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconLogout, IconEdit } from "@tabler/icons-react";
+import { IconLogout, IconEdit, IconArrowLeft } from "@tabler/icons-react";
 import EditProfileDrawer from "../../../pages/profile/ui/components/EditProfileDrawer/EditProfileDrawer";
 import { useLogoutMutation } from "@/entities/auth";
 import { useNavigate } from "react-router-dom";
@@ -53,6 +53,16 @@ export default function ProfileNavigation({
         opened={openedDrawerEditProfile}
         onClose={closeDrawerEditProfile}
       />
+
+      {!isOwnProfile && (
+        <SpotActionIcon
+          size={47}
+          onClick={() => navigate(-1)}
+          style={{ position: "absolute", left: 32, top: 24 }}
+        >
+          <IconArrowLeft />
+        </SpotActionIcon>
+      )}
 
       <Flex
         className={styles.usernameRow}

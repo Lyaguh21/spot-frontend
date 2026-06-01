@@ -62,15 +62,17 @@ export default function HeaderProfile({
           username: userData?.username ?? "",
         });
         showSuccess("Вы отписались от пользователя");
-      } catch (error) {
-        showError("Ошибка при отписке от пользователя");
+      } catch (error: any) {
+        showError(error?.message ?? "Ошибка при отписке от пользователя");
       }
     } else {
       try {
-        await followToUser({ username: userData?.username ?? "" });
+        const data = await followToUser({
+          username: userData?.username ?? "",
+        }).unwrap();
         showSuccess("Вы подписались на пользователя");
-      } catch (error) {
-        showError("Ошибка при подписке на пользователя");
+      } catch (error: any) {
+        showError(error?.message ?? "Ошибка при подписке на пользователя");
       }
     }
   };
