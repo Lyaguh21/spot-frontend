@@ -1,9 +1,9 @@
 import { useParams } from "react-router-dom";
-import Header from "./components/Header";
+import Header from "./components/Header/Header";
 import { Stack } from "@mantine/core";
 import { SpotFloatingIndicator } from "@/shared/ui";
 import { useEffect, useState } from "react";
-import UserList from "./components/UserList";
+import UserList from "./components/UserList/UserList";
 import { useGetFollowersQuery, useGetFollowingsQuery } from "@/entities/user";
 
 export default function Follows() {

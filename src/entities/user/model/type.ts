@@ -16,6 +16,7 @@ export interface IUserState {
     followers: number;
     following: number;
   };
+  isFollowing?: boolean;
 }
 
 export interface IUserProfileResponse extends IUserState {}

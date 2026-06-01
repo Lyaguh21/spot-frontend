@@ -1,4 +1,7 @@
 export {
+  useGetCoupleByIdQuery,
+  useFollowCoupleMutation,
+  useUnfollowCoupleMutation,
   useGetCoupleCodeQuery,
   useResetCoupleCodeMutation,
   useJoinCoupleMutation,

@@ -1,77 +1,8 @@
-import {
-  IFollowersResponse,
-  IFollowingResponse,
-  IUserState,
-} from "@/entities/user";
-import { ICoupleState } from "@/entities/couple";
-import { SpotActionIcon, SpotGlassCard } from "@/shared/ui";
-import { Avatar, Flex, Group, ScrollArea, Stack, Text } from "@mantine/core";
-import { IconArrowRight, IconChevronRight } from "@tabler/icons-react";
-import styles from "./UserList.module.css";
+import { IFollowersResponse, IFollowingResponse } from "@/entities/user";
 
-const UserCard = function ({ userData }: { userData: IUserState }) {
-  return (
-    <SpotGlassCard isButton={true} p="md">
-      <Flex justify="space-between" align="center">
-        <Flex gap="md" align="center">
-          <Avatar size="xl" src={userData.avatarUrl} alt={userData.username}>
-            {userData.username.charAt(0)}
-          </Avatar>
-
-          <Stack gap={0}>
-            <Text>{userData.name}</Text>
-            <Text size="xs" c="dimmed">
-              {userData.username}
-            </Text>
-          </Stack>
-        </Flex>
-        <SpotActionIcon size="lg">
-          <IconArrowRight />
-        </SpotActionIcon>
-      </Flex>
-    </SpotGlassCard>
-  );
-};
-
-const CoupleCard = function ({ couple }: { couple: ICoupleState }) {
-  const first = couple.members[0]?.user;
-  const second = couple.members[1]?.user;
-  const names = [first?.name, second?.name].filter(Boolean).join(" & ");
-
-  return (
-    <SpotGlassCard className={styles.pairCard} isButton={true} p="md">
-      <Group justify="space-between" wrap="nowrap">
-        <Group gap="md" wrap="nowrap">
-          <Group gap={0}>
-            <Avatar
-              size={52}
-              src={first?.avatarUrl}
-              className={styles.pairAvatar}
-            >
-              {first?.username?.charAt(0)}
-            </Avatar>
-            <Avatar
-              size={52}
-              src={second?.avatarUrl}
-              className={styles.pairAvatar}
-            >
-              {second?.username?.charAt(0)}
-            </Avatar>
-          </Group>
-          <Stack gap={2}>
-            <Text c="white" fw={600} size="sm">
-              {names || "Пара"}
-            </Text>
-            <Text c="dimmed" size="sm">
-              Карточка пары
-            </Text>
-          </Stack>
-        </Group>
-        <IconChevronRight />
-      </Group>
-    </SpotGlassCard>
-  );
-};
+import { ScrollArea, Stack, Text } from "@mantine/core";
+import CoupleCard from "@/widgets/couple-card";
+import UserCard from "@/widgets/user-card";
 
 export default function UserList({
   followType,
@@ -104,7 +35,12 @@ export default function UserList({
         ) : (
           <Stack gap="sm">
             {couples.map((couple) => (
-              <CoupleCard key={couple.id} couple={couple} />
+              <CoupleCard
+                key={couple.id}
+                firstUser={couple.members[0]?.user}
+                secondUser={couple.members[1]?.user}
+                subtitle="Карточка пары"
+              />
             ))}
             {users.map((user) => (
               <UserCard key={user.id} userData={user} />

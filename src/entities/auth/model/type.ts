@@ -11,10 +11,10 @@ export interface IRegisterRequest extends Pick<
   password: string;
 }
 
-interface UserStatus {
-  id: number;
-  email: string;
-}
+interface UserStatus extends Pick<
+  IUserState,
+  "id" | "name" | "username" | "email" | "coupleId"
+> {}
 
 export interface IStatusResponse {
   authenticated: boolean;

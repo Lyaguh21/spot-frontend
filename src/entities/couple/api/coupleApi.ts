@@ -1,7 +1,36 @@
 import { baseApi } from "@/shared/api";
+import { ICoupleState } from "../model/type";
 
 export const coupleApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
+    getCoupleById: build.query<
+      ICoupleState & { displayName?: string },
+      { id: string }
+    >({
+      query: ({ id }) => `/couples/${id}`,
+      providesTags: (_result, _error, arg) => [{ type: "Couple", id: arg.id }],
+    }),
+
+    followCouple: build.mutation<void, { id: string }>({
+      query: ({ id }) => ({
+        url: `/couples/${id}/follow`,
+        method: "POST",
+      }),
+      invalidatesTags: (_result, _error, arg) => [
+        { type: "Couple", id: arg.id },
+      ],
+    }),
+
+    unfollowCouple: build.mutation<void, { id: string }>({
+      query: ({ id }) => ({
+        url: `/couples/${id}/follow`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (_result, _error, arg) => [
+        { type: "Couple", id: arg.id },
+      ],
+    }),
+
     getCoupleCode: build.query<{ inviteCode: string }, void>({
       query: () => "/couples",
       providesTags: [{ type: "Couple", id: "CODE" }],
@@ -24,6 +53,9 @@ export const coupleApi = baseApi.injectEndpoints({
 });
 
 export const {
+  useGetCoupleByIdQuery,
+  useFollowCoupleMutation,
+  useUnfollowCoupleMutation,
   useGetCoupleCodeQuery,
   useResetCoupleCodeMutation,
   useJoinCoupleMutation,

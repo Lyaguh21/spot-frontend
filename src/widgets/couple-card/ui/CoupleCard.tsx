@@ -5,69 +5,60 @@ import styles from "./CoupleCard.module.css";
 import { IUserState } from "@/entities/user";
 
 export default function CoupleCard({
-  isOwnProfile,
-  handleCoupleClick,
-  userData,
+  firstUser,
+  secondUser,
+  title,
+  subtitle,
+  onClick,
+  mt,
 }: {
-  isOwnProfile: boolean;
-  userData: IUserState | undefined;
-  handleCoupleClick: () => void;
+  firstUser?: Pick<IUserState, "avatarUrl" | "name" | "username"> | null;
+  secondUser?: Pick<IUserState, "avatarUrl" | "name" | "username"> | null;
+  title?: string;
+  subtitle?: string;
+  onClick?: () => void;
+  mt?: string | number;
 }) {
-  if (!userData?.partner && isOwnProfile)
-    return (
-      <SpotGlassCard
-        className={styles.pairCard}
-        mt="lg"
-        onClick={handleCoupleClick}
-        isButton={true}
-      >
-        <Group justify="space-between" wrap="nowrap">
-          <Stack gap={2}>
-            <Text c="white" fw={600}>
-              Создать свою пару
-            </Text>
-            <Text c="dimmed" size="sm">
-              Нажмите чтобы добавить партнера
-            </Text>
-          </Stack>
-          <IconChevronRight />
-        </Group>
-      </SpotGlassCard>
-    );
+  const names =
+    title ?? [firstUser?.name, secondUser?.name].filter(Boolean).join(" & ");
+  const description = subtitle ?? "Карточка пары";
 
   return (
-    <Stack gap="xs" mt="lg">
-      <SpotGlassCard className={styles.pairCard} onClick={handleCoupleClick}>
-        <Group justify="space-between" wrap="nowrap">
-          <Group gap="md" wrap="nowrap">
-            <Group gap={0}>
-              <Avatar
-                size={52}
-                src={userData?.avatarUrl}
-                className={styles.pairAvatar}
-              >
-                {userData?.username.charAt(0)}
-              </Avatar>
-              <Avatar
-                size={52}
-                src={userData?.partner?.avatarUrl}
-                className={styles.pairAvatar}
-              >
-                {userData?.partner?.username.charAt(0)}
-              </Avatar>
-            </Group>
-            <Stack gap={2}>
-              <Text c="white" fw={600} size="sm">
-                {userData?.name} & {userData?.partner?.name}
-              </Text>
-              <Text c="dimmed">
-                {isOwnProfile ? "Карточка пары" : `Пара пользователя`}
-              </Text>
-            </Stack>
+    <SpotGlassCard
+      className={styles.pairCard}
+      onClick={onClick}
+      isButton={Boolean(onClick)}
+      mt={mt}
+    >
+      <Group justify="space-between" wrap="nowrap">
+        <Group gap="sm" wrap="nowrap">
+          <Group gap={0} wrap="nowrap">
+            <Avatar
+              size={52}
+              src={firstUser?.avatarUrl}
+              className={styles.pairAvatar}
+            >
+              {firstUser?.username?.charAt(0)}
+            </Avatar>
+            <Avatar
+              size={52}
+              src={secondUser?.avatarUrl}
+              className={styles.pairAvatar}
+            >
+              {secondUser?.username?.charAt(0)}
+            </Avatar>
           </Group>
-          <IconChevronRight />
+          <Stack gap={2}>
+            <Text c="white" fw={600} size="sm">
+              {names || "Пара"}
+            </Text>
+            <Text c="dimmed" size="sm">
+              {description}
+            </Text>
+          </Stack>
         </Group>
-      </SpotGlassCard>
-    </Stack>
+        <IconChevronRight />
+      </Group>
+    </SpotGlassCard>
   );
 }
