@@ -9,6 +9,7 @@ import ClosedProfile from "@/pages/errors/ui/ClosedProfile/ClosedProfile";
 import { AuthGuard } from "../guards/AuthGuard";
 import Map from "@/pages/map";
 import Profile from "@/pages/profile";
+import Follows from "@/pages/follows";
 
 const router = createBrowserRouter([
   {
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
       {
         path: "/profile/:username",
         element: <Profile />,
+      },
+      {
+        path: "/profile/:username/:type",
+        element: <Follows />,
       },
     ],
   },

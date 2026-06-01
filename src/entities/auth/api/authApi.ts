@@ -19,6 +19,7 @@ export const authApi = baseApi.injectEndpoints({
           username: data.username,
         },
       }),
+      invalidatesTags: [{ type: "User" }],
     }),
 
     login: build.mutation<{ user: IUserState }, ILoginRequest>({
@@ -27,6 +28,7 @@ export const authApi = baseApi.injectEndpoints({
         method: "POST",
         body: data,
       }),
+      invalidatesTags: [{ type: "User" }],
     }),
 
     logout: build.mutation<void, void>({

@@ -1,5 +1,7 @@
 import { baseApi } from "@/shared/api";
 import {
+  IFollowersResponse,
+  IFollowingResponse,
   IUpdateProfileRequest,
   IUserProfileResponse,
   IUserState,
@@ -35,6 +37,34 @@ export const userApi = baseApi.injectEndpoints({
       query: ({ username }) => `/users/${username}/visits`,
       providesTags: [{ type: "User", id: "PROFILE" }],
     }),
+
+    followToUser: build.mutation<void, { username: string }>({
+      query: ({ username }) => ({
+        url: `/users/${username}/follow`,
+        method: "POST",
+      }),
+      invalidatesTags: [{ type: "User", id: "PROFILE" }],
+    }),
+
+    unfollowUser: build.mutation<void, { username: string }>({
+      query: ({ username }) => ({
+        url: `/users/${username}/follow`,
+        method: "DELETE",
+      }),
+      invalidatesTags: [{ type: "User", id: "PROFILE" }],
+    }),
+
+    // Подписчики
+    getFollowers: build.query<IFollowersResponse, { username: string }>({
+      query: ({ username }) => `/users/${username}/followers`,
+      providesTags: [{ type: "User", id: "FOLLOWERS" }],
+    }),
+
+    // Подписки
+    getFollowings: build.query<IFollowingResponse, { username: string }>({
+      query: ({ username }) => `/users/${username}/following`,
+      providesTags: [{ type: "User", id: "FOLLOWING" }],
+    }),
   }),
 });
 
@@ -44,4 +74,8 @@ export const {
   useUpdateProfileMutation,
   useGetUserByIdQuery,
   useGetVisitsByUsernameQuery,
+  useFollowToUserMutation,
+  useUnfollowUserMutation,
+  useGetFollowersQuery,
+  useGetFollowingsQuery,
 } = userApi;

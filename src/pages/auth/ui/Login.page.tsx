@@ -66,7 +66,7 @@ export default function Login() {
             ta="center"
             style={{ letterSpacing: "1px" }}
           >
-            Добро пожаловать обратно!
+            Добро пожаловать обратно
           </Text>
         </Stack>
 

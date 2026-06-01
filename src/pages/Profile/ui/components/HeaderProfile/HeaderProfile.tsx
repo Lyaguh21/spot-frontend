@@ -36,8 +36,16 @@ export default function HeaderProfile({
   const dispatch = useAppDispatch();
   const statistics = [
     { label: "Мест", value: userData?.stats.places ?? 0 },
-    { label: "Подписчики", value: userData?.stats.followers ?? 0 },
-    { label: "Подписки", value: userData?.stats.following ?? 0 },
+    {
+      label: "Подписчики",
+      value: userData?.stats.followers ?? 0,
+      link: `/profile/${userData?.username}/${"followers"}`,
+    },
+    {
+      label: "Подписки",
+      value: userData?.stats.following ?? 0,
+      link: `/profile/${userData?.username}/${"following"}`,
+    },
   ];
 
   const [
@@ -157,7 +165,10 @@ export default function HeaderProfile({
         <Group justify="center" mt="lg" gap="24">
           {statistics.map((stat, index) => (
             <Fragment key={stat.label}>
-              <Box>
+              <Box
+                onClick={() => stat.link && navigate(stat.link)}
+                style={{ cursor: stat.link ? "pointer" : "default" }}
+              >
                 <Text fz="24px" c="primary" fw={700} ta="center">
                   {stat.value}
                 </Text>

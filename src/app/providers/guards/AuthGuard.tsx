@@ -12,7 +12,10 @@ export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
   const dispatch = useAppDispatch();
   const location = useLocation();
   const userId = useAppSelector((state) => state.user.id);
-  const { data, isLoading, isError, isUninitialized } = useStatusQuery();
+  const { data, isLoading, isError, isUninitialized } = useStatusQuery(
+    undefined,
+    { refetchOnMountOrArgChange: true },
+  );
   const lastAuthUsernameRef = useRef<string | null>(null);
 
   const isPublicRoute = PUBLIC_ROUTES.some((pattern) =>

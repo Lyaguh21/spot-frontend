@@ -110,11 +110,13 @@ export default function EditProfileDrawer({
         <Stack gap="md">
           <SpotTextInput
             label="Имя"
+            radius="lg"
             value={name}
             onChange={(event) => setName(event.currentTarget.value)}
             placeholder="Ваше имя"
           />
           <Textarea
+            radius="lg"
             label="Описание"
             value={bio}
             onChange={(event) => setBio(event.currentTarget.value)}
@@ -127,6 +129,7 @@ export default function EditProfileDrawer({
           />
           <SegmentedControl
             value={visibility}
+            radius="lg"
             onChange={(value) => setVisibility(value as "PUBLIC" | "PRIVATE")}
             data={[
               { label: "Публичный", value: "PUBLIC" },

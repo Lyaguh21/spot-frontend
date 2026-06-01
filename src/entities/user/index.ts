@@ -5,5 +5,13 @@ export {
   useUpdateProfileMutation,
   useGetUserByIdQuery,
   useGetVisitsByUsernameQuery,
+  useFollowToUserMutation,
+  useUnfollowUserMutation,
+  useGetFollowersQuery,
+  useGetFollowingsQuery,
 } from "./api/userApi";
-export type { IUserState } from "./model/type";
+export type {
+  IUserState,
+  IFollowersResponse,
+  IFollowingResponse,
+} from "./model/type";
