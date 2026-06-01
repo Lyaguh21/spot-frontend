@@ -11,7 +11,7 @@ export default function Map() {
 
   const data = [
     { label: "Своя", value: "my" },
-    { label: "Пара", value: "couple", disabled: !user.coupleId },
+    { label: "Пара", value: "couple", disabled: !user.partner },
     { label: "Друзья", value: "friends" },
   ];
   return (

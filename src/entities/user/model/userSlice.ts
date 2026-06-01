@@ -2,7 +2,10 @@ import { createSlice } from "@reduxjs/toolkit";
 import { IUserState } from "./type";
 
 interface IUserSliceState extends Partial<
-  Pick<IUserState, "id" | "name" | "email" | "username" | "coupleId">
+  Pick<
+    IUserState,
+    "id" | "name" | "email" | "username" | "coupleId" | "partner"
+  >
 > {}
 
 const initialState: IUserSliceState = {
@@ -11,6 +14,7 @@ const initialState: IUserSliceState = {
   username: undefined,
   email: undefined,
   coupleId: null,
+  partner: null,
 };
 
 export const userSlice = createSlice({
@@ -23,6 +27,7 @@ export const userSlice = createSlice({
       state.email = action.payload.email;
       state.username = action.payload.username;
       state.coupleId = action.payload.coupleId;
+      state.partner = action.payload.partner;
     },
 
     userLogout: (state) => {
@@ -31,6 +36,7 @@ export const userSlice = createSlice({
       state.email = undefined;
       state.username = undefined;
       state.coupleId = null;
+      state.partner = null;
     },
   },
 });

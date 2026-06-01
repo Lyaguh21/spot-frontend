@@ -20,6 +20,7 @@
 
 .spoiler {
   margin-top: 6px;
+  max-width: 100%;
 }
 
 .spoilerControl {
@@ -29,4 +30,8 @@
 
 .bio {
   line-height: 1.4;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  white-space: pre-wrap;
 }

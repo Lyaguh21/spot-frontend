@@ -7,7 +7,7 @@ export interface IUserState {
   username: string;
   avatarUrl: string;
   bio: string;
-  visibility: "PUBLIC" | "PRIVATE";
+  isPrivate: boolean;
   createdAt: string;
   coupleId: number | null;
   partner: Pick<IUserState, "avatarUrl" | "name" | "username"> | null;
@@ -22,10 +22,15 @@ export interface IUserState {
 export interface IUserProfileResponse extends IUserState {}
 
 export interface IUpdateProfileRequest extends Partial<
-  Pick<IUserState, "name" | "avatarUrl" | "bio" | "visibility">
+  Pick<IUserState, "name" | "avatarUrl" | "bio" | "isPrivate">
 > {}
 
-export type IFollowersResponse = IUserState[];
+export interface IFollowersResponse {
+  items: IUserState[];
+  total: number;
+  page: number;
+  limit: number;
+}
 
 export interface IFollowingResponse {
   users: IUserState[];

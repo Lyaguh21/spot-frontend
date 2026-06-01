@@ -24,7 +24,7 @@ export default function EditProfileDrawer({
 
   const [name, setName] = useState("");
   const [bio, setBio] = useState("");
-  const [visibility, setVisibility] = useState<"PUBLIC" | "PRIVATE">("PUBLIC");
+  const [isPrivate, setIsPrivate] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState("");
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
 
@@ -35,7 +35,7 @@ export default function EditProfileDrawer({
 
     setName(profile.name ?? "");
     setBio(profile.bio ?? "");
-    setVisibility(profile.visibility ?? "PUBLIC");
+    setIsPrivate(profile.isPrivate ?? false);
     setAvatarUrl(profile.avatarUrl ?? "");
     setAvatarPreview(profile.avatarUrl ?? null);
   }, [opened, profile]);
@@ -66,7 +66,7 @@ export default function EditProfileDrawer({
     const payload = {
       name: name.trim(),
       bio: bio.trim(),
-      visibility,
+      isPrivate,
       ...(avatarUrl ? { avatarUrl } : {}),
     };
 
@@ -128,9 +128,9 @@ export default function EditProfileDrawer({
             }}
           />
           <SegmentedControl
-            value={visibility}
+            value={isPrivate ? "PRIVATE" : "PUBLIC"}
             radius="lg"
-            onChange={(value) => setVisibility(value as "PUBLIC" | "PRIVATE")}
+            onChange={(value) => setIsPrivate(value === "PRIVATE")}
             data={[
               { label: "Публичный", value: "PUBLIC" },
               { label: "Приватный", value: "PRIVATE" },

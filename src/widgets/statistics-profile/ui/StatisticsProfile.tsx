@@ -2,7 +2,7 @@ import { Group, Box, Divider, Text } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 import { Fragment } from "react/jsx-runtime";
 
-export default function InfoProfile({
+export default function StatisticsProfile({
   statistics,
 }: {
   statistics: { label: string; value: number; link?: string }[];

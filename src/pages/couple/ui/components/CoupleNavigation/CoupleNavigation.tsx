@@ -1,20 +1,37 @@
 import { Flex, Text } from "@mantine/core";
 import styles from "./CoupleNavigation.module.css";
 import { SpotActionIcon } from "@/shared/ui";
-import { IconArrowLeft, IconEdit } from "@tabler/icons-react";
+import { IconArrowLeft, IconEdit, IconLock } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
+import EditCoupleDrawer from "../EditCoupleDrawer/EditCoupleDrawer";
+import { useDisclosure } from "@mantine/hooks";
 
 export default function CoupleNavigation({
+  coupleId,
   generatedName,
   isOwnCouple,
+  bio,
+  isPrivate,
 }: {
+  coupleId?: string;
+  bio?: string;
+  isPrivate?: boolean;
   generatedName?: string;
   isOwnCouple: boolean;
 }) {
   const navigate = useNavigate();
+  const [opened, { open, close }] = useDisclosure(false);
 
   return (
     <>
+      <EditCoupleDrawer
+        opened={opened}
+        onClose={close}
+        coupleId={coupleId}
+        initialBio={bio}
+        initialIsPrivate={isPrivate}
+      />
+
       {!isOwnCouple && (
         <SpotActionIcon
           size={45}
@@ -37,11 +54,12 @@ export default function CoupleNavigation({
             <IconArrowLeft />
           </SpotActionIcon>
         )}
-        <Text fz="lg" c="white">
-          {generatedName || "Пара"}
-        </Text>
+        <Flex align="center" gap={4}>
+          <Text fz="lg">{generatedName || "Пара"}</Text>
+          {isPrivate && <IconLock size={18} />}
+        </Flex>
         {isOwnCouple && (
-          <SpotActionIcon size={40}>
+          <SpotActionIcon size={40} onClick={open}>
             <IconEdit />
           </SpotActionIcon>
         )}

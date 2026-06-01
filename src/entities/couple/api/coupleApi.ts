@@ -1,5 +1,5 @@
 import { baseApi } from "@/shared/api";
-import { ICoupleState } from "../model/type";
+import { ICoupleState, IUpdateCoupleRequest } from "../model/type";
 
 export const coupleApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
@@ -49,6 +49,27 @@ export const coupleApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [{ type: "Couple", id: "MyCouple" }, { type: "User" }],
     }),
+
+    updateCouple: build.mutation<void, { id: string } & IUpdateCoupleRequest>({
+      query: ({ id, ...data }) => ({
+        url: `/couples/${id}`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: (_result, _error, arg) => [
+        { type: "Couple", id: arg.id },
+      ],
+    }),
+
+    leaveCouple: build.mutation<void, { id: string }>({
+      query: ({ id }) => ({
+        url: `/couples/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (_result, _error, arg) => [
+        { type: "Couple", id: arg.id },
+      ],
+    }),
   }),
 });
 
@@ -59,4 +80,6 @@ export const {
   useGetCoupleCodeQuery,
   useResetCoupleCodeMutation,
   useJoinCoupleMutation,
+  useUpdateCoupleMutation,
+  useLeaveCoupleMutation,
 } = coupleApi;

@@ -24,7 +24,7 @@ export default function HeaderProfile({
   isOwnProfile: boolean;
 }) {
   const statistics = [
-    { label: "Мест", value: userData?.stats.places ?? 0 },
+    { label: "Места", value: userData?.stats.places ?? 0 },
     {
       label: "Подписчики",
       value: userData?.stats.followers ?? 0,
@@ -101,7 +101,7 @@ export default function HeaderProfile({
               <Text fz="32px" c="white" lh={1}>
                 {userData?.name}
               </Text>
-              {userData?.visibility === "PRIVATE" && <IconLock />}
+              {userData?.isPrivate && <IconLock />}
             </Group>
 
             <Spoiler
