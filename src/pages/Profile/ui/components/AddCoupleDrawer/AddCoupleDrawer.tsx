@@ -18,6 +18,7 @@ import {
   useJoinCoupleMutation,
   useResetCoupleCodeMutation,
 } from "@/entities/couple";
+import { useNotifications } from "@/shared/lib";
 export default function AddCoupleDrawer({
   opened,
   onClose,
@@ -25,6 +26,8 @@ export default function AddCoupleDrawer({
   opened: boolean;
   onClose: () => void;
 }) {
+  const { showError, showSuccess } = useNotifications();
+
   const { data } = useGetCoupleCodeQuery();
   const [resetCoupleCode] = useResetCoupleCodeMutation();
   const [joinCouple] = useJoinCoupleMutation();
@@ -73,8 +76,16 @@ export default function AddCoupleDrawer({
     resetCoupleCode();
   };
 
-  const handleJoinCouple = () => {
-    joinCouple({ inviteCode: pastedCode.toUpperCase() });
+  const handleJoinCouple = async () => {
+    try {
+      const data = await joinCouple({
+        inviteCode: pastedCode.toUpperCase(),
+      }).unwrap();
+      showSuccess("Вы успешно присоединились к паре");
+      onClose();
+    } catch (err: any) {
+      showError(err?.data.message || "Не удалось присоединиться к паре");
+    }
   };
 
   return (

@@ -68,7 +68,12 @@ export default function HeaderProfile({
     dispatch(userLogout());
   };
   const handleCoupleClick = () => {
-    openCoupleDrawer();
+    if (userData?.partner) {
+      navigate("/couple/");
+    } //!
+    else {
+      openCoupleDrawer();
+    }
   };
   const handleSubscribeClick = () => {};
 

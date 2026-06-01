@@ -18,7 +18,7 @@ export const coupleApi = baseApi.injectEndpoints({
         method: "POST",
         body: data,
       }),
-      invalidatesTags: [{ type: "Couple", id: "MyCouple" }],
+      invalidatesTags: [{ type: "Couple", id: "MyCouple" }, { type: "User" }],
     }),
   }),
 });

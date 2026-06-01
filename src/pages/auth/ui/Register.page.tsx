@@ -97,7 +97,11 @@ export default function Register() {
       navigate("/");
       form.reset();
     } catch (error: any) {
-      showError(error?.data?.message ?? "Не удалось выполнить запрос");
+      if (error?.data?.message === "User already exists") {
+        showError("Пользователь с таким email или ником уже существует");
+      } else {
+        showError(error?.data?.message ?? "Не удалось выполнить запрос");
+      }
     }
   };
 
