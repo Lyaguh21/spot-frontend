@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import Header from "./components/Header";
 import { Stack } from "@mantine/core";
-import { SpotFloatingIndicator } from "@/shared/ui/SpotFloatingIndicator/SpotFloatingIndicator";
+import { SpotFloatingIndicator } from "@/shared/ui";
 import { useEffect, useState } from "react";
 import UserList from "./components/UserList";
 import { useGetFollowersQuery, useGetFollowingsQuery } from "@/entities/user";
@@ -9,9 +9,7 @@ import { useGetFollowersQuery, useGetFollowingsQuery } from "@/entities/user";
 export default function Follows() {
   const { type, username } = useParams();
   const initialType = type === "following" ? "following" : "followers";
-  const [followType, setFollowType] = useState(
-    initialType,
-  );
+  const [followType, setFollowType] = useState(initialType);
   const { data: followersData } = useGetFollowersQuery(
     {
       username: username ?? "",

@@ -6,3 +6,5 @@ export { default as SpotActionIcon } from "./SpotActionIcon/SpotActionIcon";
 export { default as SpotGlassCard } from "./SpotGlassCard/SpotGlassCard";
 export { default as SpotConfirmActionModal } from "./SpotConfirmActionModal/SpotConfirmActionModal";
 export { default as SpotDrawer } from "./SpotDrawer/SpotDrawer";
+export { default as SpotFloatingIndicator } from "./SpotFloatingIndicator/SpotFloatingIndicator";
+export { default as SpotCodeInput } from "./SpotCodeInput/SpotCodeInput";

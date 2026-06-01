@@ -12,7 +12,7 @@ import {
   IconRefresh,
 } from "@tabler/icons-react";
 import { useState, useRef, useEffect } from "react";
-import { CoupleCodeInput } from "../CoupleCodeInput/CoupleCodeInput";
+import { SpotCodeInput } from "@/shared/ui";
 import {
   useGetCoupleCodeQuery,
   useJoinCoupleMutation,
@@ -156,7 +156,7 @@ export default function AddCoupleDrawer({
             </Text>
             <Flex gap="md" align="center" mb="md">
               <Box flex={1}>
-                <CoupleCodeInput value={pastedCode} onChange={setPastedCode} />
+                <SpotCodeInput value={pastedCode} onChange={setPastedCode} />
               </Box>
               <SpotActionIcon radius="md" size="56" onClick={handlePasteCode}>
                 <IconClipboard size={16} />

@@ -4,27 +4,6 @@
   border-bottom: 1px solid rgba(200, 215, 255, 0.15);
 }
 
-.usernameRow {
-  padding: 8px 12px;
-  border-radius: 999px;
-  background:
-    radial-gradient(
-      120% 160% at 50% -20%,
-      rgba(140, 171, 255, 0.09) 0%,
-      rgba(40, 60, 110, 0.08) 45%,
-      rgba(12, 20, 46, 0.6) 100%
-    ),
-    linear-gradient(
-      135deg,
-      rgba(20, 34, 68, 0.4) 0%,
-      rgba(10, 18, 40, 0.4) 100%
-    );
-  border: 1px solid rgba(130, 150, 200, 0.138);
-
-  backdrop-filter: blur(26px);
-  -webkit-backdrop-filter: blur(26px);
-}
-
 .avatarFrame {
   display: inline-flex;
   padding: 3px;

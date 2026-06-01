@@ -15,7 +15,7 @@ interface Item {
   disabled?: boolean;
 }
 
-export function SpotFloatingIndicator({
+export default function SpotFloatingIndicator({
   items,
   value,
   setValue,

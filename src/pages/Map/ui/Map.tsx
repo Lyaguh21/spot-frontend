@@ -1,6 +1,6 @@
 import { selectUser } from "@/entities/user/model/userSelectors";
 import { useAppSelector } from "@/shared/lib";
-import { SpotFloatingIndicator } from "@/shared/ui/SpotFloatingIndicator/SpotFloatingIndicator";
+import { SpotFloatingIndicator } from "@/shared/ui";
 import { Box, Flex } from "@mantine/core";
 import { useState } from "react";
 

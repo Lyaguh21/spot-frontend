@@ -1,12 +1,12 @@
 import { PinInput, Box, BoxProps } from "@mantine/core";
-import classes from "./CoupleCodeInput.module.css";
+import classes from "./SpotCodeInput.module.css";
 
 interface CoupleCodeInputProps extends BoxProps {
   value?: string;
   onChange?: (value: string) => void;
 }
 
-export function CoupleCodeInput({
+export default function SpotCodeInput({
   value,
   onChange,
   ...boxProps
