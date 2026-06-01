@@ -3,8 +3,9 @@ import Header from "./components/Header/Header";
 import { Stack } from "@mantine/core";
 import { SpotFloatingIndicator } from "@/shared/ui";
 import { useEffect, useState } from "react";
-import UserList from "./components/UserList/UserList";
+
 import { useGetFollowersQuery, useGetFollowingsQuery } from "@/entities/user";
+import FollowList from "./components/FollowList";
 
 export default function Follows() {
   const { type, username } = useParams();
@@ -40,7 +41,7 @@ export default function Follows() {
           { label: "Подписки", value: "following" },
         ]}
       />
-      <UserList
+      <FollowList
         followType={followType}
         followers={followersData}
         followings={followingsData}

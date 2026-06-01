@@ -49,7 +49,7 @@ export default function HeaderProfile({
 
   const handleCoupleClick = () => {
     if (userData?.partner) {
-      navigate({ pathname: `/couple/${userData.coupleId}` }, { replace: true });
+      navigate({ pathname: `/couple/${userData.coupleId}` });
     } //!
     else {
       openCoupleDrawer();

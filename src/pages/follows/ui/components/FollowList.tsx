@@ -1,10 +1,9 @@
 import { IFollowersResponse, IFollowingResponse } from "@/entities/user";
-
 import { ScrollArea, Stack, Text } from "@mantine/core";
 import CoupleCard from "@/widgets/couple-card";
 import UserCard from "@/widgets/user-card";
 
-export default function UserList({
+export default function FollowList({
   followType,
   followers,
   followings,
@@ -34,7 +33,7 @@ export default function UserList({
           </Text>
         ) : (
           <Stack gap="sm">
-            {couples.map((couple) => (
+            {couples?.map((couple) => (
               <CoupleCard
                 key={couple.id}
                 firstUser={couple.members[0]?.user}

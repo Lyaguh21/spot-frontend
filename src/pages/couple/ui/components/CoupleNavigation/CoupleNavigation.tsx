@@ -17,14 +17,14 @@ export default function CoupleNavigation({
     <>
       {!isOwnCouple && (
         <SpotActionIcon
-          size={40}
+          size={45}
           onClick={() => navigate(-1)}
-          style={{ position: "absolute", left: 32, top: 32 }}
+          style={{ position: "absolute", left: 32, top: 24 }}
         >
           <IconArrowLeft />
         </SpotActionIcon>
       )}
-      
+
       <Flex
         className={styles.nameRow}
         justify={isOwnCouple ? "space-between" : "center"}
