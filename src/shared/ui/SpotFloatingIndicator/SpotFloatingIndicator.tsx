@@ -35,7 +35,12 @@ export default function SpotFloatingIndicator({
   }, [value]);
 
   return (
-    <Box className={classes.root} ref={parentRef} data-size={size}>
+    <Box
+      className={classes.root}
+      ref={parentRef}
+      data-size={size}
+      style={{ transition: "all 0.1s ease-in-out" }}
+    >
       {items.map((item) => (
         <UnstyledButton
           key={item.value}

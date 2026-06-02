@@ -4,6 +4,7 @@ export interface IViewSliceState {
   ui: {
     mapIsFullScreen: boolean;
   };
+  
 }
 
 const initialState: IViewSliceState = {
