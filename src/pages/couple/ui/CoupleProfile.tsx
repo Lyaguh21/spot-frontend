@@ -83,24 +83,26 @@ export default function CoupleProfile() {
         />
         <CoupleHero members={members} />
         {couple?.bio && (
-          <Text fz="lg" c="white" mt="xs">
-            Описание:
-          </Text>
+          <>
+            <Text fz="lg" c="white" mt="xs">
+              Описание:
+            </Text>
+            <Spoiler
+              mb="xl"
+              maxHeight={45}
+              showLabel="Показать"
+              hideLabel="Скрыть"
+              classNames={{
+                root: styles.spoiler,
+                control: styles.spoilerControl,
+              }}
+            >
+              <Text c="dimmed" className={styles.bio}>
+                {couple?.bio}
+              </Text>
+            </Spoiler>
+          </>
         )}
-        <Spoiler
-          mb="xl"
-          maxHeight={45}
-          showLabel="Показать"
-          hideLabel="Скрыть"
-          classNames={{
-            root: styles.spoiler,
-            control: styles.spoilerControl,
-          }}
-        >
-          <Text c="dimmed" className={styles.bio}>
-            {couple?.bio}
-          </Text>
-        </Spoiler>
 
         <StatisticsProfile
           statistics={[

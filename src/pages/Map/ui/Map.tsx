@@ -1,11 +1,14 @@
 import { selectUser } from "@/entities/user/model/userSelectors";
+import { selectView } from "@/entities/view";
 import { useAppSelector } from "@/shared/lib";
 import { SpotFloatingIndicator } from "@/shared/ui";
-import { Box, Flex } from "@mantine/core";
+import MapContainer from "@/widgets/MapContainer";
+import { Flex } from "@mantine/core";
 import { useState } from "react";
 
 export default function Map() {
   const user = useAppSelector(selectUser);
+  const viewState = useAppSelector(selectView);
 
   const [value, setValue] = useState("my");
 
@@ -15,15 +18,22 @@ export default function Map() {
     { label: "Друзья", value: "friends" },
   ];
   return (
-    <Flex direction="column" h={"calc(100dvh - 80px)"} gap="md" p="md">
-      <SpotFloatingIndicator
-        items={data}
-        value={value}
-        setValue={setValue}
-        size="lg"
-      />
+    <Flex
+      direction="column"
+      h={viewState.ui.mapIsFullScreen ? "100dvh" : "calc(100dvh - 80px)"}
+      gap="md"
+      p={viewState.ui.mapIsFullScreen ? 0 : "md"}
+    >
+      {!viewState.ui.mapIsFullScreen && (
+        <SpotFloatingIndicator
+          items={data}
+          value={value}
+          setValue={setValue}
+          size="lg"
+        />
+      )}
 
-      <Box bdrs="lg" bg={"blue"} flex={1} h="100%" w="100%"></Box>
+      <MapContainer />
     </Flex>
   );
 }
