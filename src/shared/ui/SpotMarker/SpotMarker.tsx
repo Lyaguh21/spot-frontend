@@ -1,5 +1,8 @@
+import { markersColors } from "@/entities/map";
 import { Box } from "@mantine/core";
-import { ReactNode, useId } from "react";
+import { IconPlus, IconQuestionMark } from "@tabler/icons-react";
+import { ReactNode, useEffect, useId, useState } from "react";
+import styles from "./SpotMarker.module.css";
 
 function MarkerShape({
   colors,
@@ -15,6 +18,7 @@ function MarkerShape({
       width={size}
       height={size}
       viewBox="0 0 24 24"
+      style={{ overflow: "visible" }}
     >
       <defs>
         <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="100%">
@@ -22,7 +26,14 @@ function MarkerShape({
           <stop offset="100%" stopColor={colors[1]} />
         </linearGradient>
 
-        <filter id={`${gradientId}-glow`}>
+        <filter
+          id={`${gradientId}-glow`}
+          x="-8"
+          y="-8"
+          width="40"
+          height="40"
+          filterUnits="userSpaceOnUse"
+        >
           <feGaussianBlur stdDeviation="2" result="blur" />
           <feMerge>
             <feMergeNode in="blur" />
@@ -32,8 +43,10 @@ function MarkerShape({
       </defs>
 
       <g
-        fill="none"
+        fill={"none"}
         stroke={`url(#${gradientId})`}
+        width={size}
+        height={size}
         strokeLinecap="round"
         strokeLinejoin="round"
         strokeWidth="1"
@@ -46,45 +59,98 @@ function MarkerShape({
 }
 
 type MarkerProps = {
-  colors: [string, string];
-  icon: ReactNode;
+  colors?: [string, string];
+  icon?: ReactNode;
   size?: number;
+  isCreating?: boolean;
   onClick?: () => void;
+  onCreateClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  latitude: number;
+  longitude: number;
 };
 
 export default function SpotMarker({
-  colors,
-  icon,
+  colors = markersColors.red,
+  icon = <IconQuestionMark color="white" size={28} />,
   size = 64,
+  isCreating = false,
+  latitude,
+  longitude,
   onClick,
+  onCreateClick,
 }: MarkerProps) {
-  return (
-    <Box
-      pos="relative"
-      w={size}
-      h={size}
-      style={{
-        cursor: "pointer",
-      }}
-      onClick={onClick}
-    >
-      <MarkerShape colors={colors} size={size} />
+  const [isCreateMenuMounted, setIsCreateMenuMounted] = useState(false);
+  const [isCreateMenuVisible, setIsCreateMenuVisible] = useState(false);
 
+  useEffect(() => {
+    let showTimeoutId: number | undefined;
+    let unmountTimeoutId: number | undefined;
+
+    setIsCreateMenuVisible(false);
+
+    if (!isCreating) {
+      unmountTimeoutId = window.setTimeout(() => {
+        setIsCreateMenuMounted(false);
+      }, 180);
+    } else {
+      setIsCreateMenuMounted(true);
+      showTimeoutId = window.setTimeout(() => {
+        setIsCreateMenuVisible(true);
+      }, 1000);
+    }
+
+    return () => {
+      window.clearTimeout(showTimeoutId);
+      window.clearTimeout(unmountTimeoutId);
+    };
+  }, [isCreating, longitude, latitude]);
+
+  return (
+    <Box className={styles.root}>
       <Box
-        pos="absolute"
-        top="42%"
-        left="50%"
+        pos="relative"
         style={{
-          transform: "translate(-50%, -50%)",
-          color: "white",
-          pointerEvents: "none",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
+          cursor: "pointer",
+          overflow: "visible",
         }}
+        onClick={onClick}
       >
-        {icon}
+        <MarkerShape colors={colors} size={size} />
+
+        <Box
+          pos="absolute"
+          top="42%"
+          left="50%"
+          style={{
+            transform: "translate(-50%, -50%)",
+            color: "white",
+            pointerEvents: "none",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          {icon}
+        </Box>
       </Box>
+
+      {isCreateMenuMounted && (
+        <button
+          className={[
+            styles.createMenu,
+            isCreateMenuVisible ? styles.createMenuVisible : "",
+          ]
+            .filter(Boolean)
+            .join(" ")}
+          type="button"
+          onClick={onCreateClick}
+        >
+          <span className={styles.createIcon} aria-hidden="true">
+            <IconPlus size={24} stroke={2.4} />
+          </span>
+          <span className={styles.createText}>Добавить новое место</span>
+        </button>
+      )}
     </Box>
   );
 }

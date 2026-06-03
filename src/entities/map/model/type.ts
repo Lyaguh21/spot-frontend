@@ -8,3 +8,9 @@ export const markersColors: { [key: string]: [string, string] } = {
   cyan: ["#14B8A6", "#8B5CF6"],
   neon: ["#10B981", "#06B6D4"],
 };
+
+export interface MapMarker {
+  name?: string;
+  longitude: number;
+  latitude: number;
+}
