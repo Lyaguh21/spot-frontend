@@ -21,9 +21,10 @@ export default function MapContainer() {
   ] = useDisclosure(false);
 
   const [marker, setMarker] = useState<{
-    name?: string;
-    longitude: number;
-    latitude: number;
+    externalId?: string;
+    title: string;
+    lng: number;
+    lat: number;
   } | null>(null);
 
   const handleSwapCrateMode = () => {
@@ -43,11 +44,12 @@ export default function MapContainer() {
     console.log("features", features);
     if (isCreatingMarker) {
       setMarker({
-        name: features?.properties.name ?? undefined,
+        externalId: features?.id ? String(features.id) : undefined,
+        title: features?.properties.name ?? "",
         // @ts-ignore
-        longitude: features?.geometry.coordinates[0] ?? e.lngLat.lng,
+        lng: features?.geometry.coordinates[0] ?? e.lngLat.lng,
         // @ts-ignore
-        latitude: features?.geometry.coordinates[1] ?? e.lngLat.lat,
+        lat: features?.geometry.coordinates[1] ?? e.lngLat.lat,
       });
     }
   };
@@ -102,15 +104,15 @@ export default function MapContainer() {
         {marker && (
           <>
             <Marker
-              longitude={marker.longitude}
-              latitude={marker.latitude}
+              longitude={marker.lng}
+              latitude={marker.lat}
               anchor="bottom"
             >
               <SpotMarker
                 onCreateClick={handleCreateMarker}
                 isCreating
-                longitude={marker.longitude}
-                latitude={marker.latitude}
+                longitude={marker.lng}
+                latitude={marker.lat}
               />
             </Marker>
           </>
