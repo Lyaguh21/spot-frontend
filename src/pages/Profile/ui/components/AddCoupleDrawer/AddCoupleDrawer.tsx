@@ -1,5 +1,4 @@
 import {
-  SpotActionIcon,
   SpotButton,
   SpotDrawer,
   SpotGlassCard,
@@ -7,7 +6,6 @@ import {
 import { Stack, Text, Box, Flex, Group } from "@mantine/core";
 import {
   IconCopy,
-  IconClipboard,
   IconCheck,
   IconRefresh,
 } from "@tabler/icons-react";
@@ -78,7 +76,7 @@ export default function AddCoupleDrawer({
 
   const handleJoinCouple = async () => {
     try {
-      const data = await joinCouple({
+      await joinCouple({
         inviteCode: pastedCode.toUpperCase(),
       }).unwrap();
       showSuccess("Вы успешно присоединились к паре");

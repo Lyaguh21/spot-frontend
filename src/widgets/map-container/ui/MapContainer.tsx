@@ -8,8 +8,19 @@ import SpotMarker from "@/shared/ui/SpotMarker";
 import SpotSkeletonLoader from "@/shared/ui/SpotSkeletonLoader";
 import CreateMarkerDrawer from "./components/CreateMarkerDrawer";
 import { useDisclosure } from "@mantine/hooks";
+import {
+  IMapMarker,
+  IMapPlaceVisits,
+  markerColorOptions,
+  markersIcons,
+} from "@/entities/map/model/type";
+import ViewVisitInfoDrawer from "./components/ViewVisitInfoDrawer";
 
-export default function MapContainer() {
+export default function MapContainer({
+  dataMarkers,
+}: {
+  dataMarkers?: IMapPlaceVisits[];
+}) {
   const viewState = useAppSelector(selectView);
   const mapRef = useRef<MapRef>(null);
 
@@ -26,6 +37,20 @@ export default function MapContainer() {
     lng: number;
     lat: number;
   } | null>(null);
+  const [selectedPlace, setSelectedPlace] = useState<IMapPlaceVisits | null>(
+    null,
+  );
+  const [selectedVisit, setSelectedVisit] = useState<IMapMarker | null>(null);
+
+  const getSortedVisits = (visits: IMapMarker[]) =>
+    [...visits].sort(
+      (left, right) =>
+        new Date(right.visitDate).getTime() -
+        new Date(left.visitDate).getTime(),
+    );
+
+  const getPrimaryVisit = (placeVisits: IMapPlaceVisits) =>
+    getSortedVisits(placeVisits.visits)[0];
 
   const handleSwapCrateMode = () => {
     setIsCreatingMarker((prev) => !prev);
@@ -59,12 +84,48 @@ export default function MapContainer() {
     openCreateMarkerDrawer();
   };
 
+  const handleMarkerCreated = () => {
+    setIsCreatingMarker(false);
+    setMarker(null);
+  };
+
+  const handleCloseVisitDrawer = () => {
+    setSelectedPlace(null);
+    setSelectedVisit(null);
+  };
+
+  const handleExistingMarkerClick = (
+    e: React.MouseEvent<HTMLDivElement>,
+    placeVisits: IMapPlaceVisits,
+  ) => {
+    e.stopPropagation();
+
+    const visits = getSortedVisits(placeVisits.visits);
+
+    if (visits.length === 1) {
+      setSelectedVisit(visits[0]);
+      setSelectedPlace(null);
+      return;
+    }
+
+    setSelectedPlace({ ...placeVisits, visits });
+    setSelectedVisit(null);
+  };
+
   return (
     <>
       <CreateMarkerDrawer
         marker={marker}
         opened={isCreateMarkerDrawerOpen}
         onClose={closeCreatemarkerDrawer}
+        onCreated={handleMarkerCreated}
+      />
+
+      <ViewVisitInfoDrawer
+        selectedPlace={selectedPlace}
+        selectedVisit={selectedVisit}
+        handleCloseVisitDrawer={handleCloseVisitDrawer}
+        setSelectedVisit={setSelectedVisit}
       />
 
       {!isLoaded && (
@@ -109,14 +170,52 @@ export default function MapContainer() {
               anchor="bottom"
             >
               <SpotMarker
-                onCreateClick={handleCreateMarker}
+                onChildrenClick={handleCreateMarker}
                 isCreating
-                longitude={marker.lng}
-                latitude={marker.lat}
+                lng={marker.lng}
+                lat={marker.lat}
               />
             </Marker>
           </>
         )}
+
+        {dataMarkers?.map((placeVisits, index) => {
+          const primaryVisit = getPrimaryVisit(placeVisits);
+
+          if (!primaryVisit) {
+            return null;
+          }
+
+          const markerInfo = {
+            ...primaryVisit,
+            title: placeVisits.place.title,
+            lat: placeVisits.place.lat,
+            lng: placeVisits.place.lng,
+          };
+
+          return (
+            <Marker
+              key={`${placeVisits.place.lat}-${placeVisits.place.lng}-${placeVisits.place.title}-${index}`}
+              longitude={placeVisits.place.lng}
+              latitude={placeVisits.place.lat}
+              anchor="bottom"
+            >
+              <SpotMarker
+                markerInfo={markerInfo}
+                lng={placeVisits.place.lng}
+                lat={placeVisits.place.lat}
+                icon={markersIcons[primaryVisit.icon]}
+                colors={
+                  markerColorOptions.find(
+                    (opt) => opt.key === primaryVisit.color,
+                  )?.colors
+                }
+                visitCount={placeVisits.visits.length}
+                onClick={(e) => handleExistingMarkerClick(e, placeVisits)}
+              />
+            </Marker>
+          );
+        })}
       </Map>
     </>
   );

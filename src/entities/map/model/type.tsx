@@ -164,14 +164,16 @@ export const markersIcons: { [key: string]: ReactNode } = {
   ...Object.fromEntries(markerIconOptions.map(({ key, icon }) => [key, icon])),
 };
 
-export interface MapMarker {
+export interface IMapMarker {
+  id?: string;
+  ownerType: "USER" | "COUPLE";
   externalId?: string;
   title: string;
   description: string;
   icon: MarkerIconKey;
   color: MarkerColorKey;
-  lng: number;
-  lat: number;
+  lng?: number;
+  lat?: number;
   coupleId?: string;
   ratings: {
     nickname: string;
@@ -183,6 +185,21 @@ export interface MapMarker {
   photoURL?: string;
 }
 
-export interface ICreateVisitRequest extends Omit<MapMarker, "externalId"> {
-  ownerType: "USER" | "COUPLE";
+export interface IMapPlace {
+  title: string;
+  lat: number;
+  lng: number;
 }
+
+export interface IMapPlaceVisits {
+  place: IMapPlace;
+  visits: IMapMarker[];
+}
+
+export interface ICreateVisitRequest
+  extends Omit<IMapMarker, "lat" | "lng"> {
+  lat: number;
+  lng: number;
+}
+
+export type IVisitsResponse = IMapPlaceVisits[];

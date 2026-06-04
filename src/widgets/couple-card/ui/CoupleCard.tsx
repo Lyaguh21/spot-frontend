@@ -3,7 +3,6 @@ import { Group, Avatar, Stack, Text } from "@mantine/core";
 import { IconChevronRight } from "@tabler/icons-react";
 import styles from "./CoupleCard.module.css";
 import { IUserState } from "@/entities/user";
-import { useNavigate } from "react-router-dom";
 
 export default function CoupleCard({
   firstUser,

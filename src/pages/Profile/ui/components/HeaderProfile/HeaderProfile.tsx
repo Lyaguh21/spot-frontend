@@ -67,7 +67,7 @@ export default function HeaderProfile({
       }
     } else {
       try {
-        const data = await followToUser({
+        await followToUser({
           username: userData?.username ?? "",
         }).unwrap();
         showSuccess("Вы подписались на пользователя");

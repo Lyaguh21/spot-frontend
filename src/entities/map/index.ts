@@ -4,10 +4,17 @@ export {
   markersColors,
   markersIcons,
 } from "./model/type";
-export { useCreateVisitMutation } from "./api/mapApi";
+export {
+  useCreateVisitMutation,
+  useGetVisitsByCoupleIdQuery,
+  useGetVisitsByUsernameQuery,
+} from "./api/mapApi";
 export type {
-  MapMarker,
+  IMapMarker,
+  IMapPlace,
+  IMapPlaceVisits,
   MarkerColorKey,
   MarkerIconKey,
   ICreateVisitRequest,
+  IVisitsResponse,
 } from "./model/type";

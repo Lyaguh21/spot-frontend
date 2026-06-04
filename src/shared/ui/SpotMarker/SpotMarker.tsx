@@ -1,84 +1,46 @@
-import { markersColors } from "@/entities/map";
-import { Box } from "@mantine/core";
+import { IMapMarker, markersColors } from "@/entities/map";
+import { Box, Text } from "@mantine/core";
 import { IconPlus, IconQuestionMark } from "@tabler/icons-react";
 import { ReactNode, useEffect, useId, useState } from "react";
 import styles from "./SpotMarker.module.css";
+import MarkerShape from "./components/MarkerShape";
 
-function MarkerShape({
-  colors,
-  size = 48,
-}: {
-  colors: [string, string];
-  size?: number;
-}) {
-  const gradientId = useId();
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      style={{ overflow: "visible" }}
-    >
-      <defs>
-        <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor={colors[0]} />
-          <stop offset="100%" stopColor={colors[1]} />
-        </linearGradient>
-
-        <filter
-          id={`${gradientId}-glow`}
-          x="-8"
-          y="-8"
-          width="40"
-          height="40"
-          filterUnits="userSpaceOnUse"
-        >
-          <feGaussianBlur stdDeviation="2" result="blur" />
-          <feMerge>
-            <feMergeNode in="blur" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
-        </filter>
-      </defs>
-
-      <g
-        fill={"none"}
-        stroke={`url(#${gradientId})`}
-        width={size}
-        height={size}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1"
-        filter={`url(#${gradientId}-glow)`}
-      >
-        <path d="M17.657 16.657L13.414 20.9a2 2 0 0 1-2.827 0l-4.244-4.243a8 8 0 1 1 11.314 0" />
-      </g>
-    </svg>
-  );
-}
-
-type MarkerProps = {
+type IMarkerComponentsProps = {
+  markerInfo?: IMapMarker;
+  lat: number;
+  lng: number;
   colors?: [string, string];
   icon?: ReactNode;
   size?: number;
   isCreating?: boolean;
-  onClick?: () => void;
-  onCreateClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
-  latitude: number;
-  longitude: number;
+  visitCount?: number;
+  onClick?: (event: React.MouseEvent<HTMLDivElement>) => void;
+  onChildrenClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+};
+
+const getShortMarkerTitle = (title: string) => {
+  const words = title.trim().split(/\s+/).filter(Boolean);
+
+  if (words.length <= 2) {
+    return words.join(" ");
+  }
+
+  return `${words.slice(0, 2).join(" ")}...`;
 };
 
 export default function SpotMarker({
-  colors = markersColors.red,
-  icon = <IconQuestionMark color="white" size={28} />,
+  colors = markersColors.lime,
+  icon = <IconQuestionMark />,
+  lat,
+  lng,
+
+  markerInfo,
   size = 64,
   isCreating = false,
-  latitude,
-  longitude,
+  visitCount = 0,
   onClick,
-  onCreateClick,
-}: MarkerProps) {
+  onChildrenClick,
+}: IMarkerComponentsProps) {
   const [isCreateMenuMounted, setIsCreateMenuMounted] = useState(false);
   const [isCreateMenuVisible, setIsCreateMenuVisible] = useState(false);
 
@@ -103,7 +65,7 @@ export default function SpotMarker({
       window.clearTimeout(showTimeoutId);
       window.clearTimeout(unmountTimeoutId);
     };
-  }, [isCreating, longitude, latitude]);
+  }, [isCreating, lng, lat]);
 
   return (
     <Box className={styles.root}>
@@ -118,8 +80,9 @@ export default function SpotMarker({
         <MarkerShape colors={colors} size={size} />
 
         <Box
+          className={styles.iconSlot}
           pos="absolute"
-          top="42%"
+          top="32%"
           left="50%"
           style={{
             transform: "translate(-50%, -50%)",
@@ -132,7 +95,17 @@ export default function SpotMarker({
         >
           {icon}
         </Box>
+
+        {!isCreating && visitCount > 1 && (
+          <Box className={styles.countBadge}>{visitCount}</Box>
+        )}
       </Box>
+
+      {!isCreating && markerInfo?.title && (
+        <Text className={styles.label}>
+          {getShortMarkerTitle(markerInfo.title)}
+        </Text>
+      )}
 
       {isCreateMenuMounted && (
         <button
@@ -143,7 +116,7 @@ export default function SpotMarker({
             .filter(Boolean)
             .join(" ")}
           type="button"
-          onClick={onCreateClick}
+          onClick={onChildrenClick}
         >
           <span className={styles.createIcon} aria-hidden="true">
             <IconPlus size={24} stroke={2.4} />

@@ -1,12 +1,68 @@
 .root {
   position: relative;
   width: max-content;
+  max-width: 160px;
   overflow: visible;
+}
+
+.label {
+  position: absolute;
+  top: calc(100%);
+  left: 50%;
+
+  margin-top: 0;
+  max-width: 160px;
+  padding: 0;
+
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1.15;
+  text-wrap: nowrap;
+  text-align: center;
+  overflow-wrap: anywhere;
+  text-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.9),
+    0 0 12px rgba(0, 0, 0, 0.85);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.iconSlot svg {
+  margin-top: 6px;
+  width: 36px;
+  height: 36px;
+  stroke-width: 2.4;
+}
+
+.countBadge {
+  position: absolute;
+  top: -2px;
+  right: -6px;
+
+  display: grid;
+  place-items: center;
+
+  min-width: 24px;
+  height: 24px;
+  padding: 0 7px;
+
+  color: #0b1020;
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1;
+  background: #ffffff;
+  border: 2px solid rgba(11, 16, 32, 0.22);
+  border-radius: 999px;
+  box-shadow:
+    0 8px 18px rgba(4, 10, 30, 0.36),
+    0 0 0 2px rgba(255, 255, 255, 0.28);
+  pointer-events: none;
 }
 
 .createMenu {
   position: absolute;
-  top: calc(100% - 10px);
+  top: calc(100% + 16px);
   left: 50%;
   z-index: 3;
 

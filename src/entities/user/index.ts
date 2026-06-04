@@ -4,7 +4,6 @@ export {
   useGetUserByUsernameQuery,
   useUpdateProfileMutation,
   useGetUserByIdQuery,
-  useGetVisitsByUsernameQuery,
   useFollowToUserMutation,
   useUnfollowUserMutation,
   useGetFollowersQuery,

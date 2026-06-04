@@ -1,6 +1,6 @@
 import {
   ICreateVisitRequest,
-  MapMarker,
+  IMapMarker,
   MarkerColorKey,
   MarkerIconKey,
   markerColorOptions,
@@ -46,10 +46,10 @@ type CreateMarkerFormValues = {
 };
 
 type CreateMarkerDraft = Pick<
-  MapMarker,
+  IMapMarker,
   "externalId" | "title" | "lat" | "lng"
 > &
-  Partial<Pick<MapMarker, "description" | "icon" | "color">>;
+  Partial<Pick<IMapMarker, "description" | "icon" | "color">>;
 
 type RatingParticipant = {
   nickname: string;
@@ -101,10 +101,12 @@ export default function CreateMarkerDrawer({
   marker,
   opened,
   onClose,
+  onCreated,
 }: {
   marker: CreateMarkerDraft | null;
   opened: boolean;
   onClose: () => void;
+  onCreated?: () => void;
 }) {
   const user = useAppSelector(selectUser);
   const viewState = useAppSelector(selectView);
@@ -204,10 +206,11 @@ export default function CreateMarkerDrawer({
 
     try {
       await createVisit({ body: payload }).unwrap();
-      showSuccess("РњРµСЃС‚Рѕ СЃРѕР·РґР°РЅРѕ");
+      showSuccess("Метка успешно создана");
+      onCreated?.();
       onClose();
-    } catch {
-      showError("РќРµ СѓРґР°Р»РѕСЃСЊ СЃРѕР·РґР°С‚СЊ РјРµСЃС‚Рѕ");
+    } catch (error: any) {
+      showError(error.message ?? "Не удалось создать метку");
     }
   };
 

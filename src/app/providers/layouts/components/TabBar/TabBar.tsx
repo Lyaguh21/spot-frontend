@@ -2,7 +2,6 @@ import { Link, useLocation } from "react-router-dom";
 import {
   IconFileText,
   IconUser,
-  IconMap2,
   IconMapPinFilled,
 } from "@tabler/icons-react";
 import styles from "./TabBar.module.css";

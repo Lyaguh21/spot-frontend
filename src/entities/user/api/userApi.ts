@@ -33,11 +33,6 @@ export const userApi = baseApi.injectEndpoints({
       providesTags: [{ type: "User", id: "PROFILE" }],
     }),
 
-    getVisitsByUsername: build.query<IUserState, { username: string }>({
-      query: ({ username }) => `/users/${username}/visits`,
-      providesTags: [{ type: "User", id: "PROFILE" }],
-    }),
-
     followToUser: build.mutation<void, { username: string }>({
       query: ({ username }) => ({
         url: `/users/${username}/follow`,
@@ -85,7 +80,6 @@ export const {
   useGetUserByUsernameQuery,
   useUpdateProfileMutation,
   useGetUserByIdQuery,
-  useGetVisitsByUsernameQuery,
   useFollowToUserMutation,
   useUnfollowUserMutation,
   useGetFollowersQuery,
