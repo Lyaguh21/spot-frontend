@@ -36,7 +36,11 @@ export default function MapContainer({
     title: string;
     lng: number;
     lat: number;
+    description?: string;
+    icon?: IMapMarker["icon"];
+    color?: IMapMarker["color"];
   } | null>(null);
+  const [createMarkerDraft, setCreateMarkerDraft] = useState<typeof marker>(null);
   const [selectedPlace, setSelectedPlace] = useState<IMapPlaceVisits | null>(
     null,
   );
@@ -81,12 +85,19 @@ export default function MapContainer({
 
   const handleCreateMarker = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
+    setCreateMarkerDraft(marker);
     openCreateMarkerDrawer();
   };
 
   const handleMarkerCreated = () => {
     setIsCreatingMarker(false);
     setMarker(null);
+    setCreateMarkerDraft(null);
+  };
+
+  const handleCloseCreateMarkerDrawer = () => {
+    setCreateMarkerDraft(null);
+    closeCreatemarkerDrawer();
   };
 
   const handleCloseVisitDrawer = () => {
@@ -102,22 +113,31 @@ export default function MapContainer({
 
     const visits = getSortedVisits(placeVisits.visits);
 
-    if (visits.length === 1) {
-      setSelectedVisit(visits[0]);
-      setSelectedPlace(null);
-      return;
-    }
-
     setSelectedPlace({ ...placeVisits, visits });
-    setSelectedVisit(null);
+    setSelectedVisit(visits.length === 1 ? visits[0] : null);
+  };
+
+  const handleCreateVisitAtPlace = (placeVisits: IMapPlaceVisits) => {
+    const primaryVisit = getPrimaryVisit(placeVisits);
+
+    setCreateMarkerDraft({
+      externalId: primaryVisit?.externalId,
+      title: placeVisits.place.title,
+      lat: placeVisits.place.lat,
+      lng: placeVisits.place.lng,
+      icon: primaryVisit?.icon,
+      color: primaryVisit?.color,
+    });
+    handleCloseVisitDrawer();
+    openCreateMarkerDrawer();
   };
 
   return (
     <>
       <CreateMarkerDrawer
-        marker={marker}
+        marker={createMarkerDraft}
         opened={isCreateMarkerDrawerOpen}
-        onClose={closeCreatemarkerDrawer}
+        onClose={handleCloseCreateMarkerDrawer}
         onCreated={handleMarkerCreated}
       />
 
@@ -126,6 +146,7 @@ export default function MapContainer({
         selectedVisit={selectedVisit}
         handleCloseVisitDrawer={handleCloseVisitDrawer}
         setSelectedVisit={setSelectedVisit}
+        onCreateVisit={handleCreateVisitAtPlace}
       />
 
       {!isLoaded && (

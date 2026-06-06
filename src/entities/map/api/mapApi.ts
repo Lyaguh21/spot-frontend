@@ -87,7 +87,10 @@ export const mapApi = baseApi.injectEndpoints({
         method: "POST",
         body,
       }),
-      invalidatesTags: [{ type: "User", id: "VISITS" }],
+      invalidatesTags: [
+        { type: "User", id: "VISITS" },
+        { type: "Couple", id: "VISITS" },
+      ],
     }),
 
     getVisitsByUsername: build.query<IVisitsResponse, { username: string }>({

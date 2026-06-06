@@ -1,7 +1,7 @@
 import { IMapMarker, markersColors } from "@/entities/map";
 import { Box, Text } from "@mantine/core";
 import { IconPlus, IconQuestionMark } from "@tabler/icons-react";
-import { ReactNode, useEffect, useId, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import styles from "./SpotMarker.module.css";
 import MarkerShape from "./components/MarkerShape";
 
