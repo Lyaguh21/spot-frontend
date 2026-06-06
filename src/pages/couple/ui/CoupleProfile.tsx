@@ -51,15 +51,14 @@ export default function CoupleProfile() {
     }
     if (couple?.isFollowing && !couple?.isPrivate) {
       try {
-        await followCouple({ id });
-        unfollowCouple({ id });
+        await unfollowCouple({ id }).unwrap();
         showSuccess("Вы отписались от пары");
       } catch (e) {
         showError("Ошибка при отписке от пары");
       }
     } else {
       try {
-        await followCouple({ id });
+        await followCouple({ id }).unwrap();
         showSuccess("Вы подписались на пару");
       } catch (e) {
         showError("Ошибка при подписке на пару");
@@ -85,59 +84,61 @@ export default function CoupleProfile() {
       className={styles.page}
       data-fullscreen={viewState.ui.mapIsFullScreen || undefined}
     >
-      {!viewState.ui.mapIsFullScreen && <Box className={styles.header}>
-        <CoupleNavigation
-          coupleId={couple?.id}
-          bio={couple?.bio}
-          isPrivate={couple?.isPrivate}
-          isOwnCouple={isOwnCouple}
-          generatedName={generatedName}
-        />
-        <CoupleHero members={members} />
-        {couple?.bio && (
-          <>
-            <Text fz="lg" c="white" mt="xs">
-              Описание:
-            </Text>
-            <Spoiler
-              mb="xl"
-              maxHeight={45}
-              showLabel="Показать"
-              hideLabel="Скрыть"
-              classNames={{
-                root: styles.spoiler,
-                control: styles.spoilerControl,
-              }}
-            >
-              <Text c="dimmed" className={styles.bio}>
-                {couple?.bio}
+      {!viewState.ui.mapIsFullScreen && (
+        <Box className={styles.header}>
+          <CoupleNavigation
+            coupleId={couple?.id}
+            bio={couple?.bio}
+            isPrivate={couple?.isPrivate}
+            isOwnCouple={isOwnCouple}
+            generatedName={generatedName}
+          />
+          <CoupleHero members={members} />
+          {couple?.bio && (
+            <>
+              <Text fz="lg" c="white" mt="xs">
+                Описание:
               </Text>
-            </Spoiler>
-          </>
-        )}
+              <Spoiler
+                mb="xl"
+                maxHeight={45}
+                showLabel="Показать"
+                hideLabel="Скрыть"
+                classNames={{
+                  root: styles.spoiler,
+                  control: styles.spoilerControl,
+                }}
+              >
+                <Text c="dimmed" className={styles.bio}>
+                  {couple?.bio}
+                </Text>
+              </Spoiler>
+            </>
+          )}
 
-        <StatisticsProfile
-          statistics={[
-            { label: "Места", value: couple?.placesCount ?? 0 },
-            { label: "Подписчики", value: couple?.followersCount ?? 0 },
-          ]}
-        />
-        {!isOwnCouple && (
-          <SpotButton
-            kind={couple?.isFollowing ? "glass" : "default"}
-            fullWidth
-            mt="lg"
-            size="md"
-            radius="lg"
-            onClick={handleFollow}
-          >
-            {couple?.isFollowing ? "Отписаться" : "Подписаться"}
-          </SpotButton>
-        )}
-        {isOwnCouple && currentUser.username && (
-          <BackToProfileCard username={currentUser.username} />
-        )}
-      </Box>}
+          <StatisticsProfile
+            statistics={[
+              { label: "Места", value: couple?.placesCount ?? 0 },
+              { label: "Подписчики", value: couple?.followersCount ?? 0 },
+            ]}
+          />
+          {!isOwnCouple && (
+            <SpotButton
+              kind={couple?.isFollowing ? "glass" : "default"}
+              fullWidth
+              mt="lg"
+              size="md"
+              radius="lg"
+              onClick={handleFollow}
+            >
+              {couple?.isFollowing ? "Отписаться" : "Подписаться"}
+            </SpotButton>
+          )}
+          {isOwnCouple && currentUser.username && (
+            <BackToProfileCard username={currentUser.username} />
+          )}
+        </Box>
+      )}
       <Box
         className={styles.mapIsland}
         data-fullscreen={viewState.ui.mapIsFullScreen || undefined}

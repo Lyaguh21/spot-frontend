@@ -102,7 +102,6 @@ export default function EditCoupleDrawer({
             }}
           />
           <Button
-            type="submit"
             color="red.5"
             variant="outline"
             size="lg"

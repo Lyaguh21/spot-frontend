@@ -52,7 +52,10 @@ export default function Map() {
         />
       )}
 
-      <MapContainer dataMarkers={markers} />
+      <MapContainer
+        visited={viewState.map.createMode === "friends" ? true : false}
+        dataMarkers={markers}
+      />
     </Flex>
   );
 }

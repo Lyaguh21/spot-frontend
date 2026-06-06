@@ -30,7 +30,7 @@ export default function MapContainer({
   const [isCreatingMarker, setIsCreatingMarker] = useState(false);
   const [
     isCreateMarkerDrawerOpen,
-    { open: openCreateMarkerDrawer, close: closeCreatemarkerDrawer },
+    { open: openCreateMarkerDrawer, close: closeCreateMarkerDrawer },
   ] = useDisclosure(false);
 
   const [marker, setMarker] = useState<{
@@ -112,7 +112,7 @@ export default function MapContainer({
     const features = map
       ?.queryRenderedFeatures(e.point)
       .find((feature) => feature.properties?.name);
-    console.log("features", features);
+
     if (isCreatingMarker) {
       setMarker({
         externalId: features?.id ? String(features.id) : undefined,
@@ -139,7 +139,7 @@ export default function MapContainer({
 
   const handleCloseCreateMarkerDrawer = () => {
     setCreateMarkerDraft(null);
-    closeCreatemarkerDrawer();
+    closeCreateMarkerDrawer();
   };
 
   const handleCloseVisitDrawer = () => {
