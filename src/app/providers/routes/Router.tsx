@@ -11,14 +11,18 @@ import Map from "@/pages/map";
 import Profile from "@/pages/profile";
 import Follows from "@/pages/follows";
 import CoupleProfile from "@/pages/couple";
+import Onboarding from "@/pages/onboarding";
+import { OnboardingGuard } from "../guards/OnboardingGuard";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: (
-      <AuthGuard>
-        <MainLayout />
-      </AuthGuard>
+      <OnboardingGuard>
+        <AuthGuard>
+          <MainLayout />
+        </AuthGuard>
+      </OnboardingGuard>
     ),
     children: [
       {
@@ -43,9 +47,13 @@ const router = createBrowserRouter([
       },
     ],
   },
-
+  {
+    path: "/onboarding",
+    element: <Onboarding />,
+  },
   {
     path: "/auth",
+    element: <OnboardingGuard />,
     children: [
       {
         path: "/auth/login",

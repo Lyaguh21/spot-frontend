@@ -38,7 +38,7 @@ export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
   }
 
   if (!isPublicRoute && !userId && (isError || !data?.authenticated)) {
-    return <Navigate to="/auth/login" replace state={{ from: location }} />;
+    return <Navigate to="/onboarding" replace state={{ from: location }} />;
   }
 
   const profileMatch = matchPath(
@@ -51,7 +51,7 @@ export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
     profileMatch.params.username === lastAuthUsernameRef.current &&
     (isError || data?.authenticated === false)
   ) {
-    return <Navigate to="/auth/login" replace state={{ from: location }} />;
+    return <Navigate to="/onboarding" replace state={{ from: location }} />;
   }
 
   return <>{children}</>;
