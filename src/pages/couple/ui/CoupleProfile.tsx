@@ -13,6 +13,9 @@ import CoupleHero from "./components/CoupleHero/CoupleHero";
 import BackToProfileCard from "./components/BackToProfileCard/BackToProfileCard";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import StatisticsProfile from "@/widgets/statistics-profile";
+import { useGetVisitsByCoupleIdQuery } from "@/entities/map";
+import MapContainer from "@/widgets/map-container";
+import { selectView } from "@/entities/view";
 
 export default function CoupleProfile() {
   const { id } = useParams();
@@ -25,7 +28,12 @@ export default function CoupleProfile() {
   const [unfollowCouple] = useUnfollowCoupleMutation();
   const { showSuccess, showError } = useNotifications();
   const currentUser = useAppSelector((state) => state.user);
+  const viewState = useAppSelector(selectView);
   const members = couple?.members ?? [];
+  const { data: visits } = useGetVisitsByCoupleIdQuery(
+    { coupleId: couple?.id ?? "" },
+    { skip: !couple?.id },
+  );
 
   const derivedName = members
     .map((member) => member.user.name)
@@ -72,8 +80,12 @@ export default function CoupleProfile() {
   }
 
   return (
-    <Stack gap="md" style={{ minHeight: "100dvh" }}>
-      <Box className={styles.header}>
+    <Stack
+      gap={viewState.ui.mapIsFullScreen ? 0 : "md"}
+      className={styles.page}
+      data-fullscreen={viewState.ui.mapIsFullScreen || undefined}
+    >
+      {!viewState.ui.mapIsFullScreen && <Box className={styles.header}>
         <CoupleNavigation
           coupleId={couple?.id}
           bio={couple?.bio}
@@ -125,6 +137,12 @@ export default function CoupleProfile() {
         {isOwnCouple && currentUser.username && (
           <BackToProfileCard username={currentUser.username} />
         )}
+      </Box>}
+      <Box
+        className={styles.mapIsland}
+        data-fullscreen={viewState.ui.mapIsFullScreen || undefined}
+      >
+        <MapContainer dataMarkers={visits} visited />
       </Box>
     </Stack>
   );

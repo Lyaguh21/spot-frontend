@@ -2,7 +2,7 @@ import Map, { MapRef, Marker } from "react-map-gl/maplibre";
 import { FullScreenButton } from "./components/FullScreenButton";
 import { selectView } from "@/entities/view";
 import { useAppSelector } from "@/shared/lib";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import CreateMarkerButton from "./components/CreateMarkerButton";
 import SpotMarker from "@/shared/ui/SpotMarker";
 import SpotSkeletonLoader from "@/shared/ui/SpotSkeletonLoader";
@@ -18,8 +18,10 @@ import ViewVisitInfoDrawer from "./components/ViewVisitInfoDrawer";
 
 export default function MapContainer({
   dataMarkers,
+  visited = false,
 }: {
   dataMarkers?: IMapPlaceVisits[];
+  visited?: boolean;
 }) {
   const viewState = useAppSelector(selectView);
   const mapRef = useRef<MapRef>(null);
@@ -40,7 +42,8 @@ export default function MapContainer({
     icon?: IMapMarker["icon"];
     color?: IMapMarker["color"];
   } | null>(null);
-  const [createMarkerDraft, setCreateMarkerDraft] = useState<typeof marker>(null);
+  const [createMarkerDraft, setCreateMarkerDraft] =
+    useState<typeof marker>(null);
   const [selectedPlace, setSelectedPlace] = useState<IMapPlaceVisits | null>(
     null,
   );
@@ -56,13 +59,52 @@ export default function MapContainer({
   const getPrimaryVisit = (placeVisits: IMapPlaceVisits) =>
     getSortedVisits(placeVisits.visits)[0];
 
+  useEffect(() => {
+    if (!visited || !isLoaded || !dataMarkers?.length) {
+      return;
+    }
+
+    const coordinates = dataMarkers.map(({ place }) => [place.lng, place.lat]);
+
+    if (coordinates.length === 1) {
+      mapRef.current?.flyTo({
+        center: coordinates[0] as [number, number],
+        zoom: 14,
+        duration: 600,
+      });
+      return;
+    }
+
+    const lngValues = coordinates.map(([lng]) => lng);
+    const latValues = coordinates.map(([, lat]) => lat);
+
+    mapRef.current?.fitBounds(
+      [
+        [Math.min(...lngValues), Math.min(...latValues)],
+        [Math.max(...lngValues), Math.max(...latValues)],
+      ],
+      { padding: 52, maxZoom: 14, duration: 600 },
+    );
+  }, [dataMarkers, isLoaded, visited]);
+
+  useEffect(() => {
+    if (!isLoaded) {
+      return;
+    }
+
+    const frameId = requestAnimationFrame(() => mapRef.current?.resize());
+
+    return () => cancelAnimationFrame(frameId);
+  }, [isLoaded, viewState.ui.mapIsFullScreen]);
+
   const handleSwapCrateMode = () => {
+    if (visited) return;
     setIsCreatingMarker((prev) => !prev);
     setMarker(null);
   };
 
   const handleClickOnMap = (e: any) => {
-    if (!isCreatingMarker) return;
+    if (visited || !isCreatingMarker) return;
     setMarker(null); // Удаляем прошлый маркер
 
     //? Получаем места на которые кликнули
@@ -113,6 +155,13 @@ export default function MapContainer({
 
     const visits = getSortedVisits(placeVisits.visits);
 
+    mapRef.current?.flyTo({
+      center: [placeVisits.place.lng, placeVisits.place.lat],
+      zoom: 17,
+      duration: 850,
+      essential: true,
+    });
+
     setSelectedPlace({ ...placeVisits, visits });
     setSelectedVisit(visits.length === 1 ? visits[0] : null);
   };
@@ -134,12 +183,14 @@ export default function MapContainer({
 
   return (
     <>
-      <CreateMarkerDrawer
-        marker={createMarkerDraft}
-        opened={isCreateMarkerDrawerOpen}
-        onClose={handleCloseCreateMarkerDrawer}
-        onCreated={handleMarkerCreated}
-      />
+      {!visited && (
+        <CreateMarkerDrawer
+          marker={createMarkerDraft}
+          opened={isCreateMarkerDrawerOpen}
+          onClose={handleCloseCreateMarkerDrawer}
+          onCreated={handleMarkerCreated}
+        />
+      )}
 
       <ViewVisitInfoDrawer
         selectedPlace={selectedPlace}
@@ -147,6 +198,7 @@ export default function MapContainer({
         handleCloseVisitDrawer={handleCloseVisitDrawer}
         setSelectedVisit={setSelectedVisit}
         onCreateVisit={handleCreateVisitAtPlace}
+        allowCreate={!visited}
       />
 
       {!isLoaded && (
@@ -169,7 +221,12 @@ export default function MapContainer({
         onLoad={() => setIsLoaded(true)}
         onClick={handleClickOnMap}
         style={{
+          width: viewState.ui.mapIsFullScreen ? "100vw" : "100%",
+          height: viewState.ui.mapIsFullScreen ? "100dvh" : "100%",
           flex: 1,
+          position: viewState.ui.mapIsFullScreen ? "fixed" : "relative",
+          inset: viewState.ui.mapIsFullScreen ? 0 : undefined,
+          zIndex: viewState.ui.mapIsFullScreen ? 100 : undefined,
           borderRadius: viewState.ui.mapIsFullScreen ? undefined : "18px",
           display: isLoaded ? "block" : "none",
           cursor: isCreatingMarker ? "crosshair" : "default",
@@ -178,12 +235,14 @@ export default function MapContainer({
         mapStyle="https://api.maptiler.com/maps/019e87aa-d3ec-7283-92ef-32ca572234ae/style.json?key=I45PE7YnKzVVaH92vG7h"
       >
         <FullScreenButton />
-        <CreateMarkerButton
-          isCreatingMarker={isCreatingMarker}
-          onClick={handleSwapCrateMode}
-        />
+        {!visited && (
+          <CreateMarkerButton
+            isCreatingMarker={isCreatingMarker}
+            onClick={handleSwapCrateMode}
+          />
+        )}
 
-        {marker && (
+        {!visited && marker && (
           <>
             <Marker
               longitude={marker.lng}

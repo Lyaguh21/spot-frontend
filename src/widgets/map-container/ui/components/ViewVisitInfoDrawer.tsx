@@ -41,28 +41,31 @@ export default function ViewVisitInfoDrawer({
   handleCloseVisitDrawer,
   setSelectedVisit,
   onCreateVisit,
+  allowCreate = true,
 }: {
   selectedPlace: IMapPlaceVisits | null;
   selectedVisit: IMapMarker | null;
   handleCloseVisitDrawer: () => void;
   setSelectedVisit: (visit: IMapMarker | null) => void;
-  onCreateVisit: (place: IMapPlaceVisits) => void;
+  onCreateVisit?: (place: IMapPlaceVisits) => void;
+  allowCreate?: boolean;
 }) {
   const user = useAppSelector(selectUser);
   const viewState = useAppSelector(selectView);
   const drawerTitle =
     selectedVisit?.title ?? selectedPlace?.place.title ?? "Место";
   const canCreateVisit =
-    viewState.map.createMode === "my" ||
-    (viewState.map.createMode === "couple" &&
-      Boolean(user.coupleId) &&
-      Boolean(
-        selectedPlace?.visits.some(
-          (visit) =>
-            visit.ownerType === "COUPLE" &&
-            (!visit.coupleId || visit.coupleId === String(user.coupleId)),
-        ),
-      ));
+    allowCreate &&
+    (viewState.map.createMode === "my" ||
+      (viewState.map.createMode === "couple" &&
+        Boolean(user.coupleId) &&
+        Boolean(
+          selectedPlace?.visits.some(
+            (visit) =>
+              visit.ownerType === "COUPLE" &&
+              (!visit.coupleId || visit.coupleId === String(user.coupleId)),
+          ),
+        )));
 
   const formatVisitDate = (date: string) =>
     new Intl.DateTimeFormat("ru-RU", {
@@ -83,7 +86,7 @@ export default function ViewVisitInfoDrawer({
     return null;
   };
 
-  const createVisitButton = selectedPlace && canCreateVisit ? (
+  const createVisitButton = selectedPlace && canCreateVisit && onCreateVisit ? (
     <SpotActionIcon
       type="button"
       size={42}

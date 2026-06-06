@@ -1,11 +1,9 @@
 .page {
   min-height: calc(100dvh - 96px);
-  padding-bottom: 16px;
 }
 
 .page[data-fullscreen] {
   min-height: 100dvh;
-  padding-bottom: 0;
 }
 
 .mapIsland {
@@ -25,28 +23,4 @@
   border: 0;
   border-radius: 0;
   box-shadow: none;
-}
-
-.header {
-  background-color: #050f21;
-  padding: 24px 20px 24px;
-  border-bottom: 1px solid rgba(200, 215, 255, 0.15);
-}
-
-.spoiler {
-  margin-top: 6px;
-  max-width: 100%;
-}
-
-.spoilerControl {
-  color: rgba(210, 225, 255, 0.8);
-  font-weight: 500;
-}
-
-.bio {
-  line-height: 1.4;
-  max-width: 100%;
-  overflow-wrap: anywhere;
-  word-break: break-word;
-  white-space: pre-wrap;
 }
