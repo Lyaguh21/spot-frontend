@@ -2,20 +2,6 @@
   margin-top: 20px;
 }
 
-.avatarFrame {
-  display: inline-flex;
-  padding: 3px;
-  border-radius: 999px;
-  background: linear-gradient(135deg, #2b80ee 0%, #b169e8 100%);
-  box-shadow: 0 8px 18px rgba(86, 120, 255, 0.28);
-}
-
-.avatar {
-  border-radius: 999px;
-  background-color: rgba(10, 16, 36, 0.8);
-  color: #eaf1ff;
-}
-
 .memberStack {
   min-width: 140px;
 }

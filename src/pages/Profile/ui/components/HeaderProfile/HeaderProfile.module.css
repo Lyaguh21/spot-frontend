@@ -4,20 +4,6 @@
   border-bottom: 1px solid rgba(200, 215, 255, 0.15);
 }
 
-.avatarFrame {
-  display: inline-flex;
-  padding: 3px;
-  border-radius: 999px;
-  background: linear-gradient(135deg, #2b80ee 0%, #b169e8 100%);
-  box-shadow: 0 8px 18px rgba(86, 120, 255, 0.28);
-}
-
-.avatar {
-  border-radius: 999px;
-  background-color: rgba(10, 16, 36, 0.8);
-  color: #eaf1ff;
-}
-
 .spoiler {
   margin-top: 6px;
   max-width: 100%;

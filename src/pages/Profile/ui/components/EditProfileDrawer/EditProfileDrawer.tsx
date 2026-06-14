@@ -1,6 +1,5 @@
-import { SpotButton, SpotDrawer, SpotTextInput } from "@/shared/ui";
+import { SpotAvatar, SpotButton, SpotDrawer, SpotTextInput } from "@/shared/ui";
 import {
-  Avatar,
   Group,
   SegmentedControl,
   Stack,
@@ -86,14 +85,13 @@ export default function EditProfileDrawer({
       <form className={styles.form} onSubmit={handleSubmit}>
         <Group justify="center" mt="xl">
           <div className={styles.avatarFrame}>
-            <Avatar
+            <SpotAvatar
               src={avatarPreview}
               size={92}
-              className={styles.avatar}
               onClick={handleChooseAvatar}
             >
               {profile?.username?.charAt(0)}
-            </Avatar>
+            </SpotAvatar>
             <div className={styles.avatarButton}>
               <IconPhoto size={18} />
             </div>

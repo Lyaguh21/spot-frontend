@@ -7,16 +7,6 @@
 .avatarFrame {
   position: relative;
   display: inline-flex;
-  padding: 3px;
-  border-radius: 999px;
-  background: linear-gradient(135deg, #2b80ee 0%, #7b2cff 100%);
-  box-shadow: 0 10px 24px rgba(10, 18, 40, 0.45);
-}
-
-.avatar {
-  border-radius: 999px;
-  background-color: rgba(10, 16, 36, 0.85);
-  color: #eaf1ff;
 }
 
 .avatarButton {

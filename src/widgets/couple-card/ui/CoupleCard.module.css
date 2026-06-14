@@ -3,15 +3,7 @@
 }
 
 .pairAvatar {
-  border-radius: 999px;
-  color: #eaf1ff;
-  border: 2px solid transparent;
-  background:
-    linear-gradient(135deg, #2b80ee 0%, #7b2cff 100%) padding-box,
-    linear-gradient(135deg, #2b80ee 0%, #7b2cff 100%) border-box;
-  box-shadow:
-    0 0 8px rgba(43, 128, 238, 0.35),
-    0 0 12px rgba(123, 44, 255, 0.35);
+  position: relative;
 }
 
 .pairAvatar + .pairAvatar {

@@ -8,3 +8,5 @@ export { default as SpotConfirmActionModal } from "./SpotConfirmActionModal/Spot
 export { default as SpotDrawer } from "./SpotDrawer/SpotDrawer";
 export { default as SpotFloatingIndicator } from "./SpotFloatingIndicator/SpotFloatingIndicator";
 export { default as SpotCodeInput } from "./SpotCodeInput/SpotCodeInput";
+export { default as SpotSkeletonLoader } from "./SpotSkeletonLoader/SpotSkeletonLoader";
+export { default as SpotAvatar } from "./SpotAvatar/SpotAvatar";

@@ -1,5 +1,5 @@
-import { SpotButton, SpotGlassCard } from "@/shared/ui";
-import { Avatar, Box, Flex, Group, Spoiler, Stack, Text } from "@mantine/core";
+import { SpotAvatar, SpotButton, SpotGlassCard } from "@/shared/ui";
+import { Box, Flex, Group, Spoiler, Stack, Text } from "@mantine/core";
 import styles from "./HeaderProfile.module.css";
 import { IconChevronRight, IconLock } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
@@ -88,15 +88,9 @@ export default function HeaderProfile({
         <ProfileNavigation isOwnProfile={isOwnProfile} userData={userData} />
 
         <Flex gap="lg" align="center" mt="lg">
-          <Box className={styles.avatarFrame}>
-            <Avatar
-              size="100"
-              src={userData?.avatarUrl}
-              className={styles.avatar}
-            >
-              {userData?.username.charAt(0)}
-            </Avatar>
-          </Box>
+          <SpotAvatar size="100" src={userData?.avatarUrl}>
+            {userData?.username.charAt(0)}
+          </SpotAvatar>
 
           <Stack gap={0}>
             <Group gap={4} align="center">

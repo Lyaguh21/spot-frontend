@@ -10,10 +10,9 @@ import {
 import { selectUser } from "@/entities/user/model/userSelectors";
 import { selectView } from "@/entities/view";
 import { useAppSelector, useNotifications } from "@/shared/lib";
-import { SpotActionIcon, SpotButton, SpotDrawer } from "@/shared/ui";
+import { SpotActionIcon, SpotAvatar, SpotButton, SpotDrawer } from "@/shared/ui";
 import {
   ActionIcon,
-  Avatar,
   Box,
   Divider,
   Group,
@@ -428,7 +427,7 @@ export default function CreateMarkerDrawer({
                     }}
                   >
                     <Group w="100%" gap={10} wrap="nowrap">
-                      <Avatar
+                      <SpotAvatar
                         size={40}
                         radius="xl"
                         src={participant?.avatarUrl}
@@ -437,7 +436,7 @@ export default function CreateMarkerDrawer({
                         {(participant?.nickname ?? rating.nickname)
                           .charAt(0)
                           .toUpperCase()}
-                      </Avatar>
+                      </SpotAvatar>
                       <Stack gap={0} style={{ minWidth: 0 }}>
                         <Text c="#eaf1ff" size="sm" fw={700} truncate>
                           {participant?.name ?? rating.nickname}

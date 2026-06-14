@@ -2,9 +2,13 @@ import { IMapPlaceVisits, IMapMarker } from "@/entities/map";
 import { selectUser } from "@/entities/user/model/userSelectors";
 import { selectView } from "@/entities/view";
 import { useAppSelector } from "@/shared/lib";
-import { SpotActionIcon, SpotDrawer, SpotGlassCard } from "@/shared/ui";
 import {
-  Avatar,
+  SpotActionIcon,
+  SpotAvatar,
+  SpotDrawer,
+  SpotGlassCard,
+} from "@/shared/ui";
+import {
   Badge,
   Box,
   Group,
@@ -21,6 +25,13 @@ import {
   IconPlus,
   IconStarFilled,
 } from "@tabler/icons-react";
+import styles from "./ViewVisitInfoDrawer.module.css";
+
+export type VisitRatingParticipant = {
+  username: string;
+  name?: string;
+  avatarUrl?: string;
+};
 
 const getAverageRating = (ratings: IMapMarker["ratings"]) => {
   if (!ratings.length) {
@@ -42,6 +53,7 @@ export default function ViewVisitInfoDrawer({
   setSelectedVisit,
   onCreateVisit,
   allowCreate = true,
+  participants = [],
 }: {
   selectedPlace: IMapPlaceVisits | null;
   selectedVisit: IMapMarker | null;
@@ -49,6 +61,7 @@ export default function ViewVisitInfoDrawer({
   setSelectedVisit: (visit: IMapMarker | null) => void;
   onCreateVisit?: (place: IMapPlaceVisits) => void;
   allowCreate?: boolean;
+  participants?: VisitRatingParticipant[];
 }) {
   const user = useAppSelector(selectUser);
   const viewState = useAppSelector(selectView);
@@ -75,6 +88,14 @@ export default function ViewVisitInfoDrawer({
     }).format(new Date(date));
 
   const getParticipant = (nickname: string) => {
+    const suppliedParticipant = participants.find(
+      (participant) => participant.username === nickname,
+    );
+
+    if (suppliedParticipant) {
+      return suppliedParticipant;
+    }
+
     if (user.username === nickname) {
       return user;
     }
@@ -165,7 +186,7 @@ export default function ViewVisitInfoDrawer({
               <Text c="#90a5df" fz={13} fw={800} tt="uppercase">
                 Описание
               </Text>
-              <Text c="#d5defc" fz={15} lh={1.55}>
+              <Text c="#d5defc" fz={15} lh={1.55} className={styles.description}>
                 {selectedVisit.description}
               </Text>
             </Stack>
@@ -192,48 +213,47 @@ export default function ViewVisitInfoDrawer({
             </SpotGlassCard>
           )}
 
-          <SimpleGrid
-            cols={selectedVisit.ratings.length > 1 ? 2 : 1}
-            spacing={8}
-          >
-            {selectedVisit.ratings.map((rating) => {
-              const participant = getParticipant(rating.nickname);
+          {selectedVisit.ratings.length <= 1 && (
+            <SimpleGrid cols={1} spacing={8}>
+              {selectedVisit.ratings.map((rating) => {
+                const participant = getParticipant(rating.nickname);
 
-              return (
-                <SpotGlassCard key={rating.nickname} p={10}>
-                  <Stack gap={8} align="center">
-                    <Group w="100%" gap={7} wrap="nowrap">
-                      <Avatar
-                        size={34}
-                        radius="xl"
-                        src={participant?.avatarUrl}
-                        alt={rating.nickname}
-                      >
-                        {rating.nickname.charAt(0).toUpperCase()}
-                      </Avatar>
-                      <Stack gap={0} style={{ minWidth: 0 }}>
-                        <Text c="#eaf1ff" fz={12} fw={700} truncate>
-                          {participant?.name ?? rating.nickname}
-                        </Text>
-                        <Text c="#8ea2d4" fz={10} truncate>
-                          @{rating.nickname}
-                        </Text>
-                      </Stack>
-                    </Group>
-                    <Rating
-                      size="md"
-                      fractions={4}
-                      value={rating.rating}
-                      readOnly
-                    />
-                    <Text c="#f8fafc" fw={900} fz={16}>
-                      {formatRating(rating.rating)}
-                    </Text>
-                  </Stack>
-                </SpotGlassCard>
-              );
-            })}
-          </SimpleGrid>
+                return (
+                  <SpotGlassCard key={rating.nickname} p={10}>
+                    <Stack gap={8} align="center">
+                      <Group w="100%" gap={7} wrap="nowrap">
+                        <SpotAvatar
+                          size={34}
+                          radius="xl"
+                          src={participant?.avatarUrl}
+                          alt={rating.nickname}
+                        >
+                          {rating.nickname.charAt(0).toUpperCase()}
+                        </SpotAvatar>
+                        <Stack gap={0} style={{ minWidth: 0 }}>
+                          <Text c="#eaf1ff" fz={12} fw={700} truncate>
+                            {participant?.name ?? rating.nickname}
+                          </Text>
+                          <Text c="#8ea2d4" fz={10} truncate>
+                            @{rating.nickname}
+                          </Text>
+                        </Stack>
+                      </Group>
+                      <Rating
+                        size="md"
+                        fractions={4}
+                        value={rating.rating}
+                        readOnly
+                      />
+                      <Text c="#f8fafc" fw={900} fz={16}>
+                        {formatRating(rating.rating)}
+                      </Text>
+                    </Stack>
+                  </SpotGlassCard>
+                );
+              })}
+            </SimpleGrid>
+          )}
 
           <Group gap="xs">
             {selectedVisit.isFavorite && (

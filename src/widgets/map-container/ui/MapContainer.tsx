@@ -14,7 +14,7 @@ import {
   markerColorOptions,
   markersIcons,
 } from "@/entities/map/model/type";
-import ViewVisitInfoDrawer from "./components/ViewVisitInfoDrawer";
+import ViewVisitInfoDrawer from "@/widgets/visit-info-drawer";
 
 export default function MapContainer({
   dataMarkers,
