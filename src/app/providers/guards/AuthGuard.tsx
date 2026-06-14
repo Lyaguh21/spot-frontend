@@ -6,7 +6,12 @@ import { LoadingOverlay } from "@mantine/core";
 import { useEffect, useRef } from "react";
 import { Navigate, matchPath, useLocation } from "react-router-dom";
 
-const PUBLIC_ROUTES = ["/auth/login", "/auth/register", "/profile/:username"];
+const PUBLIC_ROUTES = [
+  "/auth/login",
+  "/auth/register",
+  "/profile/:username",
+  "/couple/:id",
+];
 
 export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
   const dispatch = useAppDispatch();

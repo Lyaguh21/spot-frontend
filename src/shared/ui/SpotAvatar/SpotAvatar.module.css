@@ -1,7 +1,11 @@
 .frame {
   display: inline-flex;
+  align-items: center;
+  justify-content: center;
   flex: 0 0 auto;
   padding: 3px;
+  line-height: 0;
+  vertical-align: middle;
   border-radius: 999px;
   background: linear-gradient(135deg, #2b80ee 0%, #b169e8 100%);
   box-shadow: 0 8px 18px rgba(86, 120, 255, 0.28);
@@ -11,4 +15,9 @@
   color: #eaf1ff;
   background-color: rgba(10, 16, 36, 0.88);
   border-radius: 999px;
+}
+
+.avatar [data-avatar-placeholder] {
+  line-height: 1;
+  transform: translateY(1px);
 }

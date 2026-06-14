@@ -58,7 +58,7 @@ export default function ProfileNavigation({
         <SpotActionIcon
           size={47}
           onClick={() => navigate(-1)}
-          style={{ position: "absolute", left: 32, top: 24 }}
+          style={{ position: "absolute", left: 32, top: 16 }}
         >
           <IconArrowLeft />
         </SpotActionIcon>

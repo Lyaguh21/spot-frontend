@@ -8,6 +8,7 @@ import SpotMarker from "@/shared/ui/SpotMarker";
 import SpotSkeletonLoader from "@/shared/ui/SpotSkeletonLoader";
 import CreateMarkerDrawer from "./components/CreateMarkerDrawer";
 import { useDisclosure } from "@mantine/hooks";
+import { useLocation } from "react-router-dom";
 import {
   IMapMarker,
   IMapPlaceVisits,
@@ -23,8 +24,12 @@ export default function MapContainer({
   dataMarkers?: IMapPlaceVisits[];
   visited?: boolean;
 }) {
+  const location = useLocation();
   const viewState = useAppSelector(selectView);
   const mapRef = useRef<MapRef>(null);
+  const focusVisit = (
+    location.state as { focusVisit?: { lat: number; lng: number } } | null
+  )?.focusVisit;
 
   const [isLoaded, setIsLoaded] = useState(false);
   const [isCreatingMarker, setIsCreatingMarker] = useState(false);
@@ -96,6 +101,19 @@ export default function MapContainer({
 
     return () => cancelAnimationFrame(frameId);
   }, [isLoaded, viewState.ui.mapIsFullScreen]);
+
+  useEffect(() => {
+    if (!isLoaded || !focusVisit) {
+      return;
+    }
+
+    mapRef.current?.flyTo({
+      center: [focusVisit.lng, focusVisit.lat],
+      zoom: 17,
+      duration: 850,
+      essential: true,
+    });
+  }, [focusVisit, isLoaded, location.key]);
 
   const handleSwapCrateMode = () => {
     if (visited) return;

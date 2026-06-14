@@ -8,13 +8,6 @@ import { IconStarFilled } from "@tabler/icons-react";
 import { useState } from "react";
 import styles from "./FeedItem.module.css";
 
-const formatVisitDate = (date: string) =>
-  new Intl.DateTimeFormat("ru-RU", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  }).format(new Date(date));
-
 const formatRating = (rating: number) =>
   Number.isInteger(rating) ? String(rating) : rating.toFixed(1);
 

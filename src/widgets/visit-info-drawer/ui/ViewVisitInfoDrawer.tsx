@@ -1,7 +1,7 @@
 import { IMapPlaceVisits, IMapMarker } from "@/entities/map";
 import { selectUser } from "@/entities/user/model/userSelectors";
-import { selectView } from "@/entities/view";
-import { useAppSelector } from "@/shared/lib";
+import { selectView, setMapCreateMode } from "@/entities/view";
+import { useAppDispatch, useAppSelector } from "@/shared/lib";
 import {
   SpotActionIcon,
   SpotAvatar,
@@ -20,11 +20,13 @@ import {
 import {
   IconCalendar,
   IconChevronLeft,
+  IconCurrentLocation,
   IconHeart,
   IconMapPin,
   IconPlus,
   IconStarFilled,
 } from "@tabler/icons-react";
+import { useNavigate } from "react-router-dom";
 import styles from "./ViewVisitInfoDrawer.module.css";
 
 export type VisitRatingParticipant = {
@@ -63,10 +65,10 @@ export default function ViewVisitInfoDrawer({
   allowCreate?: boolean;
   participants?: VisitRatingParticipant[];
 }) {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const user = useAppSelector(selectUser);
   const viewState = useAppSelector(selectView);
-  const drawerTitle =
-    selectedVisit?.title ?? selectedPlace?.place.title ?? "Место";
   const canCreateVisit =
     allowCreate &&
     (viewState.map.createMode === "my" ||
@@ -107,6 +109,24 @@ export default function ViewVisitInfoDrawer({
     return null;
   };
 
+  const visitCoordinates =
+    selectedVisit?.lat !== undefined && selectedVisit.lng !== undefined
+      ? { lat: selectedVisit.lat, lng: selectedVisit.lng }
+      : selectedPlace?.place;
+
+  const handleShowVisitOnMap = () => {
+    if (!visitCoordinates) {
+      return;
+    }
+
+    dispatch(setMapCreateMode("friends"));
+    navigate("/map", {
+      state: {
+        focusVisit: visitCoordinates,
+      },
+    });
+  };
+
   const createVisitButton =
     selectedPlace && canCreateVisit && onCreateVisit ? (
       <SpotActionIcon
@@ -124,7 +144,7 @@ export default function ViewVisitInfoDrawer({
     <SpotDrawer
       opened={Boolean(selectedPlace || selectedVisit)}
       onClose={handleCloseVisitDrawer}
-      title={drawerTitle}
+      // title={drawerTitle}
     >
       {selectedVisit ? (
         <Stack gap="md">
@@ -166,11 +186,30 @@ export default function ViewVisitInfoDrawer({
           )}
 
           <Stack gap={8}>
-            <Group gap="xs" align="center">
-              <IconMapPin size={18} color="#b9c8ff" />
-              <Text c="#eaf1ff" fw={800} fz={32} lh={1.15}>
-                {selectedVisit.title}
-              </Text>
+            <Group
+              justify="space-between"
+              gap="xs"
+              align="flex-start"
+              wrap="nowrap"
+            >
+              <Group gap="xs" align="center" wrap="nowrap">
+                <IconMapPin size={18} color="#b9c8ff" />
+                <Text c="#eaf1ff" fw={800} fz={32} lh={1.15}>
+                  {selectedVisit.title}
+                </Text>
+              </Group>
+
+              {visitCoordinates && (
+                <SpotActionIcon
+                  type="button"
+                  size={42}
+                  aria-label="Показать место на карте друзей"
+                  title="Показать на карте"
+                  onClick={handleShowVisitOnMap}
+                >
+                  <IconCurrentLocation size={27} stroke={2.4} />
+                </SpotActionIcon>
+              )}
             </Group>
 
             <Group gap="xs">
@@ -186,7 +225,12 @@ export default function ViewVisitInfoDrawer({
               <Text c="#90a5df" fz={13} fw={800} tt="uppercase">
                 Описание
               </Text>
-              <Text c="#d5defc" fz={15} lh={1.55} className={styles.description}>
+              <Text
+                c="#d5defc"
+                fz={15}
+                lh={1.55}
+                className={styles.description}
+              >
                 {selectedVisit.description}
               </Text>
             </Stack>

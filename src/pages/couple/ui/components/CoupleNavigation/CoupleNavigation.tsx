@@ -36,7 +36,7 @@ export default function CoupleNavigation({
         <SpotActionIcon
           size={45}
           onClick={() => navigate(-1)}
-          style={{ position: "absolute", left: 32, top: 24 }}
+          style={{ position: "absolute", left: 32, top: 16 }}
         >
           <IconArrowLeft />
         </SpotActionIcon>
