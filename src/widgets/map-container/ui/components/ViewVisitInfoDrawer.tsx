@@ -86,17 +86,18 @@ export default function ViewVisitInfoDrawer({
     return null;
   };
 
-  const createVisitButton = selectedPlace && canCreateVisit && onCreateVisit ? (
-    <SpotActionIcon
-      type="button"
-      size={42}
-      aria-label="Добавить новый визит в это место"
-      title="Добавить новый визит"
-      onClick={() => onCreateVisit(selectedPlace)}
-    >
-      <IconPlus size={22} />
-    </SpotActionIcon>
-  ) : null;
+  const createVisitButton =
+    selectedPlace && canCreateVisit && onCreateVisit ? (
+      <SpotActionIcon
+        type="button"
+        size={42}
+        aria-label="Добавить новый визит в это место"
+        title="Добавить новый визит"
+        onClick={() => onCreateVisit(selectedPlace)}
+      >
+        <IconPlus size={22} />
+      </SpotActionIcon>
+    ) : null;
 
   return (
     <SpotDrawer
@@ -110,25 +111,25 @@ export default function ViewVisitInfoDrawer({
             (selectedPlace && selectedPlace.visits.length > 1)) && (
             <Group justify="space-between" align="center">
               {selectedPlace && selectedPlace.visits.length > 1 ? (
-              <button
-                type="button"
-                onClick={() => setSelectedVisit(null)}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 6,
-                  padding: 0,
-                  color: "#b9c8ff",
-                  background: "transparent",
-                  border: 0,
-                  fontSize: 14,
-                  fontWeight: 700,
-                  cursor: "pointer",
-                }}
-              >
-                <IconChevronLeft size={18} />
-                Все визиты
-              </button>
+                <button
+                  type="button"
+                  onClick={() => setSelectedVisit(null)}
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 6,
+                    padding: 0,
+                    color: "#b9c8ff",
+                    background: "transparent",
+                    border: 0,
+                    fontSize: 14,
+                    fontWeight: 700,
+                    cursor: "pointer",
+                  }}
+                >
+                  <IconChevronLeft size={18} />
+                  Все визиты
+                </button>
               ) : (
                 <Stack gap={0}>
                   <Text c="#eaf1ff" fz={14} fw={800}>
@@ -144,9 +145,9 @@ export default function ViewVisitInfoDrawer({
           )}
 
           <Stack gap={8}>
-            <Group gap="xs">
+            <Group gap="xs" align="center">
               <IconMapPin size={18} color="#b9c8ff" />
-              <Text c="#eaf1ff" fw={800} fz={22} lh={1.15}>
+              <Text c="#eaf1ff" fw={800} fz={32} lh={1.15}>
                 {selectedVisit.title}
               </Text>
             </Group>

@@ -1,5 +1,6 @@
 .page {
-  min-height: calc(100dvh - 96px);
+  min-height: calc(100dvh);
+  overflow: auto;
 }
 
 .page[data-fullscreen] {
@@ -7,9 +8,9 @@
 }
 
 .mapIsland {
-  flex: 1 1 0;
-  min-height: 360px;
-  margin: 0 16px;
+  flex: 1 0 auto;
+  min-height: 400px;
+  margin: 0 16px 95px 16px;
   overflow: hidden;
   border: 1px solid rgba(200, 215, 255, 0.15);
   border-radius: 20px;
@@ -18,6 +19,7 @@
 }
 
 .mapIsland[data-fullscreen] {
+  aspect-ratio: auto;
   min-height: 100dvh;
   margin: 0;
   border: 0;
