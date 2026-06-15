@@ -1,11 +1,3 @@
 .pairCard {
   padding: 14px 16px;
 }
-
-.pairAvatar {
-  position: relative;
-}
-
-.pairAvatar + .pairAvatar {
-  margin-left: -16px;
-}

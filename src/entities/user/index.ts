@@ -8,6 +8,7 @@ export {
   useUnfollowUserMutation,
   useGetFollowersQuery,
   useGetFollowingsQuery,
+  useSearchUsersQuery,
 } from "./api/userApi";
 export type {
   IUserState,

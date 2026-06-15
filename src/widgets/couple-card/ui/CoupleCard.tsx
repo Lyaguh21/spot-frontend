@@ -1,5 +1,5 @@
 import { SpotAvatar, SpotGlassCard } from "@/shared/ui";
-import { Group, Stack, Text } from "@mantine/core";
+import { Avatar, Group, Stack, Text } from "@mantine/core";
 import { IconChevronRight } from "@tabler/icons-react";
 import styles from "./CoupleCard.module.css";
 import { IUserState } from "@/entities/user";
@@ -31,22 +31,20 @@ export default function CoupleCard({
     >
       <Group justify="space-between" wrap="nowrap">
         <Group gap="sm" wrap="nowrap">
-          <Group gap={0} wrap="nowrap">
+          <Avatar.Group spacing={16}>
             <SpotAvatar
               size={52}
               src={firstUser?.avatarUrl}
-              frameClassName={styles.pairAvatar}
             >
               {firstUser?.username?.charAt(0)}
             </SpotAvatar>
             <SpotAvatar
               size={52}
               src={secondUser?.avatarUrl}
-              frameClassName={styles.pairAvatar}
             >
               {secondUser?.username?.charAt(0)}
             </SpotAvatar>
-          </Group>
+          </Avatar.Group>
           <Stack gap={2}>
             <Text c="white" fw={600} size="sm">
               {names || "Пара"}

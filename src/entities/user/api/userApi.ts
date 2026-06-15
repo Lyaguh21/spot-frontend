@@ -23,6 +23,16 @@ export const userApi = baseApi.injectEndpoints({
       invalidatesTags: [{ type: "User", id: "PROFILE" }],
     }),
 
+    searchUsers: build.query<
+      { items: IUserState[] },
+      { search: string; page?: number; limit?: number }
+    >({
+      query: ({ search, page = 1, limit = 5 }) => ({
+        url: "/users/search",
+        params: { search, page, limit },
+      }),
+    }),
+
     getUserByUsername: build.query<IUserState, { username: string }>({
       query: ({ username }) => `/users/${username}`,
       providesTags: [{ type: "User", id: "PROFILE" }],
@@ -84,4 +94,5 @@ export const {
   useUnfollowUserMutation,
   useGetFollowersQuery,
   useGetFollowingsQuery,
+  useSearchUsersQuery,
 } = userApi;

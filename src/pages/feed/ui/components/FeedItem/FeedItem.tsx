@@ -3,7 +3,7 @@ import { markersColors, markersIcons } from "@/entities/map";
 import { formatRelativeTime } from "@/shared/lib";
 import { SpotAvatar, SpotButton, SpotSkeletonLoader } from "@/shared/ui";
 import ViewVisitInfoDrawer from "@/widgets/visit-info-drawer";
-import { Box, Divider, Group, Stack, Text } from "@mantine/core";
+import { Avatar, Box, Divider, Group, Stack, Text } from "@mantine/core";
 import { IconStarFilled } from "@tabler/icons-react";
 import { useState } from "react";
 import styles from "./FeedItem.module.css";
@@ -39,7 +39,7 @@ export default function FeedItem({ item }: { item: IFeedItem }) {
     <>
       <article className={styles.card}>
         <Group gap={10} wrap="nowrap" align="center">
-          <div className={styles.avatars} data-couple={isCouple || undefined}>
+          <Avatar.Group className={styles.avatars} spacing={13}>
             {owners.slice(0, 2).map((owner) => (
               <SpotAvatar
                 key={owner.username}
@@ -47,12 +47,11 @@ export default function FeedItem({ item }: { item: IFeedItem }) {
                 alt={owner.name || owner.username}
                 size={42}
                 radius="xl"
-                frameClassName={styles.avatarFrame}
               >
                 {(owner.name || owner.username).charAt(0).toUpperCase()}
               </SpotAvatar>
             ))}
-          </div>
+          </Avatar.Group>
           <Stack gap={1} style={{ minWidth: 0 }}>
             <Text className={styles.ownerName} truncate>
               {ownerName}

@@ -18,13 +18,8 @@
 }
 
 .avatars {
-  display: flex;
   flex: 0 0 auto;
   min-width: 42px;
-}
-
-.avatars[data-couple] .avatarFrame + .avatarFrame {
-  margin-left: -13px;
 }
 
 .ownerName {
