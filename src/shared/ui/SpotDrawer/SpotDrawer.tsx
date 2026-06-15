@@ -1,5 +1,6 @@
-import { CloseButton, Drawer, Text } from "@mantine/core";
-import { useRef } from "react";
+import { IconX } from "@tabler/icons-react";
+import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import styles from "./SpotDrawer.module.css";
 
 type SpotDrawerProps = {
@@ -11,6 +12,10 @@ type SpotDrawerProps = {
   closeOnSwipeDown?: boolean;
 };
 
+const TRANSITION_DURATION = 420;
+const MIN_CLOSE_DISTANCE = 90;
+const CLOSE_VELOCITY = 0.65;
+
 export default function SpotDrawer({
   opened,
   onClose,
@@ -19,106 +24,216 @@ export default function SpotDrawer({
   size = "80%",
   closeOnSwipeDown = true,
 }: SpotDrawerProps) {
-  const startYRef = useRef<number | null>(null);
-  const closeThreshold = 90;
+  const [mounted, setMounted] = useState(opened);
+  const [visible, setVisible] = useState(false);
+  const [dragY, setDragY] = useState(0);
+  const [dragging, setDragging] = useState(false);
+  const sheetRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const dragStartRef = useRef({ y: 0, time: 0 });
+  const lastMoveRef = useRef({ y: 0, time: 0 });
+  const previousFocusRef = useRef<HTMLElement | null>(null);
+  const titleId = useId();
   const maxHeight = typeof size === "number" ? `${size}px` : size;
 
-  const beginDrag = (clientY: number | undefined) => {
-    if (clientY === undefined) {
+  useEffect(() => {
+    if (opened) {
+      setMounted(true);
       return;
     }
 
-    startYRef.current = clientY;
-  };
+    setVisible(false);
+    const timeout = window.setTimeout(() => {
+      setMounted(false);
+      setDragY(0);
+      setDragging(false);
+    }, TRANSITION_DURATION);
 
-  const updateDrag = (clientY: number | undefined) => {
-    if (startYRef.current === null || clientY === undefined) {
+    return () => window.clearTimeout(timeout);
+  }, [opened]);
+
+  useLayoutEffect(() => {
+    if (!mounted || !opened) {
       return;
     }
 
-    const delta = clientY - startYRef.current;
-    if (delta > closeThreshold) {
-      startYRef.current = null;
-      onClose();
-    }
-  };
+    setVisible(false);
 
-  const endDrag = () => {
-    startYRef.current = null;
-  };
+    // Commit the closed position before adding the visible class. Without this
+    // style flush, a newly mounted portal can skip its opening transition.
+    sheetRef.current?.getBoundingClientRect();
+    const frame = requestAnimationFrame(() => setVisible(true));
+
+    return () => cancelAnimationFrame(frame);
+  }, [mounted, opened]);
+
+  useEffect(() => {
+    if (!mounted) {
+      return;
+    }
+
+    previousFocusRef.current = document.activeElement as HTMLElement | null;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const focusFrame = requestAnimationFrame(() => {
+      closeButtonRef.current?.focus({ preventScroll: true });
+    });
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+
+      if (event.key !== "Tab" || !sheetRef.current) {
+        return;
+      }
+
+      const focusableElements = Array.from(
+        sheetRef.current.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ),
+      );
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements.at(-1);
+
+      if (!firstElement || !lastElement) {
+        event.preventDefault();
+        return;
+      }
+
+      if (event.shiftKey && document.activeElement === firstElement) {
+        event.preventDefault();
+        lastElement.focus();
+      } else if (!event.shiftKey && document.activeElement === lastElement) {
+        event.preventDefault();
+        firstElement.focus();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      cancelAnimationFrame(focusFrame);
+      document.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = previousOverflow;
+      previousFocusRef.current?.focus({ preventScroll: true });
+    };
+  }, [mounted, onClose]);
 
   const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
-    if (!closeOnSwipeDown) {
+    if (
+      !closeOnSwipeDown ||
+      !event.isPrimary ||
+      event.button !== 0 ||
+      (event.target as HTMLElement).closest("button")
+    ) {
       return;
     }
 
-    beginDrag(event.clientY);
+    const point = { y: event.clientY, time: performance.now() };
+    dragStartRef.current = point;
+    lastMoveRef.current = point;
+    setDragging(true);
     event.currentTarget.setPointerCapture(event.pointerId);
   };
 
   const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
-    updateDrag(event.clientY);
-  };
-
-  const handlePointerUp = () => {
-    endDrag();
-  };
-
-  const handleTouchStart = (event: React.TouchEvent<HTMLDivElement>) => {
-    if (!closeOnSwipeDown) {
+    if (!dragging) {
       return;
     }
 
-    beginDrag(event.touches[0]?.clientY);
+    const nextDragY = Math.max(0, event.clientY - dragStartRef.current.y);
+    setDragY(nextDragY);
+    lastMoveRef.current = { y: event.clientY, time: performance.now() };
   };
 
-  const handleTouchMove = (event: React.TouchEvent<HTMLDivElement>) => {
-    updateDrag(event.touches[0]?.clientY ?? event.changedTouches[0]?.clientY);
+  const finishDrag = (clientY: number) => {
+    if (!dragging) {
+      return;
+    }
+
+    const now = performance.now();
+    const elapsed = Math.max(1, now - lastMoveRef.current.time);
+    const velocity = Math.max(0, clientY - lastMoveRef.current.y) / elapsed;
+    const sheetHeight = sheetRef.current?.getBoundingClientRect().height ?? 0;
+    const closeDistance = Math.max(
+      MIN_CLOSE_DISTANCE,
+      Math.min(180, sheetHeight * 0.22),
+    );
+
+    setDragging(false);
+
+    if (dragY >= closeDistance || velocity >= CLOSE_VELOCITY) {
+      onClose();
+      return;
+    }
+
+    setDragY(0);
   };
 
-  const handleTouchEnd = () => {
-    endDrag();
+  const handlePointerUp = (event: React.PointerEvent<HTMLDivElement>) => {
+    finishDrag(event.clientY);
   };
 
-  return (
-    <Drawer
-      opened={opened}
-      onClose={onClose}
-      position="bottom"
-      withCloseButton={false}
-      radius="lg"
-      size="auto"
-      transitionProps={{ transition: "slide-up", duration: 520 }}
-      overlayProps={{ blur: 6, opacity: 0.65, color: "#040b1a" }}
-      classNames={{ content: styles.content, body: styles.body }}
-      styles={{
-        content: {
-          maxHeight,
-          height: "auto",
-        },
-      }}
+  const handlePointerCancel = () => {
+    setDragging(false);
+    setDragY(0);
+  };
+
+  if (!mounted || typeof document === "undefined") {
+    return null;
+  }
+
+  return createPortal(
+    <div
+      className={`${styles.root} ${visible ? styles.rootVisible : ""}`}
+      aria-hidden={!visible}
     >
+      <div className={styles.overlay} onClick={onClose} />
       <div
-        className={styles.dragArea}
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerUp}
-        onPointerCancel={handlePointerUp}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
+        ref={sheetRef}
+        className={`${styles.sheet} ${dragging ? styles.dragging : ""}`}
+        style={
+          {
+            "--spot-drawer-max-height": maxHeight,
+            "--spot-drawer-drag-y": `${dragY}px`,
+          } as React.CSSProperties
+        }
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={title ? titleId : undefined}
+        aria-label={title ? undefined : "Окно"}
       >
-        <div className={styles.handle} />
-        <div className={styles.topRow}>
-          {title ? <Text className={styles.title}>{title}</Text> : <span />}
-          <CloseButton
-            tabIndex={-1}
-            className={styles.close}
-            onClick={onClose}
-          />
+        <div
+          className={styles.dragArea}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          onPointerCancel={handlePointerCancel}
+        >
+          <div className={styles.handle} />
+          <div className={styles.topRow}>
+            {title ? (
+              <h2 className={styles.title} id={titleId}>
+                {title}
+              </h2>
+            ) : (
+              <span />
+            )}
+            <button
+              ref={closeButtonRef}
+              type="button"
+              className={styles.close}
+              onClick={onClose}
+              aria-label="Закрыть"
+            >
+              <IconX size={18} stroke={2} />
+            </button>
+          </div>
         </div>
+        <div className={styles.scroll}>{children}</div>
       </div>
-      <div className={styles.scroll}>{children}</div>
-    </Drawer>
+    </div>,
+    document.body,
   );
 }
