@@ -1,7 +1,7 @@
 import { useStatusQuery } from "@/entities/auth";
 import { setUser, userLogout } from "@/entities/user";
-
 import { useAppDispatch, useAppSelector } from "@/shared/lib";
+import { getAuthRedirectPath } from "@/shared/utils";
 import { LoadingOverlay } from "@mantine/core";
 import { useEffect, useRef } from "react";
 import { Navigate, matchPath, useLocation } from "react-router-dom";
@@ -43,7 +43,9 @@ export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
   }
 
   if (!isPublicRoute && !userId && (isError || !data?.authenticated)) {
-    return <Navigate to="/onboarding" replace state={{ from: location }} />;
+    return (
+      <Navigate to={getAuthRedirectPath()} replace state={{ from: location }} />
+    );
   }
 
   const profileMatch = matchPath(
@@ -56,7 +58,9 @@ export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
     profileMatch.params.username === lastAuthUsernameRef.current &&
     (isError || data?.authenticated === false)
   ) {
-    return <Navigate to="/onboarding" replace state={{ from: location }} />;
+    return (
+      <Navigate to={getAuthRedirectPath()} replace state={{ from: location }} />
+    );
   }
 
   return <>{children}</>;

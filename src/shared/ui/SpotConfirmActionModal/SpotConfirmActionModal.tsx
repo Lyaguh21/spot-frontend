@@ -39,15 +39,6 @@ export default function SpotConfirmActionModal({
         <Text className={styles.question}>{question}</Text>
       </div>
       <div className={styles.actions}>
-        <Button
-          classNames={{ root: styles.cancel }}
-          radius="lg"
-          size="md"
-          fullWidth
-          onClick={onClose}
-        >
-          {cancelText}
-        </Button>
         <SpotButton
           radius="lg"
           size="md"
@@ -57,6 +48,15 @@ export default function SpotConfirmActionModal({
         >
           {confirmText}
         </SpotButton>
+        <Button
+          classNames={{ root: styles.cancel }}
+          radius="lg"
+          size="md"
+          fullWidth
+          onClick={onClose}
+        >
+          {cancelText}
+        </Button>
       </div>
     </Modal>
   );
