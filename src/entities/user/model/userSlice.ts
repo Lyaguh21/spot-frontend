@@ -11,6 +11,7 @@ interface IUserSliceState extends Partial<
     | "avatarUrl"
     | "coupleId"
     | "partner"
+    | "role"
   >
 > {}
 
@@ -20,6 +21,7 @@ const initialState: IUserSliceState = {
   username: undefined,
   email: undefined,
   avatarUrl: undefined,
+  role: undefined,
   coupleId: null,
   partner: null,
 };
@@ -36,6 +38,7 @@ export const userSlice = createSlice({
       state.avatarUrl = action.payload.avatarUrl;
       state.coupleId = action.payload.coupleId;
       state.partner = action.payload.partner;
+      state.role = action.payload.role;
     },
 
     userLogout: (state) => {
@@ -46,6 +49,7 @@ export const userSlice = createSlice({
       state.avatarUrl = undefined;
       state.coupleId = null;
       state.partner = null;
+      state.role = undefined;
     },
   },
 });

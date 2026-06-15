@@ -1,7 +1,7 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { IconFileText, IconUser, IconMapPinFilled } from "@tabler/icons-react";
 import styles from "./TabBar.module.css";
-import { selectUser } from "@/entities/user/model/userSelectors";
+import { selectUser } from "@/entities/user";
 import { useAppSelector } from "@/shared/lib";
 import { SpotConfirmActionModal } from "@/shared/ui";
 import { useDisclosure } from "@mantine/hooks";

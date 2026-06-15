@@ -7,10 +7,15 @@ import {
   markerIconOptions,
   useCreateVisitMutation,
 } from "@/entities/map";
-import { selectUser } from "@/entities/user/model/userSelectors";
+import { selectUser } from "@/entities/user";
 import { selectView } from "@/entities/view";
 import { useAppSelector, useNotifications } from "@/shared/lib";
-import { SpotActionIcon, SpotAvatar, SpotButton, SpotDrawer } from "@/shared/ui";
+import {
+  SpotActionIcon,
+  SpotAvatar,
+  SpotButton,
+  SpotDrawer,
+} from "@/shared/ui";
 import {
   ActionIcon,
   Box,
@@ -448,6 +453,7 @@ export default function CreateMarkerDrawer({
                       </Stack>
                     </Group>
                     <Rating
+                      color="#facc15"
                       size="lg"
                       fractions={4}
                       value={rating.rating}

@@ -1,6 +1,6 @@
 import { useLogoutMutation } from "@/entities/auth";
 import { userLogout } from "@/entities/user";
-import { useAppDispatch } from "@/shared/lib";
+import { useAppDispatch, useAppSelector } from "@/shared/lib";
 import { SpotConfirmActionModal, SpotDrawer, SpotGlassCard } from "@/shared/ui";
 import { Stack, Text, UnstyledButton, Group, ThemeIcon } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
@@ -10,15 +10,18 @@ import {
   IconLogout,
   IconChevronRight,
   IconCode,
+  IconUserCode,
 } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
 import styles from "./SettingsDrawer.module.css";
+import { selectUser } from "@/entities/user";
 
 type SettingsOption = {
   title: string;
   description: string;
   icon: React.ReactNode;
   danger?: boolean;
+  adminOnly?: boolean;
   onClick: () => void;
 };
 
@@ -29,6 +32,7 @@ export default function SettingsDrawer({
   opened: boolean;
   onClose: () => void;
 }) {
+  const user = useAppSelector(selectUser);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [logout, { isLoading: isLoggingOut }] = useLogoutMutation();
@@ -63,6 +67,13 @@ export default function SettingsDrawer({
       onClick: () => {}, //todo реализовать
     },
     {
+      title: "Админка",
+      description: "Панель администратора",
+      icon: <IconUserCode size={24} stroke={1.8} />,
+      adminOnly: true,
+      onClick: () => {}, //todo реализовать
+    },
+    {
       title: "Выйти из аккаунта",
       description: "Вы выйдете из аккаунта на этом устройстве",
       icon: <IconLogout size={24} stroke={1.8} />,
@@ -90,42 +101,44 @@ export default function SettingsDrawer({
 
       <SpotDrawer title="Настройки" opened={opened} onClose={onClose}>
         <Stack className={styles.options} gap="sm">
-          {settingsOptions.map((option) => (
-            <SpotGlassCard
-              component={UnstyledButton}
-              className={`${styles.option} ${
-                option.danger ? styles.danger : ""
-              }`}
-              isButton
-              key={option.title}
-              onClick={option.onClick}
-            >
-              <Group gap="md" wrap="nowrap">
-                <ThemeIcon
-                  className={styles.icon}
-                  data-danger={option.danger || undefined}
-                  size={52}
-                  radius="xl"
-                  variant="transparent"
-                >
-                  {option.icon}
-                </ThemeIcon>
+          {settingsOptions
+            .filter((option) => !option.adminOnly || user.role === "ADMIN")
+            .map((option) => (
+              <SpotGlassCard
+                component={UnstyledButton}
+                className={`${styles.option} ${
+                  option.danger ? styles.danger : ""
+                }`}
+                isButton
+                key={option.title}
+                onClick={option.onClick}
+              >
+                <Group gap="md" wrap="nowrap">
+                  <ThemeIcon
+                    className={styles.icon}
+                    data-danger={option.danger || undefined}
+                    size={52}
+                    radius="xl"
+                    variant="transparent"
+                  >
+                    {option.icon}
+                  </ThemeIcon>
 
-                <Stack className={styles.copy} gap={2}>
-                  <Text className={styles.optionTitle}>{option.title}</Text>
-                  <Text className={styles.description}>
-                    {option.description}
-                  </Text>
-                </Stack>
+                  <Stack className={styles.copy} gap={2}>
+                    <Text className={styles.optionTitle}>{option.title}</Text>
+                    <Text className={styles.description}>
+                      {option.description}
+                    </Text>
+                  </Stack>
 
-                <IconChevronRight
-                  className={styles.chevron}
-                  size={20}
-                  stroke={1.8}
-                />
-              </Group>
-            </SpotGlassCard>
-          ))}
+                  <IconChevronRight
+                    className={styles.chevron}
+                    size={20}
+                    stroke={1.8}
+                  />
+                </Group>
+              </SpotGlassCard>
+            ))}
         </Stack>
       </SpotDrawer>
     </>

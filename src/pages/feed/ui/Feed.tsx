@@ -1,5 +1,5 @@
 import { Stack, Text } from "@mantine/core";
-import SearchUsersSection from "./components/SearchUsersSection";
+import SearchUsersSection from "./components/SearchUsersSection/SearchUsersSection";
 import { useGetFeedQuery } from "@/entities/feed";
 import FeedItem, { FeedItemSkeleton } from "./components/FeedItem/FeedItem";
 import styles from "./Feed.module.css";

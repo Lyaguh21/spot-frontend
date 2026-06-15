@@ -7,11 +7,13 @@ import { Avatar, Box, Divider, Group, Stack, Text } from "@mantine/core";
 import { IconStarFilled } from "@tabler/icons-react";
 import { useState } from "react";
 import styles from "./FeedItem.module.css";
+import { useNavigate } from "react-router-dom";
 
 const formatRating = (rating: number) =>
   Number.isInteger(rating) ? String(rating) : rating.toFixed(1);
 
 export default function FeedItem({ item }: { item: IFeedItem }) {
+  const navigate = useNavigate();
   const [detailsOpened, setDetailsOpened] = useState(false);
   const [imageFailed, setImageFailed] = useState(false);
   const isCouple = item.ownerType === "COUPLE" && Boolean(item.couple);
@@ -47,6 +49,9 @@ export default function FeedItem({ item }: { item: IFeedItem }) {
                 alt={owner.name || owner.username}
                 size={42}
                 radius="xl"
+                onClick={() => {
+                  navigate(`/profile/${owner.username}`);
+                }}
               >
                 {(owner.name || owner.username).charAt(0).toUpperCase()}
               </SpotAvatar>

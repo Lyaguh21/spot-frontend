@@ -2,7 +2,7 @@ import {
   useGetVisitsByCoupleIdQuery,
   useGetVisitsByUsernameQuery,
 } from "@/entities/map";
-import { selectUser } from "@/entities/user/model/userSelectors";
+import { selectUser } from "@/entities/user";
 import { MapCreateMode, selectView, setMapCreateMode } from "@/entities/view";
 import { useAppDispatch, useAppSelector } from "@/shared/lib";
 import { SpotFloatingIndicator } from "@/shared/ui";

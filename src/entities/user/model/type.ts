@@ -3,6 +3,7 @@ import { ICoupleState } from "@/entities/couple";
 export interface IUserState {
   id: number;
   name: string;
+  role: "USER" | "ADMIN";
   email: string;
   username: string;
   avatarUrl: string;

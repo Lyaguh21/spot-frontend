@@ -13,7 +13,7 @@ export interface IRegisterRequest extends Pick<
 
 interface UserStatus extends Pick<
   IUserState,
-  "id" | "name" | "username" | "email" | "coupleId" | "partner"
+  "id" | "name" | "username" | "email" | "coupleId" | "partner" | "role"
 > {}
 
 export interface IStatusResponse {

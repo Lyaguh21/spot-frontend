@@ -1,4 +1,4 @@
-import { selectUser } from "@/entities/user/model/userSelectors";
+import { selectUser } from "@/entities/user";
 import { useAppSelector } from "@/shared/lib";
 import { Navigate, useParams } from "react-router-dom";
 import HeaderProfile from "./components/HeaderProfile/HeaderProfile";

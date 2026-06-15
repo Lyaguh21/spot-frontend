@@ -1,5 +1,5 @@
 import { IMapPlaceVisits, IMapMarker } from "@/entities/map";
-import { selectUser } from "@/entities/user/model/userSelectors";
+import { selectUser } from "@/entities/user";
 import { selectView, setMapCreateMode } from "@/entities/view";
 import { useAppDispatch, useAppSelector } from "@/shared/lib";
 import {
@@ -284,6 +284,7 @@ export default function ViewVisitInfoDrawer({
                         </Stack>
                       </Group>
                       <Rating
+                        color="#facc15"
                         size="md"
                         fractions={4}
                         value={rating.rating}
