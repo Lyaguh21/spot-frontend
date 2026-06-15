@@ -182,7 +182,7 @@ export default function CreateMarkerDrawer({
 
   const selectedIcon = iconByKey.get(form.values.icon);
   const selectedColor = colorByKey.get(form.values.color);
-  const selectionGutter = 10;
+  const selectionGlowGutter = 28;
 
   const handleSubmit = async (values: CreateMarkerFormValues) => {
     const payload: ICreateVisitRequest = {
@@ -233,12 +233,13 @@ export default function CreateMarkerDrawer({
               scrollbarSize={0}
               styles={{
                 root: {
-                  marginInline: -selectionGutter,
-                  width: `calc(100% + ${selectionGutter * 2}px)`,
+                  marginBlock: -selectionGlowGutter,
+                  marginInline: -selectionGlowGutter,
+                  width: `calc(100% + ${selectionGlowGutter * 2}px)`,
                 },
                 viewport: {
-                  paddingBlock: 12,
-                  paddingInline: selectionGutter,
+                  paddingBlock: selectionGlowGutter,
+                  paddingInline: selectionGlowGutter,
                 },
               }}
             >

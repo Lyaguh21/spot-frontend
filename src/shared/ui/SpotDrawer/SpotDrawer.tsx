@@ -231,7 +231,9 @@ export default function SpotDrawer({
             </button>
           </div>
         </div>
-        <div className={styles.scroll}>{children}</div>
+        <div className={styles.scroll}>
+          <div className={styles.scrollContent}>{children}</div>
+        </div>
       </div>
     </div>,
     document.body,

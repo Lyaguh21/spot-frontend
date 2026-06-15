@@ -4,7 +4,11 @@ import type { ComponentPropsWithoutRef, PropsWithChildren } from "react";
 import styles from "./SpotGlassCard.module.css";
 
 type SpotGlassCardProps = PropsWithChildren<
-  BoxProps & ComponentPropsWithoutRef<"div"> & { isButton?: boolean }
+  BoxProps &
+    ComponentPropsWithoutRef<"div"> & {
+      component?: any;
+      isButton?: boolean;
+    }
 >;
 
 export default function SpotGlassCard(props: SpotGlassCardProps) {
