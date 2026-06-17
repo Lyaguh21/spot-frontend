@@ -1,14 +1,28 @@
-import { SpotAvatar, SpotButton, SpotDrawer, SpotTextInput } from "@/shared/ui";
+import { SpotButton, SpotDrawer, SpotTextInput } from "@/shared/ui";
+import { SegmentedControl, Stack, Textarea } from "@mantine/core";
+import { useForm } from "@mantine/form";
+import { useEffect } from "react";
 import {
-  Group,
-  SegmentedControl,
-  Stack,
-  Textarea,
-} from "@mantine/core";
-import { IconPhoto } from "@tabler/icons-react";
-import { useEffect, useRef, useState } from "react";
-import { useGetProfileQuery, useUpdateProfileMutation } from "@/entities/user";
+  UserVisibility,
+  useGetProfileQuery,
+  useUpdateProfileMutation,
+} from "@/entities/user";
 import styles from "./EditProfileDrawer.module.css";
+import { SpotPhotoInput } from "@/widgets/spot-photo-input";
+
+type EditProfileFormValues = {
+  name: string;
+  bio: string;
+  visibility: UserVisibility;
+  avatarUrl: string;
+};
+
+const initialValues: EditProfileFormValues = {
+  name: "",
+  bio: "",
+  visibility: "PUBLIC",
+  avatarUrl: "",
+};
 
 export default function EditProfileDrawer({
   opened,
@@ -19,54 +33,32 @@ export default function EditProfileDrawer({
 }) {
   const { data: profile } = useGetProfileQuery();
   const [updateProfile, { isLoading }] = useUpdateProfileMutation();
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
-
-  const [name, setName] = useState("");
-  const [bio, setBio] = useState("");
-  const [isPrivate, setIsPrivate] = useState(false);
-  const [avatarUrl, setAvatarUrl] = useState("");
-  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const form = useForm<EditProfileFormValues>({
+    initialValues,
+  });
 
   useEffect(() => {
     if (!opened || !profile) {
       return;
     }
 
-    setName(profile.name ?? "");
-    setBio(profile.bio ?? "");
-    setIsPrivate(profile.isPrivate ?? false);
-    setAvatarUrl(profile.avatarUrl ?? "");
-    setAvatarPreview(profile.avatarUrl ?? null);
+    const nextValues = {
+      name: profile.name ?? "",
+      bio: profile.bio ?? "",
+      visibility: profile.visibility ?? "PUBLIC",
+      avatarUrl: profile.avatarUrl ?? "",
+    };
+
+    form.setValues(nextValues);
+    form.resetDirty(nextValues);
   }, [opened, profile]);
 
-  const handleChooseAvatar = () => {
-    fileInputRef.current?.click();
-  };
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) {
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      if (typeof reader.result === "string") {
-        setAvatarPreview(reader.result);
-        setAvatarUrl(reader.result);
-      }
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
+  const handleSubmit = async (values: EditProfileFormValues) => {
     const payload = {
-      name: name.trim(),
-      bio: bio.trim(),
-      isPrivate,
-      ...(avatarUrl ? { avatarUrl } : {}),
+      name: values.name.trim(),
+      bio: values.bio.trim(),
+      visibility: values.visibility,
+      avatarUrl: values.avatarUrl,
     };
 
     try {
@@ -82,53 +74,38 @@ export default function EditProfileDrawer({
       onClose={onClose}
       title="Редактирование профиля"
     >
-      <form className={styles.form} onSubmit={handleSubmit}>
-        <Group justify="center" mt="xl">
-          <div className={styles.avatarFrame}>
-            <SpotAvatar
-              src={avatarPreview}
-              size={92}
-              onClick={handleChooseAvatar}
-            >
-              {profile?.username?.charAt(0)}
-            </SpotAvatar>
-            <div className={styles.avatarButton}>
-              <IconPhoto size={18} />
-            </div>
-          </div>
-        </Group>
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/*"
-          className={styles.fileInput}
-          onChange={handleFileChange}
-        />
-
+      <form className={styles.form} onSubmit={form.onSubmit(handleSubmit)}>
         <Stack gap="md">
+          <SpotPhotoInput
+            title="Аватар"
+            description="Выберите аватарку или перетащите ее сюда"
+            value={form.values.avatarUrl}
+            onChange={(photo) => form.setFieldValue("avatarUrl", photo ?? "")}
+          />
+
           <SpotTextInput
             label="Имя"
             radius="lg"
-            value={name}
-            onChange={(event) => setName(event.currentTarget.value)}
+            {...form.getInputProps("name")}
             placeholder="Ваше имя"
           />
           <Textarea
             radius="lg"
             label="Описание"
-            value={bio}
-            onChange={(event) => setBio(event.currentTarget.value)}
             placeholder="Коротко о себе"
             minRows={3}
+            {...form.getInputProps("bio")}
             classNames={{
               label: styles.label,
               input: styles.textareaInput,
             }}
           />
           <SegmentedControl
-            value={isPrivate ? "PRIVATE" : "PUBLIC"}
+            value={form.values.visibility}
             radius="lg"
-            onChange={(value) => setIsPrivate(value === "PRIVATE")}
+            onChange={(value) =>
+              form.setFieldValue("visibility", value as UserVisibility)
+            }
             data={[
               { label: "Публичный", value: "PUBLIC" },
               { label: "Приватный", value: "PRIVATE" },

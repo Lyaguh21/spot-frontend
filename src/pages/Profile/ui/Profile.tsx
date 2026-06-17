@@ -38,7 +38,7 @@ export default function Profile() {
   const status = (userByUsernameError as FetchBaseQueryError | undefined)
     ?.status;
   const isNotFound = !isOwnProfile && isUserByUsernameError && status === 404;
-  const isPrivateProfile = !isOwnProfile && data?.isPrivate;
+  const isPrivateProfile = !isOwnProfile && data?.visibility === "PRIVATE";
 
   if (isNotFound) {
     return <Navigate to="/404" replace />;

@@ -15,5 +15,6 @@ export type {
   IFollowersResponse,
   IFollowingItem,
   IFollowingResponse,
+  UserVisibility,
 } from "./model/type";
 export { selectUser } from "./model/userSelectors";

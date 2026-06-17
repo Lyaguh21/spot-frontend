@@ -16,7 +16,7 @@ export default function SettingsCard({ option }: { option: SettingsOption }) {
         <ThemeIcon
           className={styles.icon}
           data-danger={option.danger || undefined}
-          size={38}
+          size={48}
           radius="xl"
           variant="transparent"
         >

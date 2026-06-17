@@ -97,7 +97,7 @@ export default function HeaderProfile({
               <Text fz="32px" c="white" lh={1}>
                 {userData?.name}
               </Text>
-              {userData?.isPrivate && <IconLock />}
+              {userData?.visibility === "PRIVATE" && <IconLock />}
             </Group>
 
             <Spoiler

@@ -1,5 +1,7 @@
 import { ICoupleState } from "@/entities/couple";
 
+export type UserVisibility = "PUBLIC" | "PRIVATE";
+
 export interface IUserState {
   id: number;
   name: string;
@@ -8,7 +10,7 @@ export interface IUserState {
   username: string;
   avatarUrl: string;
   bio: string;
-  isPrivate: boolean;
+  visibility: UserVisibility;
   createdAt: string;
   coupleId: number | null;
   partner: Pick<IUserState, "avatarUrl" | "name" | "username"> | null;
@@ -23,7 +25,7 @@ export interface IUserState {
 export interface IUserProfileResponse extends IUserState {}
 
 export interface IUpdateProfileRequest extends Partial<
-  Pick<IUserState, "name" | "avatarUrl" | "bio" | "isPrivate">
+  Pick<IUserState, "name" | "avatarUrl" | "bio" | "visibility">
 > {}
 
 export interface IFollowersResponse {
