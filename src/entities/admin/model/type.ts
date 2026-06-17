@@ -7,22 +7,22 @@ export const typeBugReportOptions = [
     color: "red",
   },
   {
-    value: "performance-issue",
+    value: "performance",
     label: "Производительность",
     color: "yellow",
   },
   {
-    value: "visual-bug",
+    value: "visual",
     label: "Визуальная ошибка",
     color: "orange",
   },
   {
-    value: "security-issue",
+    value: "security",
     label: "Безопасность",
     color: "red",
   },
   {
-    value: "security-issue",
+    value: "account",
     label: "Аккаунт",
     color: "blue",
   },
@@ -41,7 +41,7 @@ export interface IBugReport {
   title: string;
   description: string;
   type: string;
-  photoUrl?: string;
+  photos?: string[];
 }
 
 export interface IStatisticsResponse {
@@ -67,7 +67,7 @@ export interface ICouplesStatisticsResponse {
 
 export interface ICreateBugReportRequest extends Pick<
   IBugReport,
-  "title" | "description" | "type" | "photoUrl"
+  "title" | "description" | "type" | "photos"
 > {}
 
 export interface IListBugReportResponse extends IBugReport {}

@@ -127,8 +127,8 @@ export default function SettingsDrawer({
           <Stack w="100%" pt={4} pb={2} gap="sm">
             {settingsOptions
               .filter((option) => !option.adminOnly || user.role === "ADMIN")
-              .map((option) => (
-                <SettingsCard option={option} />
+              .map((option, index) => (
+                <SettingsCard key={index} option={option} />
               ))}
           </Stack>
         )}

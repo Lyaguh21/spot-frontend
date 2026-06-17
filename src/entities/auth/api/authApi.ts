@@ -36,7 +36,12 @@ export const authApi = baseApi.injectEndpoints({
         url: "/auth/logout",
         method: "POST",
       }),
-      invalidatesTags: [{ type: "User" }, { type: "Couple" }, { type: "Feed" }],
+      invalidatesTags: [
+        { type: "User" },
+        { type: "Couple" },
+        { type: "Feed" },
+        { type: "Admin" },
+      ],
     }),
 
     status: build.query<IStatusResponse, void>({

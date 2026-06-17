@@ -29,7 +29,7 @@ export default function BugReportPage() {
     try {
       await createBugReport({
         ...form.values,
-        photoUrl: "",
+        photos: undefined,
       }).unwrap();
       await showSuccess("Спасибо за помощь в улучшении нашего сервиса!");
     } catch (error) {

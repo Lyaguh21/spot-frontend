@@ -1,14 +1,6 @@
-import {
-  SpotButton,
-  SpotDrawer,
-  SpotGlassCard,
-} from "@/shared/ui";
+import { SpotButton, SpotDrawer, SpotGlassCard } from "@/shared/ui";
 import { Stack, Text, Box, Flex, Group } from "@mantine/core";
-import {
-  IconCopy,
-  IconCheck,
-  IconRefresh,
-} from "@tabler/icons-react";
+import { IconCopy, IconCheck, IconRefresh } from "@tabler/icons-react";
 import { useState, useRef, useEffect } from "react";
 import { SpotCodeInput } from "@/shared/ui";
 import {
@@ -16,7 +8,8 @@ import {
   useJoinCoupleMutation,
   useResetCoupleCodeMutation,
 } from "@/entities/couple";
-import { useNotifications } from "@/shared/lib";
+import { useAppSelector, useNotifications } from "@/shared/lib";
+import { selectUser } from "@/entities/user";
 export default function AddCoupleDrawer({
   opened,
   onClose,
@@ -24,9 +17,9 @@ export default function AddCoupleDrawer({
   opened: boolean;
   onClose: () => void;
 }) {
+  const user = useAppSelector(selectUser);
   const { showError, showSuccess } = useNotifications();
-
-  const { data } = useGetCoupleCodeQuery();
+  const { data, refetch } = useGetCoupleCodeQuery();
   const [resetCoupleCode] = useResetCoupleCodeMutation();
   const [joinCouple] = useJoinCoupleMutation();
 
@@ -41,6 +34,10 @@ export default function AddCoupleDrawer({
       contentRef.current.focus();
     }
   }, [opened]);
+
+  useEffect(() => {
+    refetch();
+  }, [user.id]);
 
   const handleCopyCode = async () => {
     try {
