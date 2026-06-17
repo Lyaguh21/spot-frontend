@@ -2,7 +2,6 @@ import { SpotButton, SpotGlassCard } from "@/shared/ui";
 import {
   Anchor,
   Avatar,
-  Badge,
   Group,
   SimpleGrid,
   Stack,
@@ -205,7 +204,14 @@ export default function AboutPage() {
                 );
               })}
             </Stack>
-            <SpotButton>Поддержать</SpotButton>
+            <Anchor
+              target="_blank"
+              rel="noreferrer"
+              href="https://www.donationalerts.com/r/spot_project"
+              w="100%"
+            >
+              <SpotButton fullWidth>Поддержать</SpotButton>
+            </Anchor>
           </Stack>
         </SpotGlassCard>
       </section>

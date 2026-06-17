@@ -13,6 +13,8 @@ import Follows from "@/pages/follows";
 import CoupleProfile from "@/pages/couple";
 import Onboarding from "@/pages/onboarding";
 import { OnboardingGuard } from "../guards/OnboardingGuard";
+import { AdminGuard } from "../guards/AdminGuard";
+import Admin from "@/pages/admin";
 
 const router = createBrowserRouter([
   {
@@ -28,6 +30,14 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <Feed />,
+      },
+      {
+        path: "/admin",
+        element: (
+          <AdminGuard>
+            <Admin />
+          </AdminGuard>
+        ),
       },
       {
         path: "/map",
