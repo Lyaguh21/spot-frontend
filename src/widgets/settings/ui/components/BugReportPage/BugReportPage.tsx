@@ -5,6 +5,7 @@ import {
 import { useNotifications } from "@/shared/lib";
 import { SpotButton, SpotSelect, SpotTextInput } from "@/shared/ui";
 import { SpotTextArea } from "@/shared/ui";
+import { SpotPhotoInput } from "@/widgets/spot-photo-input";
 import { Stack } from "@mantine/core";
 import { useForm } from "@mantine/form";
 
@@ -17,6 +18,7 @@ export default function BugReportPage() {
       title: "",
       description: "",
       type: "",
+      photos: [] as string[],
     },
     validate: {
       title: (value) => (value ? null : "Заполните название"),
@@ -29,7 +31,7 @@ export default function BugReportPage() {
     try {
       await createBugReport({
         ...form.values,
-        photos: undefined,
+        photos: form.values.photos.length > 0 ? form.values.photos : undefined,
       }).unwrap();
       await showSuccess("Спасибо за помощь в улучшении нашего сервиса!");
     } catch (error) {
@@ -67,6 +69,13 @@ export default function BugReportPage() {
           required
           key={form.key("type")}
           {...form.getInputProps("type")}
+        />
+        <SpotPhotoInput
+          multiple
+          title="Фото"
+          description="Добавьте скриншоты или перетащите их сюда"
+          value={form.values.photos}
+          onChange={(photos) => form.setFieldValue("photos", photos)}
         />
         <SpotButton size="lg" type="submit">
           Отправить

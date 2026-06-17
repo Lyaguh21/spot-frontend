@@ -8,7 +8,7 @@ import {
 import type { IListBugReportResponse } from "@/entities/admin";
 import { useNotifications } from "@/shared/lib";
 import { SpotActionIcon, SpotConfirmActionModal } from "@/shared/ui";
-import { ActionIcon, Group, Stack, Text, Title } from "@mantine/core";
+import { Group, Stack, Text, Title } from "@mantine/core";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./Admin.module.css";

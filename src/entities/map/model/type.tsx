@@ -182,7 +182,7 @@ export interface IMapMarker {
   isFavorite?: boolean;
   visitDate: string;
   address?: string;
-  photoURL?: string;
+  photos?: string[];
 }
 
 export interface IMapPlace {
@@ -196,8 +196,7 @@ export interface IMapPlaceVisits {
   visits: IMapMarker[];
 }
 
-export interface ICreateVisitRequest
-  extends Omit<IMapMarker, "lat" | "lng"> {
+export interface ICreateVisitRequest extends Omit<IMapMarker, "lat" | "lng"> {
   lat: number;
   lng: number;
 }

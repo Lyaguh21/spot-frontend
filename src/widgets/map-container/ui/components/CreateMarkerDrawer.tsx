@@ -16,6 +16,7 @@ import {
   SpotButton,
   SpotDrawer,
 } from "@/shared/ui";
+import { SpotPhotoInput } from "@/widgets/spot-photo-input";
 import {
   ActionIcon,
   Box,
@@ -41,7 +42,7 @@ type CreateMarkerFormValues = {
   lng: number;
   description: string;
   address?: string;
-  photoURL?: string;
+  photos: string[];
   coupleId?: string;
   ratings: ICreateVisitRequest["ratings"];
   visitDate: string;
@@ -92,7 +93,7 @@ const getInitialValues = (
   lat: marker?.lat ?? 0,
   lng: marker?.lng ?? 0,
   address: "",
-  photoURL: "",
+  photos: [],
   coupleId,
   description: marker?.description ?? "",
   ratings,
@@ -196,7 +197,7 @@ export default function CreateMarkerDrawer({
       lat: values.lat,
       lng: values.lng,
       address: values.address?.trim() || undefined,
-      photoURL: values.photoURL?.trim() || undefined,
+      photos: values.photos.length > 0 ? values.photos : undefined,
       coupleId:
         viewState.map.createMode === "couple" && user.coupleId
           ? String(user.coupleId)
@@ -222,6 +223,11 @@ export default function CreateMarkerDrawer({
     <SpotDrawer opened={opened} onClose={onClose} title="Добавить место">
       <Box component="form" onSubmit={form.onSubmit(handleSubmit)}>
         <Stack gap={18}>
+          <Divider
+            color="rgba(104, 132, 210, 0.16)"
+            label="Основные поля"
+            labelPosition="center"
+          />
           <Stack gap={8} style={{ overflow: "visible" }}>
             <Group justify="space-between" align="center">
               <Text c="#8ea2d4" size="xs" fw={700}>
@@ -347,11 +353,14 @@ export default function CreateMarkerDrawer({
             </SimpleGrid>
           </Stack>
 
-          <Divider
-            color="rgba(104, 132, 210, 0.16)"
-            label="Обязательные поля"
-            labelPosition="center"
+          <SpotPhotoInput
+            multiple
+            title="Фото"
+            description="Добавьте фото места или перетащите их сюда"
+            value={form.values.photos}
+            onChange={(photos) => form.setFieldValue("photos", photos)}
           />
+
           <TextInput
             label="Название места"
             placeholder="Например, Уютное кафе"
@@ -383,35 +392,6 @@ export default function CreateMarkerDrawer({
             styles={inputStyles}
             key={form.key("description")}
             {...form.getInputProps("description")}
-          />
-
-          <DatePickerInput
-            label="Дата визита"
-            styles={inputStyles}
-            key={form.key("visitDate")}
-            {...form.getInputProps("visitDate")}
-          />
-
-          <Divider
-            color="rgba(104, 132, 210, 0.16)"
-            label="Опциональные поля"
-            labelPosition="center"
-          />
-
-          <TextInput
-            label="Адрес"
-            placeholder="Москва, Крымский Вал, 9"
-            styles={inputStyles}
-            key={form.key("address")}
-            {...form.getInputProps("address")}
-          />
-
-          <TextInput
-            label="Ссылка"
-            placeholder="https://gorkypark.ru"
-            styles={inputStyles}
-            key={form.key("photoURL")}
-            {...form.getInputProps("photoURL")}
           />
 
           <SimpleGrid cols={{ base: 1, xs: 2 }} spacing={12}>
@@ -477,6 +457,27 @@ export default function CreateMarkerDrawer({
               );
             })}
           </SimpleGrid>
+
+          <Divider
+            color="rgba(104, 132, 210, 0.16)"
+            label="Дополнительные поля"
+            labelPosition="center"
+          />
+
+          <DatePickerInput
+            label="Дата визита"
+            styles={inputStyles}
+            key={form.key("visitDate")}
+            {...form.getInputProps("visitDate")}
+          />
+
+          <TextInput
+            label="Адрес"
+            placeholder="Москва, Крымский Вал, 9"
+            styles={inputStyles}
+            key={form.key("address")}
+            {...form.getInputProps("address")}
+          />
 
           <SpotButton
             size="lg"

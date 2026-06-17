@@ -1,6 +1,6 @@
 import type { IListBugReportResponse } from "@/entities/admin";
 import { SpotButton, SpotDrawer, SpotGlassCard } from "@/shared/ui";
-import { Badge, Group, Image, Stack, Text } from "@mantine/core";
+import { Badge, Group, Image, SimpleGrid, Stack, Text } from "@mantine/core";
 import { formatDate, getBugReportTypeLabel } from "../../lib/formatters";
 import styles from "../Admin.module.css";
 import EmptyState from "./EmptyState";
@@ -55,16 +55,21 @@ export default function BugReportDrawer({
             </Stack>
           </SpotGlassCard>
 
-          {report.photoUrl ? (
+          {report.photos?.length ? (
             <Stack gap={8}>
               <Text className={styles.drawerLabel}>Фото</Text>
-              <Image
-                className={styles.reportImage}
-                src={report.photoUrl}
-                alt={report.title}
-                radius="lg"
-                fit="cover"
-              />
+              <SimpleGrid cols={{ base: 2, xs: 3 }} spacing={8}>
+                {report.photos.map((photoUrl) => (
+                  <Image
+                    key={photoUrl}
+                    className={styles.reportImage}
+                    src={photoUrl}
+                    alt={report.title}
+                    radius="lg"
+                    fit="cover"
+                  />
+                ))}
+              </SimpleGrid>
             </Stack>
           ) : (
             <EmptyState>Фото не приложено</EmptyState>

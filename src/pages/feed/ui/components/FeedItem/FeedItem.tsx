@@ -26,7 +26,8 @@ export default function FeedItem({ item }: { item: IFeedItem }) {
     ? item.couple?.generatedName ||
       owners.map(({ name, username }) => name || username).join(" и ")
     : item.user?.name || item.user?.username || "Пользователь";
-  const showPhoto = Boolean(item.photoURL) && !imageFailed;
+  const previewPhoto = item.photos?.[0];
+  const showPhoto = Boolean(previewPhoto) && !imageFailed;
   const color = markersColors[item.color] ?? ["#7b2cff", "#22b5ff"];
   const averageRating =
     item.ratings.length > 0
@@ -94,7 +95,7 @@ export default function FeedItem({ item }: { item: IFeedItem }) {
 
           {showPhoto && (
             <img
-              src={item.photoURL}
+              src={previewPhoto}
               alt={item.title}
               className={styles.photo}
               onError={() => setImageFailed(true)}

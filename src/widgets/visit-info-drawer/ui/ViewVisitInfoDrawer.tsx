@@ -12,6 +12,7 @@ import {
   Badge,
   Box,
   Group,
+  Image,
   Rating,
   SimpleGrid,
   Stack,
@@ -235,6 +236,21 @@ export default function ViewVisitInfoDrawer({
               </Text>
             </Stack>
           )}
+
+          {selectedVisit.photos?.length ? (
+            <SimpleGrid cols={{ base: 2, xs: 3 }} spacing={8}>
+              {selectedVisit.photos.map((photoUrl) => (
+                <Image
+                  key={photoUrl}
+                  src={photoUrl}
+                  alt={selectedVisit.title}
+                  radius="lg"
+                  fit="cover"
+                  h={118}
+                />
+              ))}
+            </SimpleGrid>
+          ) : null}
 
           {selectedVisit.ratings.length > 1 && (
             <SpotGlassCard p={16}>

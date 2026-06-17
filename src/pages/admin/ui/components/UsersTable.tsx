@@ -1,11 +1,11 @@
 import type { IUserStatisticsResponse } from "@/entities/admin";
-import { SpotActionIcon, SpotButton } from "@/shared/ui";
+import { SpotActionIcon } from "@/shared/ui";
 import { ScrollArea, Skeleton, Table } from "@mantine/core";
 import { formatDate } from "../../lib/formatters";
 import styles from "../Admin.module.css";
 import EmptyState from "./EmptyState";
 import UserIdentity from "./UserIdentity";
-import { IconExternalLinkFilled, IconLink } from "@tabler/icons-react";
+import { IconExternalLinkFilled } from "@tabler/icons-react";
 
 export default function UsersTable({
   users,
