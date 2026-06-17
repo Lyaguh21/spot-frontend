@@ -1,28 +1,33 @@
 import { useLogoutMutation } from "@/entities/auth";
 import { userLogout } from "@/entities/user";
 import { useAppDispatch, useAppSelector } from "@/shared/lib";
-import { SpotConfirmActionModal, SpotDrawer, SpotGlassCard } from "@/shared/ui";
-import { Stack, Text, UnstyledButton, Group, ThemeIcon } from "@mantine/core";
+import {
+  SpotActionIcon,
+  SpotConfirmActionModal,
+  SpotDrawer,
+} from "@/shared/ui";
+import { Stack } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import {
   IconSchool,
   IconBug,
   IconLogout,
-  IconChevronRight,
   IconCode,
   IconUserCode,
+  IconArrowLeft,
 } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
-import styles from "./SettingsDrawer.module.css";
 import { selectUser } from "@/entities/user";
+import { useState } from "react";
+import { SettingsOption } from "../model/type";
+import SettingsCard from "./components/SettingsCard/SettingsCard";
+import BugReportPage from "./components/BugReportPage/BugReportPage";
+import AboutPage from "./components/AboutPage/AboutPage";
 
-type SettingsOption = {
-  title: string;
-  description: string;
-  icon: React.ReactNode;
-  danger?: boolean;
-  adminOnly?: boolean;
-  onClick: () => void;
+const DRAWER_TITLE = {
+  settings: "Настройки",
+  "bug-report": "Обратная связь",
+  about: "О проекте",
 };
 
 export default function SettingsDrawer({
@@ -32,6 +37,9 @@ export default function SettingsDrawer({
   opened: boolean;
   onClose: () => void;
 }) {
+  const [selectedOption, setSelectedOption] = useState<
+    "settings" | "bug-report" | "about"
+  >("settings");
   const user = useAppSelector(selectUser);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -55,23 +63,29 @@ export default function SettingsDrawer({
       onClick: openOnboarding,
     },
     {
-      title: "Пожаловаться на баг",
-      description: "Расскажите нам, что пошло не так",
+      title: "Обратная связь",
+      description: "Пожаловаться на баг или предложить идею",
       icon: <IconBug size={24} stroke={1.8} />,
-      onClick: () => {}, //todo реализовать
+      onClick: () => {
+        setSelectedOption("bug-report");
+      },
     },
     {
       title: "О проекте",
       description: "Информация о проекте и его разработчиках",
       icon: <IconCode size={24} stroke={1.8} />,
-      onClick: () => {}, //todo реализовать
+      onClick: () => {
+        setSelectedOption("about");
+      },
     },
     {
       title: "Админка",
       description: "Панель администратора",
       icon: <IconUserCode size={24} stroke={1.8} />,
       adminOnly: true,
-      onClick: () => {}, //todo реализовать
+      onClick: () => {
+        navigate("/admin");
+      },
     },
     {
       title: "Выйти из аккаунта",
@@ -99,47 +113,28 @@ export default function SettingsDrawer({
         onConfirm={handleLogout}
       />
 
-      <SpotDrawer title="Настройки" opened={opened} onClose={onClose}>
-        <Stack className={styles.options} gap="sm">
-          {settingsOptions
-            .filter((option) => !option.adminOnly || user.role === "ADMIN")
-            .map((option) => (
-              <SpotGlassCard
-                component={UnstyledButton}
-                className={`${styles.option} ${
-                  option.danger ? styles.danger : ""
-                }`}
-                isButton
-                key={option.title}
-                onClick={option.onClick}
-              >
-                <Group gap="md" wrap="nowrap">
-                  <ThemeIcon
-                    className={styles.icon}
-                    data-danger={option.danger || undefined}
-                    size={52}
-                    radius="xl"
-                    variant="transparent"
-                  >
-                    {option.icon}
-                  </ThemeIcon>
+      <SpotDrawer
+        title={DRAWER_TITLE[selectedOption]}
+        opened={opened}
+        onClose={onClose}
+      >
+        {selectedOption !== "settings" && (
+          <SpotActionIcon onClick={() => setSelectedOption("settings")}>
+            <IconArrowLeft />
+          </SpotActionIcon>
+        )}
+        {selectedOption === "settings" && (
+          <Stack w="100%" pt={4} pb={2} gap="sm">
+            {settingsOptions
+              .filter((option) => !option.adminOnly || user.role === "ADMIN")
+              .map((option) => (
+                <SettingsCard option={option} />
+              ))}
+          </Stack>
+        )}
 
-                  <Stack className={styles.copy} gap={2}>
-                    <Text className={styles.optionTitle}>{option.title}</Text>
-                    <Text className={styles.description}>
-                      {option.description}
-                    </Text>
-                  </Stack>
-
-                  <IconChevronRight
-                    className={styles.chevron}
-                    size={20}
-                    stroke={1.8}
-                  />
-                </Group>
-              </SpotGlassCard>
-            ))}
-        </Stack>
+        {selectedOption === "bug-report" && <BugReportPage />}
+        {selectedOption === "about" && <AboutPage />}
       </SpotDrawer>
     </>
   );

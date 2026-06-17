@@ -42,7 +42,8 @@ export default function TabBar() {
           close();
           navigate(getAuthRedirectPath());
         }}
-        question="Войдите в аккаунт что бы продолжить"
+        title="Войдите в аккаунт что бы продолжить"
+        question="Что бы получить доступ к этой странице, вам необходимо войти в аккаунт"
         confirmText="Войти"
       />
       <nav className={styles.wrapper}>

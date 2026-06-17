@@ -1,4 +1,4 @@
-import { SpotActionIcon } from "@/shared/ui";
+import { SpotActionIcon, SpotSkeletonLoader } from "@/shared/ui";
 import { Flex, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconEdit, IconArrowLeft, IconSettings } from "@tabler/icons-react";
@@ -69,8 +69,11 @@ export default function ProfileNavigation({
             <IconSettings />
           </SpotActionIcon>
         )}
-
-        <Text fz="lg">@{userData?.username}</Text>
+        {userData ? (
+          <Text fz="lg">@{userData.username}</Text>
+        ) : (
+          <SpotSkeletonLoader w={75} h={28} radius={999} />
+        )}
 
         {isOwnProfile && (
           <SpotActionIcon size={40} onClick={handleEditProfile}>

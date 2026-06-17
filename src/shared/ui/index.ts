@@ -10,3 +10,5 @@ export { default as SpotFloatingIndicator } from "./SpotFloatingIndicator/SpotFl
 export { default as SpotCodeInput } from "./SpotCodeInput/SpotCodeInput";
 export { default as SpotSkeletonLoader } from "./SpotSkeletonLoader/SpotSkeletonLoader";
 export { default as SpotAvatar } from "./SpotAvatar/SpotAvatar";
+export { default as SpotTextArea } from "./SpotTextArea/SpotTextArea";
+export { default as SpotSelect } from "./SpotSelect/SpotSelect";

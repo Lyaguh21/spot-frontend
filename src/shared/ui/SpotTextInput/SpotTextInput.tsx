@@ -1,7 +1,7 @@
 import { TextInput } from "@mantine/core";
 import styles from "./SpotTextInput.module.css";
 
-export default function SpotInput(
+export default function SpotTextInput(
   props: React.ComponentProps<typeof TextInput>,
 ) {
   return (
