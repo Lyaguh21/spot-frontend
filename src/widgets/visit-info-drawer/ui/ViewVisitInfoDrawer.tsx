@@ -7,12 +7,12 @@ import {
   SpotAvatar,
   SpotDrawer,
   SpotGlassCard,
+  SpotPhotoViewer,
 } from "@/shared/ui";
 import {
   Badge,
   Box,
   Group,
-  Image,
   Rating,
   SimpleGrid,
   Stack,
@@ -20,9 +20,8 @@ import {
 } from "@mantine/core";
 import {
   IconCalendar,
-  IconChevronLeft,
-  IconCurrentLocation,
   IconHeart,
+  IconMap,
   IconMapPin,
   IconPlus,
   IconStarFilled,
@@ -126,13 +125,14 @@ export default function ViewVisitInfoDrawer({
         focusVisit: visitCoordinates,
       },
     });
+    handleCloseVisitDrawer();
   };
 
   const createVisitButton =
     selectedPlace && canCreateVisit && onCreateVisit ? (
       <SpotActionIcon
         type="button"
-        size={42}
+        size={32}
         aria-label="Добавить новый визит в это место"
         title="Добавить новый визит"
         onClick={() => onCreateVisit(selectedPlace)}
@@ -149,42 +149,18 @@ export default function ViewVisitInfoDrawer({
     >
       {selectedVisit ? (
         <Stack gap="md">
-          {(canCreateVisit ||
-            (selectedPlace && selectedPlace.visits.length > 1)) && (
-            <Group justify="space-between" align="center">
-              {selectedPlace && selectedPlace.visits.length > 1 ? (
-                <button
-                  type="button"
-                  onClick={() => setSelectedVisit(null)}
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 6,
-                    padding: 0,
-                    color: "#b9c8ff",
-                    background: "transparent",
-                    border: 0,
-                    fontSize: 14,
-                    fontWeight: 700,
-                    cursor: "pointer",
-                  }}
-                >
-                  <IconChevronLeft size={18} />
-                  Все визиты
-                </button>
-              ) : (
-                <Stack gap={0}>
-                  <Text c="#eaf1ff" fz={14} fw={800}>
-                    Единственный визит
-                  </Text>
-                  <Text c="#8ea2d4" fz={11}>
-                    Добавить новое посещение этого места
-                  </Text>
-                </Stack>
-              )}
-              {createVisitButton}
-            </Group>
-          )}
+          <Group justify="space-between" align="center">
+            <Text c="#90a5df" fz={16}>
+              Добавить посещение в этом месте
+            </Text>
+            {createVisitButton}
+          </Group>
+          {selectedVisit.photos?.length ? (
+            <SpotPhotoViewer
+              photos={selectedVisit.photos}
+              alt={selectedVisit.title}
+            />
+          ) : null}
 
           <Stack gap={8}>
             <Group
@@ -193,32 +169,37 @@ export default function ViewVisitInfoDrawer({
               align="flex-start"
               wrap="nowrap"
             >
-              <Group gap="xs" align="center" wrap="nowrap">
-                <IconMapPin size={18} color="#b9c8ff" />
-                <Text c="#eaf1ff" fw={800} fz={32} lh={1.15}>
-                  {selectedVisit.title}
-                </Text>
-              </Group>
+              <Text c="#eaf1ff" fw={800} fz={32} lh={1.15}>
+                {selectedVisit.title}
+              </Text>
 
               {visitCoordinates && (
                 <SpotActionIcon
                   type="button"
-                  size={42}
                   aria-label="Показать место на карте друзей"
                   title="Показать на карте"
                   onClick={handleShowVisitOnMap}
                 >
-                  <IconCurrentLocation size={27} stroke={2.4} />
+                  <IconMap size={27} stroke={2.4} />
                 </SpotActionIcon>
               )}
             </Group>
 
-            <Group gap="xs">
-              <IconCalendar size={17} color="#90a5df" />
-              <Text c="#90a5df" fz={14}>
+            <Group gap="xs" align="end">
+              <IconCalendar size={18} color="#90a5df" />
+              <Text c="#90a5df" fz={16} lh={0.9}>
                 {formatVisitDate(selectedVisit.visitDate)}
               </Text>
             </Group>
+
+            {selectedPlace?.place.address && (
+              <Group gap="xs" align="end" wrap="nowrap">
+                <IconMapPin size={18} color="#b9c8ff" />
+                <Text c="#90a5df" fz={16} lh={0.9}>
+                  {selectedPlace?.place.address}
+                </Text>
+              </Group>
+            )}
           </Stack>
 
           {selectedVisit.description && (
@@ -237,84 +218,81 @@ export default function ViewVisitInfoDrawer({
             </Stack>
           )}
 
-          {selectedVisit.photos?.length ? (
-            <SimpleGrid cols={{ base: 2, xs: 3 }} spacing={8}>
-              {selectedVisit.photos.map((photoUrl) => (
-                <Image
-                  key={photoUrl}
-                  src={photoUrl}
-                  alt={selectedVisit.title}
-                  radius="lg"
-                  fit="cover"
-                  h={118}
-                />
-              ))}
-            </SimpleGrid>
-          ) : null}
-
-          {selectedVisit.ratings.length > 1 && (
-            <SpotGlassCard p={16}>
-              <Group justify="space-between" align="center">
-                <Stack gap={1}>
-                  <Text c="#8ea2d4" size="xs" fw={800} tt="uppercase">
-                    Общий рейтинг пары
-                  </Text>
-                  <Text c="#eaf1ff" size="sm">
-                    Среднее двух оценок
-                  </Text>
-                </Stack>
-                <Group gap={6}>
-                  <IconStarFilled size={22} color="#facc15" />
-                  <Text c="#f8fafc" fw={900} fz={24}>
-                    {formatRating(getAverageRating(selectedVisit.ratings) ?? 0)}
-                  </Text>
-                </Group>
-              </Group>
-            </SpotGlassCard>
-          )}
-
-          {selectedVisit.ratings.length <= 1 && (
-            <SimpleGrid cols={1} spacing={8}>
-              {selectedVisit.ratings.map((rating) => {
-                const participant = getParticipant(rating.nickname);
-
-                return (
-                  <SpotGlassCard key={rating.nickname} p={10}>
-                    <Stack gap={8} align="center">
-                      <Group w="100%" gap={7} wrap="nowrap">
-                        <SpotAvatar
-                          size={34}
-                          radius="xl"
-                          src={participant?.avatarUrl}
-                          alt={rating.nickname}
-                        >
-                          {rating.nickname.charAt(0).toUpperCase()}
-                        </SpotAvatar>
-                        <Stack gap={0} style={{ minWidth: 0 }}>
-                          <Text c="#eaf1ff" fz={12} fw={700} truncate>
-                            {participant?.name ?? rating.nickname}
-                          </Text>
-                          <Text c="#8ea2d4" fz={10} truncate>
-                            @{rating.nickname}
-                          </Text>
-                        </Stack>
-                      </Group>
-                      <Rating
-                        color="#facc15"
-                        size="md"
-                        fractions={4}
-                        value={rating.rating}
-                        readOnly
-                      />
-                      <Text c="#f8fafc" fw={900} fz={16}>
-                        {formatRating(rating.rating)}
+          <Stack gap={2}>
+            <Text c="#90a5df" fz={13} fw={800} tt="uppercase">
+              Описание
+            </Text>
+            <Stack gap="8">
+              {selectedVisit.ratings.length > 1 && (
+                <SpotGlassCard p={16}>
+                  <Group justify="space-between" align="center">
+                    <Stack gap={1}>
+                      <Text c="#8ea2d4" size="xs" fw={800} tt="uppercase">
+                        Общий рейтинг пары
+                      </Text>
+                      <Text c="#eaf1ff" size="sm">
+                        Среднее двух оценок
                       </Text>
                     </Stack>
-                  </SpotGlassCard>
-                );
-              })}
-            </SimpleGrid>
-          )}
+                    <Group gap={6}>
+                      <IconStarFilled size={22} color="#facc15" />
+                      <Text c="#f8fafc" fw={900} fz={24}>
+                        {formatRating(
+                          getAverageRating(selectedVisit.ratings) ?? 0,
+                        )}
+                      </Text>
+                    </Group>
+                  </Group>
+                </SpotGlassCard>
+              )}
+
+              {selectedVisit.ratings.length && (
+                <SimpleGrid
+                  cols={selectedVisit.ratings.length === 1 ? 1 : 2}
+                  spacing={8}
+                >
+                  {selectedVisit.ratings.map((rating) => {
+                    const participant = getParticipant(rating.nickname);
+
+                    return (
+                      <SpotGlassCard key={rating.nickname} p={10}>
+                        <Stack gap={8} align="center">
+                          <Group w="100%" gap={7} wrap="nowrap">
+                            <SpotAvatar
+                              size={34}
+                              radius="xl"
+                              src={participant?.avatarUrl}
+                              alt={rating.nickname}
+                            >
+                              {rating.nickname.charAt(0).toUpperCase()}
+                            </SpotAvatar>
+                            <Stack gap={0} style={{ minWidth: 0 }}>
+                              <Text c="#eaf1ff" fz={12} fw={700} truncate>
+                                {participant?.name ?? rating.nickname}
+                              </Text>
+                              <Text c="#8ea2d4" fz={10} truncate>
+                                @{rating.nickname}
+                              </Text>
+                            </Stack>
+                          </Group>
+                          <Rating
+                            color="#facc15"
+                            size="md"
+                            fractions={4}
+                            value={rating.rating}
+                            readOnly
+                          />
+                          <Text c="#f8fafc" fw={900} fz={16}>
+                            {formatRating(rating.rating)}
+                          </Text>
+                        </Stack>
+                      </SpotGlassCard>
+                    );
+                  })}
+                </SimpleGrid>
+              )}
+            </Stack>
+          </Stack>
 
           <Group gap="xs">
             {selectedVisit.isFavorite && (
@@ -326,6 +304,7 @@ export default function ViewVisitInfoDrawer({
         </Stack>
       ) : (
         <Stack gap="sm">
+          {}
           <Group justify="space-between" align="center">
             <Text c="#90a5df" fz={14}>
               {selectedPlace?.visits.length ?? 0} визита в этом месте
@@ -338,7 +317,7 @@ export default function ViewVisitInfoDrawer({
 
             return (
               <SpotGlassCard
-                key={`${visit.id ?? visit.visitDate}-${index}`}
+                key={`${visit.title ?? visit.visitDate}-${index}`}
                 isButton
                 role="button"
                 tabIndex={0}
@@ -356,7 +335,12 @@ export default function ViewVisitInfoDrawer({
                   color: "#eaf1ff",
                 }}
               >
-                <Group justify="space-between" align="flex-start" gap="md">
+                <Group
+                  justify="space-between"
+                  wrap="nowrap"
+                  align="flex-start"
+                  gap="md"
+                >
                   <Box>
                     <Text fw={800} fz={16} lh={1.2}>
                       {visit.title}

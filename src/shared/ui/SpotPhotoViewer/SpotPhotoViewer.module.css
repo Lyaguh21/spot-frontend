@@ -1,0 +1,146 @@
+.root {
+  width: 100%;
+  display: grid;
+  gap: 8px;
+  padding: 8px;
+  overflow: hidden;
+  border-radius: 18px;
+  background: rgba(7, 10, 15, 0.86);
+  border: 1px solid rgba(136, 146, 164, 0.26);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.04),
+    0 18px 44px rgba(0, 0, 0, 0.28);
+}
+
+.root[data-layout="single"] {
+  aspect-ratio: 1.82;
+  grid-template-columns: 1fr;
+}
+
+.root[data-layout="double"],
+.root[data-layout="triple"] {
+  aspect-ratio: 2.05;
+  grid-template-columns: minmax(0, 1.92fr) minmax(104px, 1fr);
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+}
+
+.photoButton {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+  color: #f6f8ff;
+  background: #101722;
+  border: 0;
+  border-radius: 12px;
+  cursor: pointer;
+  isolation: isolate;
+}
+
+.photoButton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.1), transparent 28%),
+    linear-gradient(0deg, rgba(0, 0, 0, 0.18), transparent 48%);
+  opacity: 0.68;
+  transition: opacity 180ms ease;
+}
+
+.photoButton[data-position="hero"] {
+  grid-row: 1 / -1;
+}
+
+.root[data-layout="single"] .photoButton[data-position="hero"] {
+  grid-row: auto;
+}
+
+.root[data-layout="double"] .photoButton[data-position="top"] {
+  grid-row: 1 / -1;
+}
+
+.photo {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  transform: scale(1.01);
+  transition:
+    transform 220ms ease,
+    filter 220ms ease;
+}
+
+.photoButton[data-with-overlay] .photo {
+  filter: blur(5px) brightness(0.62) saturate(0.82);
+  transform: scale(1.08);
+}
+
+.photoButton:hover .photo {
+  filter: saturate(1.08) contrast(1.04);
+  transform: scale(1.045);
+}
+
+.photoButton[data-with-overlay]:hover .photo {
+  filter: blur(5px) brightness(0.68) saturate(0.88);
+  transform: scale(1.1);
+}
+
+.photoButton:hover::after {
+  opacity: 0.42;
+}
+
+.photoButton:focus-visible {
+  z-index: 2;
+  outline: 2px solid rgba(178, 190, 255, 0.92);
+  outline-offset: -4px;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  flex-direction: column;
+  gap: 8px;
+  color: #f8fbff;
+  background: rgba(4, 8, 14, 0.2);
+  text-shadow: 0 8px 24px rgba(0, 0, 0, 0.54);
+}
+
+.overlayCount {
+  color: inherit;
+  font-size: clamp(28px, 7vw, 44px);
+  font-weight: 900;
+  line-height: 0.9;
+  letter-spacing: 0;
+}
+
+.overlayIcon {
+  color: rgba(248, 251, 255, 0.86);
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.42));
+}
+
+@media (max-width: 520px) {
+  .root {
+    gap: 6px;
+    padding: 6px;
+    border-radius: 15px;
+  }
+
+  .root[data-layout="double"],
+  .root[data-layout="triple"] {
+    aspect-ratio: 1.42;
+    grid-template-columns: minmax(0, 1.42fr) minmax(82px, 0.9fr);
+  }
+
+  .root[data-layout="single"] {
+    aspect-ratio: 1.28;
+  }
+
+  .photoButton {
+    border-radius: 10px;
+  }
+}

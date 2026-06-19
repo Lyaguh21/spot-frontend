@@ -159,6 +159,10 @@
   width: 100%;
 }
 
+.progress :global(.mantine-Progress-section) {
+  transition: width 120ms linear;
+}
+
 .rowAction {
   flex: 0 0 auto;
   color: rgba(194, 205, 234, 0.72);

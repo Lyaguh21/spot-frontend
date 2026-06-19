@@ -63,6 +63,7 @@ type PhotoItem = {
   url?: string;
   name: string;
   size?: number;
+  progress?: number;
   status: "uploaded" | "uploading" | "error";
   isLocal?: boolean;
 };
@@ -170,6 +171,38 @@ export default function SpotPhotoInput({
     }
   }, [value]);
 
+  useEffect(() => {
+    if (uploadingItems.length === 0) {
+      return;
+    }
+
+    const progressInterval = window.setInterval(() => {
+      setItems((current) =>
+        current.map((item) => {
+          if (item.status !== "uploading") {
+            return item;
+          }
+
+          const currentProgress = item.progress ?? 0;
+
+          if (currentProgress >= 99) {
+            return item;
+          }
+
+          const step =
+            currentProgress < 70 ? 7 : currentProgress < 90 ? 3 : 1;
+
+          return {
+            ...item,
+            progress: Math.min(99, currentProgress + step),
+          };
+        }),
+      );
+    }, 120);
+
+    return () => window.clearInterval(progressInterval);
+  }, [uploadingItems.length]);
+
   useEffect(() => () => revokeLocalPreviews(), []);
 
   const commitValue = (nextValue: string | string[] | null) => {
@@ -261,6 +294,7 @@ export default function SpotPhotoInput({
         id: getFileId(file),
         isLocal: true,
         name: file.name,
+        progress: 1,
         size: file.size,
         src,
         status: "uploading" as const,
@@ -448,8 +482,7 @@ export default function SpotPhotoInput({
                   </Text>
                   <Progress
                     className={styles.progress}
-                    value={item.status === "error" ? 100 : 66}
-                    animated={item.status !== "error"}
+                    value={item.status === "error" ? 100 : item.progress ?? 0}
                     color={item.status === "error" ? "red" : "violet"}
                     size={5}
                   />

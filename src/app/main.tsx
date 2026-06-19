@@ -2,6 +2,7 @@ import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
 import "@mantine/dates/styles.css";
 import "maplibre-gl/dist/maplibre-gl.css";
+import "@mantine-bites/lightbox/styles.css";
 
 import { MantineProvider } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";

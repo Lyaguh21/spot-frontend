@@ -189,11 +189,25 @@ export interface IMapPlace {
   title: string;
   lat: number;
   lng: number;
+  address?: string;
 }
 
 export interface IMapPlaceVisits {
   place: IMapPlace;
-  visits: IMapMarker[];
+  visits: Pick<
+    IMapMarker,
+    | "externalId"
+    | "ownerType"
+    | "coupleId"
+    | "title"
+    | "description"
+    | "ratings"
+    | "isFavorite"
+    | "photos"
+    | "icon"
+    | "color"
+    | "visitDate"
+  >[];
 }
 
 export interface ICreateVisitRequest extends Omit<IMapMarker, "lat" | "lng"> {

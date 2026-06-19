@@ -58,7 +58,7 @@ export default function SpotMarker({
       setIsCreateMenuMounted(true);
       showTimeoutId = window.setTimeout(() => {
         setIsCreateMenuVisible(true);
-      }, 1000);
+      }, 500);
     }
 
     return () => {

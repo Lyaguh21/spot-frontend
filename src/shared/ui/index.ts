@@ -12,3 +12,4 @@ export { default as SpotSkeletonLoader } from "./SpotSkeletonLoader/SpotSkeleton
 export { default as SpotAvatar } from "./SpotAvatar/SpotAvatar";
 export { default as SpotTextArea } from "./SpotTextArea/SpotTextArea";
 export { default as SpotSelect } from "./SpotSelect/SpotSelect";
+export { default as SpotPhotoViewer } from "./SpotPhotoViewer/SpotPhotoViewer";
