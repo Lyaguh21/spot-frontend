@@ -9,7 +9,13 @@ import { SpotPhotoInput } from "@/widgets/spot-photo-input";
 import { Stack } from "@mantine/core";
 import { useForm } from "@mantine/form";
 
-export default function BugReportPage() {
+export default function BugReportPage({
+  onClose,
+  setSelectedOption,
+}: {
+  onClose: () => void;
+  setSelectedOption: (option: "settings" | "bug-report" | "about") => void;
+}) {
   const { showError, showSuccess } = useNotifications();
   const [createBugReport] = useCreateBugReportMutation();
 
@@ -36,6 +42,9 @@ export default function BugReportPage() {
       await showSuccess("Спасибо за помощь в улучшении нашего сервиса!");
     } catch (error) {
       showError("Что-то пошло не так");
+    } finally {
+      onClose();
+      setSelectedOption("settings");
     }
   };
 
@@ -72,6 +81,7 @@ export default function BugReportPage() {
         />
         <SpotPhotoInput
           multiple
+          maxPhoto={3}
           title="Фото"
           description="Добавьте скриншоты или перетащите их сюда"
           value={form.values.photos}

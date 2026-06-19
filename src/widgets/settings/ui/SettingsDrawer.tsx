@@ -116,7 +116,10 @@ export default function SettingsDrawer({
       <SpotDrawer
         title={DRAWER_TITLE[selectedOption]}
         opened={opened}
-        onClose={onClose}
+        onClose={() => {
+          onClose();
+          setSelectedOption("settings");
+        }}
       >
         {selectedOption !== "settings" && (
           <SpotActionIcon onClick={() => setSelectedOption("settings")}>
@@ -133,7 +136,12 @@ export default function SettingsDrawer({
           </Stack>
         )}
 
-        {selectedOption === "bug-report" && <BugReportPage />}
+        {selectedOption === "bug-report" && (
+          <BugReportPage
+            onClose={onClose}
+            setSelectedOption={setSelectedOption}
+          />
+        )}
         {selectedOption === "about" && <AboutPage />}
       </SpotDrawer>
     </>

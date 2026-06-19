@@ -1,5 +1,12 @@
 import { useUploadPhotos } from "@/entities/img";
-import { ActionIcon, Button, Group, Progress, Stack, Text } from "@mantine/core";
+import {
+  ActionIcon,
+  Button,
+  Group,
+  Progress,
+  Stack,
+  Text,
+} from "@mantine/core";
 import {
   IconCheck,
   IconCloudUpload,
@@ -32,6 +39,7 @@ type BaseProps = {
 
 export type SpotPhotoInputSingleProps = BaseProps & {
   multiple?: false;
+  maxPhoto?: never;
   value?: string | null;
   defaultValue?: string | null;
   onChange?: (value: string | null) => void;
@@ -39,6 +47,7 @@ export type SpotPhotoInputSingleProps = BaseProps & {
 
 export type SpotPhotoInputMultipleProps = BaseProps & {
   multiple: true;
+  maxPhoto?: number;
   value?: string[];
   defaultValue?: string[];
   onChange?: (value: string[]) => void;
@@ -109,6 +118,7 @@ export default function SpotPhotoInput({
   disabled,
   doneText = "Готово",
   error,
+  maxPhoto,
   maxSizeMb = DEFAULT_MAX_SIZE_MB,
   multiple = false,
   onChange,
@@ -135,10 +145,17 @@ export default function SpotPhotoInput({
   const uploadedItems = items.filter((item) => item.status === "uploaded");
   const uploadingItems = items.filter((item) => item.status === "uploading");
   const hasPhotos = items.length > 0;
+  const maxPhotoLimit =
+    multiple && typeof maxPhoto === "number"
+      ? Math.max(0, maxPhoto)
+      : undefined;
+  const maxPhotoReached =
+    maxPhotoLimit !== undefined && uploadedItems.length >= maxPhotoLimit;
   const isSingleUploaded = !multiple && uploadedItems.length > 0;
-  const inputDisabled = disabled || isLoading;
+  const inputDisabled = disabled || isLoading || maxPhotoReached;
   const helperText =
-    acceptHint ?? `Поддерживаются JPG, PNG, WEBP. Максимальный размер — ${maxSizeMb} МБ`;
+    acceptHint ??
+    `Поддерживаются JPG, PNG, WEBP. Максимальный размер — ${maxSizeMb} МБ`;
 
   const revokeLocalPreviews = () => {
     localPreviewUrlsRef.current.forEach((previewUrl) => {
@@ -195,7 +212,7 @@ export default function SpotPhotoInput({
         .filter((item) => item.status === "uploaded" && item.url)
         .map((item) => item.url as string);
 
-      commitValue(multiple ? nextValue : nextValue[0] ?? null);
+      commitValue(multiple ? nextValue : (nextValue[0] ?? null));
 
       return nextItems;
     });
@@ -203,20 +220,36 @@ export default function SpotPhotoInput({
 
   const validateFiles = (files: File[]) => {
     const maxSize = maxSizeMb * 1024 * 1024;
+    const photoSlots =
+      maxPhotoLimit === undefined
+        ? undefined
+        : Math.max(0, maxPhotoLimit - uploadedItems.length);
     const validFiles = files.filter((file) => {
-      const isImage = accept.includes("image") ? file.type.startsWith("image/") : true;
+      const isImage = accept.includes("image")
+        ? file.type.startsWith("image/")
+        : true;
       const fitsSize = file.size <= maxSize;
 
       return isImage && fitsSize;
     });
 
+    const limitedFiles = multiple
+      ? validFiles.slice(0, photoSlots ?? validFiles.length)
+      : validFiles.slice(0, 1);
+
     if (validFiles.length !== files.length) {
       setLocalError(`Можно загрузить только изображения до ${maxSizeMb} МБ`);
+    } else if (
+      multiple &&
+      maxPhotoLimit !== undefined &&
+      limitedFiles.length !== validFiles.length
+    ) {
+      setLocalError(`Можно загрузить не более ${maxPhotoLimit} фото`);
     } else {
       setLocalError(null);
     }
 
-    return multiple ? validFiles : validFiles.slice(0, 1);
+    return limitedFiles;
   };
 
   const createUploadingItems = (files: File[]) =>
@@ -244,7 +277,9 @@ export default function SpotPhotoInput({
 
     const uploading = createUploadingItems(files);
     const baseItems = multiple ? items : [];
-    const nextUploadingItems = multiple ? [...baseItems, ...uploading] : uploading;
+    const nextUploadingItems = multiple
+      ? [...baseItems, ...uploading]
+      : uploading;
 
     setItems(nextUploadingItems);
 
@@ -266,7 +301,7 @@ export default function SpotPhotoInput({
         .map((item) => item.url as string);
 
       setItems(nextItems);
-      commitValue(multiple ? nextValue : nextValue[0] ?? null);
+      commitValue(multiple ? nextValue : (nextValue[0] ?? null));
       revokeLocalPreviews();
     } catch (caughtError) {
       setItems((current) =>
@@ -328,7 +363,9 @@ export default function SpotPhotoInput({
         }
       }}
     >
-      {mode === "empty" && <IconCloudUpload className={styles.cloudIcon} size={72} stroke={1.7} />}
+      {mode === "empty" && (
+        <IconCloudUpload className={styles.cloudIcon} size={72} stroke={1.7} />
+      )}
       {mode === "empty" && (
         <Stack gap={4} align="center">
           <Text className={styles.dropTitle}>Перетащите фото сюда</Text>
@@ -339,6 +376,7 @@ export default function SpotPhotoInput({
       )}
       <Button
         className={styles.pickButton}
+        disabled={inputDisabled}
         leftSection={<IconPhoto size={20} />}
         onClick={(event) => {
           event.stopPropagation();
@@ -347,7 +385,11 @@ export default function SpotPhotoInput({
         type="button"
         variant="transparent"
       >
-        {mode === "replace" ? replaceText : mode === "add" ? addText : chooseText}
+        {mode === "replace"
+          ? replaceText
+          : mode === "add"
+            ? addText
+            : chooseText}
       </Button>
     </div>
   );
@@ -381,13 +423,24 @@ export default function SpotPhotoInput({
           <Text className={styles.title}>Загрузка...</Text>
           <Stack gap={12}>
             {uploadingItems.map((item) => (
-              <Group key={item.id} className={styles.uploadRow} gap={14} wrap="nowrap">
-                <img className={styles.uploadThumb} src={item.src} alt={item.name} />
+              <Group
+                key={item.id}
+                className={styles.uploadRow}
+                gap={14}
+                wrap="nowrap"
+              >
+                <img
+                  className={styles.uploadThumb}
+                  src={item.src}
+                  alt={item.name}
+                />
                 <Stack gap={2} className={styles.fileInfo}>
                   <Text className={styles.fileName} truncate>
                     {item.name}
                   </Text>
-                  <Text className={styles.fileMeta}>{formatFileSize(item.size)}</Text>
+                  <Text className={styles.fileMeta}>
+                    {formatFileSize(item.size)}
+                  </Text>
                 </Stack>
                 <Stack gap={8} className={styles.progressCell}>
                   <Text className={styles.progressText}>
@@ -419,8 +472,14 @@ export default function SpotPhotoInput({
       {hasPhotos && uploadedItems.length > 0 && multiple && (
         <Stack gap={20}>
           <Group justify="space-between" wrap="nowrap">
-            <Text className={styles.title}>Выбрано {uploadedItems.length} фото</Text>
-            <button className={styles.linkButton} onClick={clearAll} type="button">
+            <Text className={styles.title}>
+              Выбрано {uploadedItems.length} фото
+            </Text>
+            <button
+              className={styles.linkButton}
+              onClick={clearAll}
+              type="button"
+            >
               {clearText}
             </button>
           </Group>
@@ -446,6 +505,7 @@ export default function SpotPhotoInput({
           <Group className={styles.actions} justify="space-between">
             <Button
               className={styles.secondaryButton}
+              disabled={inputDisabled}
               leftSection={<IconPhotoPlus size={20} />}
               onClick={openFileDialog}
               type="button"
@@ -454,7 +514,11 @@ export default function SpotPhotoInput({
               {addText}
             </Button>
             {withDoneButton && (
-              <Button className={styles.doneButton} onClick={onDone} type="button">
+              <Button
+                className={styles.doneButton}
+                onClick={onDone}
+                type="button"
+              >
                 {doneText}
               </Button>
             )}
@@ -465,20 +529,39 @@ export default function SpotPhotoInput({
       {isSingleUploaded && (
         <Stack gap={18}>
           <Group justify="space-between" wrap="nowrap">
-            <Text className={styles.title}>{title === "Загрузить фото" ? "Фото" : title}</Text>
-            <button className={styles.deleteButton} onClick={clearAll} type="button">
+            <Text className={styles.title}>
+              {title === "Загрузить фото" ? "Фото" : title}
+            </Text>
+            <button
+              className={styles.deleteButton}
+              onClick={clearAll}
+              type="button"
+            >
               Удалить
             </button>
           </Group>
 
           {uploadedItems.map((item) => (
-            <Group key={item.id} className={styles.singleRow} gap={14} wrap="nowrap">
-              <img className={styles.uploadThumb} src={item.src} alt={item.name} />
+            <Group
+              key={item.id}
+              className={styles.singleRow}
+              gap={14}
+              wrap="nowrap"
+            >
+              <img
+                className={styles.uploadThumb}
+                src={item.src}
+                alt={item.name}
+              />
               <Stack gap={2} className={styles.fileInfo}>
                 <Text className={styles.fileName} truncate>
                   {item.name}
                 </Text>
-                {item.size && <Text className={styles.fileMeta}>{formatFileSize(item.size)}</Text>}
+                {item.size && (
+                  <Text className={styles.fileMeta}>
+                    {formatFileSize(item.size)}
+                  </Text>
+                )}
               </Stack>
               <div className={styles.successIcon}>
                 <IconCheck size={22} />

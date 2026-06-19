@@ -355,6 +355,7 @@ export default function CreateMarkerDrawer({
 
           <SpotPhotoInput
             multiple
+            maxPhoto={3}
             title="Фото"
             description="Добавьте фото места или перетащите их сюда"
             value={form.values.photos}

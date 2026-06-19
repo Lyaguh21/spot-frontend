@@ -9,6 +9,7 @@ import {
 } from "@/entities/user";
 import styles from "./EditProfileDrawer.module.css";
 import { SpotPhotoInput } from "@/widgets/spot-photo-input";
+import { useNotifications } from "@/shared/lib";
 
 type EditProfileFormValues = {
   name: string;
@@ -31,6 +32,7 @@ export default function EditProfileDrawer({
   opened: boolean;
   onClose: () => void;
 }) {
+  const { showSuccess, showError } = useNotifications();
   const { data: profile } = useGetProfileQuery();
   const [updateProfile, { isLoading }] = useUpdateProfileMutation();
   const form = useForm<EditProfileFormValues>({
@@ -63,8 +65,12 @@ export default function EditProfileDrawer({
 
     try {
       await updateProfile(payload).unwrap();
+      showSuccess("Профиль успешно обновлен");
+    } catch (err: any) {
+      showError(err?.data?.message || "Не удалось обновить профиль");
+    } finally {
       onClose();
-    } catch {}
+    }
   };
 
   return (
@@ -78,6 +84,7 @@ export default function EditProfileDrawer({
         <Stack gap="md">
           <SpotPhotoInput
             title="Аватар"
+            maxSizeMb={5}
             description="Выберите аватарку или перетащите ее сюда"
             value={form.values.avatarUrl}
             onChange={(photo) => form.setFieldValue("avatarUrl", photo ?? "")}
