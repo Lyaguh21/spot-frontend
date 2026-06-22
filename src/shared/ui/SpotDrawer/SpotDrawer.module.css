@@ -110,7 +110,7 @@
 .topRow {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+
   min-height: 34px;
   gap: 12px;
 }

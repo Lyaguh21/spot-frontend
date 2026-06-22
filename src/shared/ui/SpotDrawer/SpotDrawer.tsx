@@ -215,7 +215,13 @@ export default function SpotDrawer({
           onPointerCancel={handlePointerCancel}
         >
           <div className={styles.handle} />
-          <div className={styles.topRow}>
+          <div
+            className={styles.topRow}
+            style={{
+              justifyContent:
+                topRowChildren || title ? "space-between" : "flex-end",
+            }}
+          >
             {title ? (
               <h2 className={styles.title} id={titleId}>
                 {title}

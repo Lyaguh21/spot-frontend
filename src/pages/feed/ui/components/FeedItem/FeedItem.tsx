@@ -1,5 +1,5 @@
 import { IFeedItem } from "@/entities/feed";
-import { markersColors, markersIcons } from "@/entities/map";
+import { IMapMarker, markersColors, markersIcons } from "@/entities/map";
 import { formatRelativeTime } from "@/shared/lib";
 import { SpotAvatar, SpotButton, SpotSkeletonLoader } from "@/shared/ui";
 import ViewVisitInfoDrawer from "@/widgets/visit-info-drawer";
@@ -14,7 +14,8 @@ const formatRating = (rating: number) =>
 
 export default function FeedItem({ item }: { item: IFeedItem }) {
   const navigate = useNavigate();
-  const [detailsOpened, setDetailsOpened] = useState(false);
+  const [selectedDetailsVisit, setSelectedDetailsVisit] =
+    useState<IMapMarker | null>(null);
   const [imageFailed, setImageFailed] = useState(false);
   const isCouple = item.ownerType === "COUPLE" && Boolean(item.couple);
   const owners = isCouple
@@ -37,6 +38,16 @@ export default function FeedItem({ item }: { item: IFeedItem }) {
 
   const getRatingOwner = (nickname: string) =>
     owners.find((owner) => owner.username === nickname);
+
+  const openDetails = () => {
+    setSelectedDetailsVisit({
+      ...item,
+      description: item.description ?? "",
+      address: item.place.address ?? item.place.title,
+      lat: item.place.lat,
+      lng: item.place.lng,
+    });
+  };
 
   return (
     <>
@@ -110,7 +121,7 @@ export default function FeedItem({ item }: { item: IFeedItem }) {
             kind="glass"
             size="xs"
             radius="xl"
-            onClick={() => setDetailsOpened(true)}
+            onClick={openDetails}
           >
             Подробнее
           </SpotButton>
@@ -169,19 +180,9 @@ export default function FeedItem({ item }: { item: IFeedItem }) {
 
       <ViewVisitInfoDrawer
         selectedPlace={null}
-        selectedVisit={
-          detailsOpened
-            ? {
-                ...item,
-                description: item.description ?? "",
-                address: item.place.address ?? item.place.title,
-                lat: item.place.lat,
-                lng: item.place.lng,
-              }
-            : null
-        }
-        handleCloseVisitDrawer={() => setDetailsOpened(false)}
-        setSelectedVisit={() => setDetailsOpened(false)}
+        selectedVisit={selectedDetailsVisit}
+        handleCloseVisitDrawer={() => setSelectedDetailsVisit(null)}
+        setSelectedVisit={setSelectedDetailsVisit}
         allowCreate={false}
         participants={owners}
       />

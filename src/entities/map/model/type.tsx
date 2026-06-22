@@ -210,6 +210,9 @@ export interface IMapPlaceVisits {
     | "photos"
     | "icon"
     | "color"
+    | "lat"
+    | "lng"
+    | "address"
     | "visitDate"
     | "status"
   >[];

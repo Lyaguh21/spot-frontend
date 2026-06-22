@@ -214,6 +214,22 @@ export default function MapContainer({
     setSelectedVisit(null);
   };
 
+  const handleVisitUpdated = (updatedVisit: IMapMarker) => {
+    setSelectedPlace((currentPlace) => {
+      if (!currentPlace || !updatedVisit.id) {
+        return currentPlace;
+      }
+
+      return {
+        ...currentPlace,
+        visits: currentPlace.visits.map((visit) =>
+          visit.id === updatedVisit.id ? updatedVisit : visit,
+        ),
+      };
+    });
+    setSelectedVisit(updatedVisit);
+  };
+
   return (
     <>
       {!visited && (
@@ -232,6 +248,7 @@ export default function MapContainer({
         setSelectedVisit={setSelectedVisit}
         onCreateVisit={handleCreateVisitAtPlace}
         onVisitDeleted={handleVisitDeleted}
+        onVisitUpdated={handleVisitUpdated}
         allowCreate={!visited}
       />
 

@@ -118,6 +118,7 @@ export const mapApi = baseApi.injectEndpoints({
       invalidatesTags: [
         { type: "User", id: "VISITS" },
         { type: "Couple", id: "VISITS" },
+        { type: "Feed", id: "LIST" },
       ],
     }),
 
