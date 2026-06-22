@@ -96,9 +96,9 @@ export default function ViewVisitInfoDrawer({
           visitHasRatingFrom(user.username) ||
           visitHasRatingFrom(user.partner?.username)))),
   );
-  const canAddVisitFromSelectedPlace = Boolean(
-    selectedPlace && canCreateVisit && onCreateVisit,
-  );
+  // const canAddVisitFromSelectedPlace = Boolean(
+  //   selectedPlace && canCreateVisit && onCreateVisit,
+  // );
 
   useEffect(() => {
     if (!drawerOpened) {
@@ -196,7 +196,6 @@ export default function ViewVisitInfoDrawer({
         <Menu.Item
           leftSection={<IconPlus size={18} />}
           onClick={handleAddVisit}
-          disabled={!canAddVisitFromSelectedPlace}
         >
           Добавить посещение
         </Menu.Item>

@@ -166,9 +166,31 @@ export const markersIcons: { [key: string]: ReactNode } = {
 
 export type visitStatus = "PLANNED" | "VISITED";
 
+export type IVisitAuthor = {
+  id?: number | string;
+  username: string;
+  name?: string;
+  avatarUrl?: string;
+};
+
+export type IVisitCoupleMember = IVisitAuthor | { user: IVisitAuthor };
+
+export type IVisitCoupleAuthor = {
+  id?: number | string;
+  generatedName?: string;
+  members?: IVisitCoupleMember[];
+};
+
 export interface IMapMarker {
   id?: string;
   ownerType: "USER" | "COUPLE";
+  authors?: IVisitAuthor[] | null;
+  author?: IVisitAuthor | null;
+  user?: IVisitAuthor | null;
+  createdBy?: IVisitAuthor | null;
+  creator?: IVisitAuthor | null;
+  owner?: IVisitAuthor | null;
+  couple?: IVisitCoupleAuthor | null;
   externalId?: string;
   title: string;
   description: string;
@@ -202,6 +224,13 @@ export interface IMapPlaceVisits {
     | "id"
     | "externalId"
     | "ownerType"
+    | "authors"
+    | "author"
+    | "user"
+    | "createdBy"
+    | "creator"
+    | "owner"
+    | "couple"
     | "coupleId"
     | "title"
     | "description"
@@ -218,9 +247,11 @@ export interface IMapPlaceVisits {
   >[];
 }
 
-export interface ICreateVisitRequest extends Omit<IMapMarker, "lat" | "lng"> {
-  lat: number;
-  lng: number;
-}
+export interface ICreateVisitRequest extends IMapMarker {}
+
+export interface IUpdateVisitRequest extends Omit<
+  IMapMarker,
+  "lat" | "lng" | "ownerType"
+> {}
 
 export type IVisitsResponse = IMapPlaceVisits[];

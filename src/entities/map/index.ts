@@ -7,11 +7,13 @@ export {
 export {
   useCreateVisitMutation,
   useGetVisitsByCoupleIdQuery,
+  useGetFollowingVisitsQuery,
   useUpdateVisitMutation,
   useDeleteVisitMutation,
   useGetVisitsByUsernameQuery,
 } from "./api/mapApi";
 export type {
+  IUpdateVisitRequest,
   visitStatus,
   IMapMarker,
   IMapPlace,
@@ -19,5 +21,7 @@ export type {
   MarkerColorKey,
   MarkerIconKey,
   ICreateVisitRequest,
+  IVisitAuthor,
+  IVisitCoupleMember,
   IVisitsResponse,
 } from "./model/type";

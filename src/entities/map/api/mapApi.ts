@@ -3,7 +3,10 @@ import {
   ICreateVisitRequest,
   IMapMarker,
   IMapPlaceVisits,
+  IVisitCoupleAuthor,
+  IVisitAuthor,
   IVisitsResponse,
+  IUpdateVisitRequest,
 } from "../model/type";
 
 type VisitsApiResponse =
@@ -12,14 +15,126 @@ type VisitsApiResponse =
   | {
       visits?: IMapMarker[] | IMapPlaceVisits[];
       map?: IMapPlaceVisits[];
-      data?: IMapMarker[] | IMapPlaceVisits[];
+      data?: IMapMarker[] | IMapPlaceVisits[] | FollowingVisitsItem[];
       places?: IMapPlaceVisits[];
-      items?: IMapMarker[] | IMapPlaceVisits[];
+      items?: IMapMarker[] | IMapPlaceVisits[] | FollowingVisitsItem[];
     };
 
+type FollowingVisitsItem = {
+  id?: number | string;
+  type?: string;
+  username?: string;
+  name?: string;
+  avatarUrl?: string;
+  authors?: IVisitAuthor[] | null;
+  author?: IVisitAuthor | null;
+  user?: IVisitAuthor | null;
+  createdBy?: IVisitAuthor | null;
+  creator?: IVisitAuthor | null;
+  owner?: IVisitAuthor | null;
+  couple?: IVisitCoupleAuthor | null;
+  members?: IVisitCoupleAuthor["members"];
+  generatedName?: string;
+  visits?: IMapMarker[] | IMapPlaceVisits[];
+  map?: IMapPlaceVisits[];
+  places?: IMapPlaceVisits[];
+};
+
 const isPlaceVisits = (
-  item: IMapMarker | IMapPlaceVisits,
+  item: IMapMarker | IMapPlaceVisits | FollowingVisitsItem,
 ): item is IMapPlaceVisits => "place" in item && Array.isArray(item.visits);
+
+const isMapMarker = (
+  item: IMapMarker | IMapPlaceVisits | FollowingVisitsItem,
+): item is IMapMarker => "visitDate" in item && "title" in item;
+
+const isVisitAuthor = (value: unknown): value is IVisitAuthor =>
+  Boolean(
+    value &&
+    typeof value === "object" &&
+    "username" in value &&
+    typeof (value as { username?: unknown }).username === "string",
+  );
+
+const getMemberAuthor = (
+  member: NonNullable<IVisitCoupleAuthor["members"]>[number],
+): IVisitAuthor | null => {
+  if (isVisitAuthor(member)) {
+    return member;
+  }
+
+  return isVisitAuthor(member.user) ? member.user : null;
+};
+
+const getMemberAuthors = (
+  members?: IVisitCoupleAuthor["members"],
+): IVisitAuthor[] => members?.map(getMemberAuthor).filter(isVisitAuthor) ?? [];
+
+const getItemAuthor = (item: FollowingVisitsItem): IVisitAuthor | undefined => {
+  const directAuthor =
+    item.author ?? item.user ?? item.createdBy ?? item.creator ?? item.owner;
+
+  if (isVisitAuthor(directAuthor)) {
+    return directAuthor;
+  }
+
+  if (item.type === "USER" && isVisitAuthor(item)) {
+    return {
+      id: item.id,
+      username: item.username,
+      name: item.name,
+      avatarUrl: item.avatarUrl,
+    };
+  }
+
+  return undefined;
+};
+
+const getItemAuthors = (item: FollowingVisitsItem): IVisitAuthor[] => {
+  if (item.authors?.length) {
+    return item.authors;
+  }
+
+  if (item.couple?.members?.length) {
+    return getMemberAuthors(item.couple.members);
+  }
+
+  if (item.members?.length) {
+    return getMemberAuthors(item.members);
+  }
+
+  const author = getItemAuthor(item);
+
+  return author ? [author] : [];
+};
+
+const withAuthors = (
+  visit: IMapMarker,
+  authors: IVisitAuthor[],
+  couple?: IVisitCoupleAuthor | null,
+): IMapMarker => {
+  if (!authors.length && !couple) {
+    return visit;
+  }
+
+  return {
+    ...visit,
+    authors: visit.authors?.length ? visit.authors : authors,
+    author: visit.author ?? authors[0],
+    couple: visit.couple ?? couple,
+  };
+};
+
+const normalizePlaceVisitsWithAuthor = (
+  placeVisits: IMapPlaceVisits,
+  authors: IVisitAuthor[],
+  couple?: IVisitCoupleAuthor | null,
+): IMapPlaceVisits => ({
+  ...placeVisits,
+  visits: placeVisits.visits.map((visit) =>
+    withAuthors(visit, authors, couple),
+  ),
+});
 
 const groupFlatVisits = (visits: IMapMarker[]): IVisitsResponse => {
   const groups = new Map<string, IMapPlaceVisits>();
@@ -49,17 +164,57 @@ const groupFlatVisits = (visits: IMapMarker[]): IVisitsResponse => {
   return Array.from(groups.values());
 };
 
+const flattenFollowingItems = (
+  items: FollowingVisitsItem[],
+): (IMapMarker | IMapPlaceVisits)[] => {
+  const flattened: (IMapMarker | IMapPlaceVisits)[] = [];
+
+  items.forEach((item) => {
+    const authors = getItemAuthors(item);
+    const visits = item.map ?? item.places ?? item.visits;
+
+    if (!visits) {
+      return;
+    }
+
+    if (visits.every(isPlaceVisits)) {
+      flattened.push(
+        ...visits.map((placeVisits) =>
+          normalizePlaceVisitsWithAuthor(placeVisits, authors, item.couple),
+        ),
+      );
+      return;
+    }
+
+    flattened.push(
+      ...(visits as IMapMarker[]).map((visit) =>
+        withAuthors(visit, authors, item.couple),
+      ),
+    );
+  });
+
+  return flattened;
+};
+
 const normalizeVisitsResponse = (
   response: VisitsApiResponse,
 ): IVisitsResponse => {
   const normalizeVisitsArray = (
-    visits: IMapMarker[] | IMapPlaceVisits[],
+    visits: (IMapMarker | IMapPlaceVisits | FollowingVisitsItem)[],
   ): IVisitsResponse => {
+    if (!visits.length) {
+      return [];
+    }
+
     if (visits.every(isPlaceVisits)) {
       return visits;
     }
 
-    return groupFlatVisits(visits as IMapMarker[]);
+    if (visits.every(isMapMarker)) {
+      return groupFlatVisits(visits);
+    }
+
+    return normalizeVisitsArray(flattenFollowingItems(visits));
   };
 
   if (Array.isArray(response)) {
@@ -106,9 +261,15 @@ export const mapApi = baseApi.injectEndpoints({
       providesTags: [{ type: "Couple", id: "VISITS" }],
     }),
 
+    getFollowingVisits: build.query<IVisitsResponse, void>({
+      query: () => "/users/me/following/visits",
+      transformResponse: normalizeVisitsResponse,
+      providesTags: [{ type: "User", id: "VISITS" }],
+    }),
+
     updateVisit: build.mutation<
       void,
-      { visitId: string; body: ICreateVisitRequest }
+      { visitId: string; body: IUpdateVisitRequest }
     >({
       query: ({ visitId, body }) => ({
         url: `/visits/${visitId}`,
@@ -140,6 +301,7 @@ export const {
   useCreateVisitMutation,
   useGetVisitsByUsernameQuery,
   useGetVisitsByCoupleIdQuery,
+  useGetFollowingVisitsQuery,
   useUpdateVisitMutation,
   useDeleteVisitMutation,
 } = mapApi;

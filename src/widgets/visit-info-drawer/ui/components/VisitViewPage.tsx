@@ -21,6 +21,8 @@ import {
   getAverageRating,
 } from "../model/visitInfoHelpers";
 import { VisitRatingParticipant } from "../model/types";
+import { getVisitAuthors } from "@/widgets/visit-card";
+import { VisitAuthorRow } from "./VisitAuthorRow";
 
 type CurrentUser = {
   username?: string;
@@ -39,6 +41,10 @@ type VisitViewPageProps = {
   onShowVisitOnMap: () => void;
 };
 
+const isRatingParticipant = (
+  participant: VisitRatingParticipant | undefined | null,
+): participant is VisitRatingParticipant => Boolean(participant?.username);
+
 export function VisitViewPage({
   selectedPlace,
   selectedVisit,
@@ -48,8 +54,18 @@ export function VisitViewPage({
   visitCoordinates,
   onShowVisitOnMap,
 }: VisitViewPageProps) {
+  const authors = getVisitAuthors(selectedVisit);
+  const authorCoupleId = selectedVisit.couple?.id ?? selectedVisit.coupleId;
+  const ratingParticipants = [...participants, ...authors]
+    .filter(isRatingParticipant)
+    .filter(
+      (participant, index, list) =>
+        list.findIndex((item) => item.username === participant.username) ===
+        index,
+    );
+
   const getParticipant = (nickname: string) => {
-    const suppliedParticipant = participants.find(
+    const suppliedParticipant = ratingParticipants.find(
       (participant) => participant.username === nickname,
     );
 
@@ -70,13 +86,13 @@ export function VisitViewPage({
 
   return (
     <Stack gap="md">
+      <VisitAuthorRow authors={authors} coupleId={authorCoupleId} />
       {selectedVisit.photos?.length ? (
         <SpotPhotoViewer
           photos={selectedVisit.photos}
           alt={selectedVisit.title}
         />
       ) : null}
-
       <Stack gap={8}>
         <Group
           justify="space-between"
@@ -102,7 +118,7 @@ export function VisitViewPage({
 
         <Group gap="xs" align="end">
           <IconTag size={18} color="#90a5df" />
-          <Badge>
+          <Badge color={selectedVisit.status === "PLANNED" ? "blue" : "green"}>
             {selectedVisit.status === "PLANNED"
               ? "В планах"
               : isCoupleMode
@@ -127,20 +143,18 @@ export function VisitViewPage({
           </Group>
         )}
       </Stack>
-
       {selectedVisit.description && (
-        <Stack gap={2}>
+        <Stack gap={0}>
           <Text c="#90a5df" fz={13} fw={800} tt="uppercase">
             Описание
           </Text>
-          <Text c="#d5defc" fz={15} lh={1.55} className={styles.description}>
+          <Text c="#d5defc" fz={15} lh={1} className={styles.description}>
             {selectedVisit.description}
           </Text>
         </Stack>
       )}
-
       {selectedVisit.ratings.length > 0 && (
-        <Stack gap={2}>
+        <Stack gap={4}>
           <Text c="#90a5df" fz={13} fw={800} tt="uppercase">
             Рейтинг
           </Text>
@@ -214,7 +228,6 @@ export function VisitViewPage({
           </Stack>
         </Stack>
       )}
-
       <Group gap="xs">
         {selectedVisit.isFavorite && (
           <Badge leftSection={<IconHeart size={12} />} color="red">

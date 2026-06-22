@@ -1,4 +1,5 @@
 import {
+  useGetFollowingVisitsQuery,
   useGetVisitsByCoupleIdQuery,
   useGetVisitsByUsernameQuery,
 } from "@/entities/map";
@@ -24,8 +25,16 @@ export default function Map() {
     { skip: !user.coupleId || viewState.map.createMode !== "couple" },
   );
 
+  const { data: followingMarkers } = useGetFollowingVisitsQuery(undefined, {
+    skip: viewState.map.createMode !== "friends",
+  });
+
   const markers =
-    viewState.map.createMode === "couple" ? coupleMarkers : userMarkers;
+    viewState.map.createMode === "couple"
+      ? coupleMarkers
+      : viewState.map.createMode === "friends"
+        ? followingMarkers
+        : userMarkers;
 
   const navigationItems = [
     { label: "Своя", value: "my" },

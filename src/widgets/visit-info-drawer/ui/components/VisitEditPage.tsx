@@ -7,6 +7,7 @@ import type {
   ICreateVisitRequest,
   IMapMarker,
   IMapPlaceVisits,
+  IUpdateVisitRequest,
   MarkerColorKey,
   MarkerIconKey,
   visitStatus,
@@ -135,12 +136,9 @@ export function VisitEditPage({
       return;
     }
 
-    const payload: ICreateVisitRequest = {
-      ownerType: visit.ownerType,
+    const payload: IUpdateVisitRequest = {
       externalId: visit.externalId,
       title: values.title.trim(),
-      lat,
-      lng,
       address: values.address.trim() || undefined,
       photos: values.photos,
       coupleId:
