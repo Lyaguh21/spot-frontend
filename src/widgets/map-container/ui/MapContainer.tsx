@@ -65,7 +65,7 @@ export default function MapContainer({
     getSortedVisits(placeVisits.visits)[0];
 
   useEffect(() => {
-    if (!visited || !isLoaded || !dataMarkers?.length) {
+    if (!isLoaded || !dataMarkers?.length) {
       return;
     }
 
@@ -90,7 +90,7 @@ export default function MapContainer({
       ],
       { padding: 52, maxZoom: 14, duration: 600 },
     );
-  }, [dataMarkers, isLoaded, visited]);
+  }, [dataMarkers, isLoaded]);
 
   useEffect(() => {
     if (!isLoaded) {
@@ -265,8 +265,8 @@ export default function MapContainer({
       <Map
         ref={mapRef}
         initialViewState={{
-          longitude: 37.6176,
-          latitude: 55.7558,
+          longitude: 37.6174,
+          latitude: 55.7505,
           zoom: 12,
         }}
         onLoad={() => setIsLoaded(true)}
