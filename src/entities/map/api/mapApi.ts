@@ -90,6 +90,7 @@ export const mapApi = baseApi.injectEndpoints({
       invalidatesTags: [
         { type: "User", id: "VISITS" },
         { type: "Couple", id: "VISITS" },
+        { type: "Feed", id: "LIST" },
       ],
     }),
 
@@ -104,6 +105,33 @@ export const mapApi = baseApi.injectEndpoints({
       transformResponse: normalizeVisitsResponse,
       providesTags: [{ type: "Couple", id: "VISITS" }],
     }),
+
+    updateVisit: build.mutation<
+      void,
+      { visitId: string; body: ICreateVisitRequest }
+    >({
+      query: ({ visitId, body }) => ({
+        url: `/visits/${visitId}`,
+        method: "PATCH",
+        body,
+      }),
+      invalidatesTags: [
+        { type: "User", id: "VISITS" },
+        { type: "Couple", id: "VISITS" },
+      ],
+    }),
+
+    deleteVisit: build.mutation<void, { visitId: string }>({
+      query: ({ visitId }) => ({
+        url: `/visits/${visitId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: [
+        { type: "User", id: "VISITS" },
+        { type: "Couple", id: "VISITS" },
+        { type: "Feed", id: "LIST" },
+      ],
+    }),
   }),
 });
 
@@ -111,4 +139,6 @@ export const {
   useCreateVisitMutation,
   useGetVisitsByUsernameQuery,
   useGetVisitsByCoupleIdQuery,
+  useUpdateVisitMutation,
+  useDeleteVisitMutation,
 } = mapApi;

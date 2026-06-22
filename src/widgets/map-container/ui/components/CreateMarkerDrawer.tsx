@@ -6,6 +6,7 @@ import {
   markerColorOptions,
   markerIconOptions,
   useCreateVisitMutation,
+  visitStatus,
 } from "@/entities/map";
 import { selectUser } from "@/entities/user";
 import { selectView } from "@/entities/view";
@@ -15,6 +16,7 @@ import {
   SpotAvatar,
   SpotButton,
   SpotDrawer,
+  SpotFloatingIndicator,
 } from "@/shared/ui";
 import { SpotPhotoInput } from "@/widgets/spot-photo-input";
 import {
@@ -117,6 +119,9 @@ export default function CreateMarkerDrawer({
   const viewState = useAppSelector(selectView);
   const [createVisit, { isLoading }] = useCreateVisitMutation();
   const { showError, showSuccess } = useNotifications();
+  const [status, setStatus] = useState<visitStatus>("VISITED");
+  const isCoupleMode = viewState.map.createMode === "couple";
+
   const iconByKey = useMemo(
     () => new Map(markerIconOptions.map((option) => [option.key, option])),
     [],
@@ -134,7 +139,7 @@ export default function CreateMarkerDrawer({
       avatarUrl: user.avatarUrl,
     };
 
-    if (viewState.map.createMode === "couple" && user.partner) {
+    if (isCoupleMode && user.partner) {
       return [
         currentUser,
         {
@@ -162,9 +167,7 @@ export default function CreateMarkerDrawer({
     [ratingParticipants],
   );
   const initialCoupleId =
-    viewState.map.createMode === "couple" && user.coupleId
-      ? String(user.coupleId)
-      : undefined;
+    isCoupleMode && user.coupleId ? String(user.coupleId) : undefined;
   const form = useForm<CreateMarkerFormValues>({
     initialValues: getInitialValues(marker, initialRatings, initialCoupleId),
     validate: {
@@ -192,21 +195,20 @@ export default function CreateMarkerDrawer({
 
   const handleSubmit = async (values: CreateMarkerFormValues) => {
     const payload: ICreateVisitRequest = {
-      ownerType: viewState.map.createMode === "couple" ? "COUPLE" : "USER",
+      ownerType: isCoupleMode ? "COUPLE" : "USER",
       title: values.title.trim(),
       lat: values.lat,
       lng: values.lng,
       address: values.address?.trim() || undefined,
       photos: values.photos.length > 0 ? values.photos : undefined,
       coupleId:
-        viewState.map.createMode === "couple" && user.coupleId
-          ? String(user.coupleId)
-          : undefined,
+        isCoupleMode && user.coupleId ? String(user.coupleId) : undefined,
       description: values.description.trim(),
       ratings: values.ratings,
       visitDate: new Date(values.visitDate).toISOString(),
       icon: values.icon,
       color: values.color,
+      status,
     };
 
     try {
@@ -458,6 +460,19 @@ export default function CreateMarkerDrawer({
               );
             })}
           </SimpleGrid>
+
+          <SpotFloatingIndicator
+            value={status}
+            label="Статус"
+            setValue={setStatus}
+            items={[
+              {
+                value: "VISITED",
+                label: isCoupleMode ? "Посетили" : "Посетил(а)",
+              },
+              { value: "PLANNED", label: "В планах" },
+            ]}
+          />
 
           <Divider
             color="rgba(104, 132, 210, 0.16)"

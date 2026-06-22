@@ -74,6 +74,7 @@ export default function SpotMarker({
         style={{
           cursor: "pointer",
           overflow: "visible",
+          opacity: markerInfo?.status === "PLANNED" ? 0.55 : 1,
         }}
         onClick={onClick}
       >

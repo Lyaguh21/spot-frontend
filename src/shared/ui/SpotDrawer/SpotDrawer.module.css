@@ -124,6 +124,14 @@
   letter-spacing: 0;
 }
 
+.topRowActions {
+  display: flex;
+  padding: 8px 0;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 6px;
+}
+
 .close {
   display: inline-grid;
   flex: 0 0 auto;

@@ -199,6 +199,21 @@ export default function MapContainer({
     openCreateMarkerDrawer();
   };
 
+  const handleVisitDeleted = (visitId: string) => {
+    setSelectedPlace((currentPlace) => {
+      if (!currentPlace) {
+        return currentPlace;
+      }
+
+      const visits = currentPlace.visits.filter(
+        (visit) => visit.id !== visitId,
+      );
+
+      return visits.length ? { ...currentPlace, visits } : null;
+    });
+    setSelectedVisit(null);
+  };
+
   return (
     <>
       {!visited && (
@@ -216,6 +231,7 @@ export default function MapContainer({
         handleCloseVisitDrawer={handleCloseVisitDrawer}
         setSelectedVisit={setSelectedVisit}
         onCreateVisit={handleCreateVisitAtPlace}
+        onVisitDeleted={handleVisitDeleted}
         allowCreate={!visited}
       />
 

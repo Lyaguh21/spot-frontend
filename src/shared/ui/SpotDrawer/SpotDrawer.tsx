@@ -2,6 +2,7 @@ import { IconX } from "@tabler/icons-react";
 import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import styles from "./SpotDrawer.module.css";
+import SpotActionIcon from "../SpotActionIcon/SpotActionIcon";
 
 type SpotDrawerProps = {
   opened: boolean;
@@ -10,6 +11,7 @@ type SpotDrawerProps = {
   title?: string;
   size?: string | number;
   closeOnSwipeDown?: boolean;
+  topRowChildren?: React.ReactNode;
 };
 
 const TRANSITION_DURATION = 420;
@@ -23,6 +25,7 @@ export default function SpotDrawer({
   title,
   size = "80%",
   closeOnSwipeDown = true,
+  topRowChildren,
 }: SpotDrawerProps) {
   const [mounted, setMounted] = useState(opened);
   const [visible, setVisible] = useState(false);
@@ -218,17 +221,19 @@ export default function SpotDrawer({
                 {title}
               </h2>
             ) : (
-              <span />
+              <>{topRowChildren}</>
             )}
-            <button
-              ref={closeButtonRef}
-              type="button"
-              className={styles.close}
-              onClick={onClose}
-              aria-label="Закрыть"
-            >
-              <IconX size={18} stroke={2} />
-            </button>
+            <div className={styles.topRowActions}>
+              <SpotActionIcon
+                ref={closeButtonRef}
+                size={32}
+                type="button"
+                onClick={onClose}
+                aria-label="Закрыть"
+              >
+                <IconX size={18} stroke={2} />
+              </SpotActionIcon>
+            </div>
           </div>
         </div>
         <div className={styles.scroll}>
