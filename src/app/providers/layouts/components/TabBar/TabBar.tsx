@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { IconFileText, IconUser, IconMapPinFilled } from "@tabler/icons-react";
+import { IconNotes, IconUser, IconMapPinFilled } from "@tabler/icons-react";
 import styles from "./TabBar.module.css";
 import { selectUser } from "@/entities/user";
 import { useAppSelector } from "@/shared/lib";
@@ -17,7 +17,7 @@ export default function TabBar() {
   const pathname = location.pathname;
 
   const tabs = [
-    { key: "feed", label: "Лента", to: "/", icon: IconFileText },
+    { key: "feed", label: "Лента", to: "/", icon: IconNotes },
     {
       key: "map",
       label: "Карта",

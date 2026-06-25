@@ -15,6 +15,7 @@ import {
   IconFlower,
   IconGlass,
   IconHeart,
+  IconHearts,
   IconIceCream2,
   IconMapPin,
   IconMicrophone,
@@ -62,7 +63,7 @@ export type MarkerIconKey =
   | "coffee"
   | "cup"
   | "bench"
-  | "tree"
+  | "hearts"
   | "trees"
   | "plant"
   | "flower"
@@ -111,7 +112,7 @@ export const markerColorOptions: {
   { key: "grape", label: "Виноград", colors: ["#A78BFA", "#7C3AED"] },
   { key: "sunset", label: "Закат", colors: ["#F97316", "#DB2777"] },
   { key: "mint", label: "Мята", colors: ["#5EEAD4", "#22C55E"] },
-  { key: "steel", label: "Сталь", colors: ["#94A3B8", "#475569"] },
+  { key: "steel", label: "Серый", colors: ["#94A3B8", "#475569"] },
 ];
 
 export const markersColors: { [key: string]: [string, string] } = {
@@ -131,7 +132,7 @@ export const markerIconOptions: {
   { key: "coffee", label: "Кофе", icon: <IconCoffee /> },
   { key: "cup", label: "Напитки", icon: <IconCup /> },
   { key: "bench", label: "Лавочка", icon: <IconArmchair /> },
-  { key: "tree", label: "Дерево", icon: <IconTree /> },
+  { key: "hearts", label: "Романтическое", icon: <IconHearts /> },
   { key: "trees", label: "Парк", icon: <IconTrees /> },
   { key: "plant", label: "Растения", icon: <IconPlant /> },
   { key: "flower", label: "Цветы", icon: <IconFlower /> },

@@ -1,3 +1,4 @@
+import "dayjs/locale/ru";
 import {
   ICreateVisitRequest,
   IMapMarker,
@@ -248,7 +249,7 @@ export default function CreateMarkerDrawer({
                 root: {
                   marginBlock: -selectionGlowGutter,
                   marginInline: -selectionGlowGutter,
-                  width: `calc(100% + ${selectionGlowGutter * 2}px)`,
+                  width: `calc(100% + ${selectionGlowGutter * 1}px)`,
                 },
                 viewport: {
                   paddingBlock: selectionGlowGutter,
@@ -482,6 +483,8 @@ export default function CreateMarkerDrawer({
 
           <DatePickerInput
             label="Дата визита"
+            locale="ru"
+            valueFormat="DD MMM YYYY"
             styles={inputStyles}
             key={form.key("visitDate")}
             {...form.getInputProps("visitDate")}
