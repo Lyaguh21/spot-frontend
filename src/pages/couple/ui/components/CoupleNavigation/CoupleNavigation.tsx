@@ -1,10 +1,16 @@
-import { Flex, Text } from "@mantine/core";
+import { Flex, Menu, Text } from "@mantine/core";
 import styles from "./CoupleNavigation.module.css";
 import { SpotActionIcon } from "@/shared/ui";
-import { IconArrowLeft, IconEdit, IconLock } from "@tabler/icons-react";
+import {
+  IconArrowLeft,
+  IconCopy,
+  IconEdit,
+  IconLock,
+} from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
 import EditCoupleDrawer from "../EditCoupleDrawer/EditCoupleDrawer";
 import { useDisclosure } from "@mantine/hooks";
+import { useNotifications } from "@/shared/lib";
 
 export default function CoupleNavigation({
   coupleId,
@@ -19,8 +25,18 @@ export default function CoupleNavigation({
   generatedName?: string;
   isOwnCouple: boolean;
 }) {
+  const { showError, showSuccess } = useNotifications();
   const navigate = useNavigate();
   const [opened, { open, close }] = useDisclosure(false);
+
+  const handleCopyCurrentUrl = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      showSuccess("Ссылка скопирована");
+    } catch {
+      showError("Не удалось скопировать ссылку");
+    }
+  };
 
   return (
     <>
@@ -54,10 +70,22 @@ export default function CoupleNavigation({
             <IconArrowLeft />
           </SpotActionIcon>
         )}
-        <Flex align="center" gap={4}>
-          <Text fz="lg">{generatedName || "Пара"}</Text>
-          {isPrivate && <IconLock size={18} />}
-        </Flex>
+        <Menu shadow="lg" width={220} position="bottom" withinPortal>
+          <Menu.Target>
+            <Flex align="center" gap={4}>
+              <Text fz="lg">{generatedName || "Пара"}</Text>
+              {isPrivate && <IconLock size={18} />}
+            </Flex>
+          </Menu.Target>
+          <Menu.Dropdown className={styles.menuDropdown}>
+            <Menu.Item
+              leftSection={<IconCopy size={17} />}
+              onClick={handleCopyCurrentUrl}
+            >
+              Скопировать ссылку
+            </Menu.Item>
+          </Menu.Dropdown>
+        </Menu>
         {isOwnCouple && (
           <SpotActionIcon size={40} onClick={open}>
             <IconEdit />
