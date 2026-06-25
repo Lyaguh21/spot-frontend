@@ -26,6 +26,15 @@ export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
   const isPublicRoute = PUBLIC_ROUTES.some((pattern) =>
     matchPath({ path: pattern, end: false }, location.pathname),
   );
+  const profileMatch = matchPath(
+    { path: "/profile/:username", end: false },
+    location.pathname,
+  );
+  const coupleMatch = matchPath(
+    { path: "/couple/:id", end: false },
+    location.pathname,
+  );
+  const shouldResolveViewerIdentity = Boolean(profileMatch || coupleMatch);
 
   useEffect(() => {
     if (data?.authenticated) {
@@ -42,16 +51,19 @@ export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
     return <LoadingOverlay visible pos="fixed" />;
   }
 
+  if (
+    shouldResolveViewerIdentity &&
+    !userId &&
+    (isLoading || isUninitialized || data?.authenticated)
+  ) {
+    return <LoadingOverlay visible pos="fixed" />;
+  }
+
   if (!isPublicRoute && !userId && (isError || !data?.authenticated)) {
     return (
       <Navigate to={getAuthRedirectPath()} replace state={{ from: location }} />
     );
   }
-
-  const profileMatch = matchPath(
-    { path: "/profile/:username", end: false },
-    location.pathname,
-  );
 
   if (
     profileMatch?.params?.username &&

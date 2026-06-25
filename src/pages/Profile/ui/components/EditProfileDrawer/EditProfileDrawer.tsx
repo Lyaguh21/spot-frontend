@@ -12,17 +12,17 @@ import { SpotPhotoInput } from "@/widgets/spot-photo-input";
 import { useNotifications } from "@/shared/lib";
 
 type EditProfileFormValues = {
-  name: string;
-  bio: string;
+  name?: string;
+  bio?: string;
   visibility: UserVisibility;
-  avatarUrl: string;
+  avatarUrl?: string;
 };
 
 const initialValues: EditProfileFormValues = {
-  name: "",
-  bio: "",
+  name: undefined,
+  bio: undefined,
   visibility: "PUBLIC",
-  avatarUrl: "",
+  avatarUrl: undefined,
 };
 
 export default function EditProfileDrawer({
@@ -48,7 +48,7 @@ export default function EditProfileDrawer({
       name: profile.name ?? "",
       bio: profile.bio ?? "",
       visibility: profile.visibility ?? "PUBLIC",
-      avatarUrl: profile.avatarUrl ?? "",
+      avatarUrl: profile.avatarUrl,
     };
 
     form.setValues(nextValues);
@@ -57,8 +57,8 @@ export default function EditProfileDrawer({
 
   const handleSubmit = async (values: EditProfileFormValues) => {
     const payload = {
-      name: values.name.trim(),
-      bio: values.bio.trim(),
+      name: values.name?.trim(),
+      bio: values.bio?.trim(),
       visibility: values.visibility,
       avatarUrl: values.avatarUrl,
     };
