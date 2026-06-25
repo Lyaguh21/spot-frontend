@@ -1,4 +1,7 @@
 import { onboardingSteps } from "../model/onboardingSteps";
+import { selectUser } from "@/entities/user";
+import { useAppSelector } from "@/shared/lib";
+import { completeIntroOnboarding } from "@/shared/utils";
 import SpotButton from "@/shared/ui/SpotButton/SpotButton";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -17,24 +20,23 @@ const stepVisuals = [
 
 export default function Onboarding() {
   const navigate = useNavigate();
+  const user = useAppSelector(selectUser);
   const [activeStep, setActiveStep] = useState(0);
   const content = onboardingSteps[activeStep];
   const isLastStep = activeStep === onboardingSteps.length - 1;
 
+  const finishIntroOnboarding = () => {
+    completeIntroOnboarding();
+    navigate(user.id ? "/" : "/auth/register");
+  };
+
   const handleNext = () => {
     if (isLastStep) {
-      localStorage.setItem("onboardingCompleted", "true");
-      navigate("/auth/login");
-
+      finishIntroOnboarding();
       return;
     }
 
     setActiveStep((step) => step + 1);
-  };
-
-  const handleSkip = () => {
-    localStorage.setItem("onboardingCompleted", "true");
-    navigate("/auth/login");
   };
 
   return (
@@ -74,7 +76,11 @@ export default function Onboarding() {
           {isLastStep ? "Начать" : "Далее"}
         </SpotButton>
 
-        <button type="button" className={styles.skip} onClick={handleSkip}>
+        <button
+          type="button"
+          className={styles.skip}
+          onClick={finishIntroOnboarding}
+        >
           Пропустить
         </button>
       </footer>

@@ -1,7 +1,8 @@
 import { Navigate, Outlet } from "react-router-dom";
+import { isIntroOnboardingCompleted } from "@/shared/utils";
 
 export function OnboardingGuard({ children }: { children?: React.ReactNode }) {
-  if (localStorage.getItem("onboardingCompleted") !== "true") {
+  if (!isIntroOnboardingCompleted()) {
     return <Navigate to="/onboarding" replace />;
   }
 

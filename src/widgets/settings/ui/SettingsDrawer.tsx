@@ -1,6 +1,7 @@
 import { useLogoutMutation } from "@/entities/auth";
 import { userLogout } from "@/entities/user";
 import { useAppDispatch, useAppSelector } from "@/shared/lib";
+import { resetAllOnboardings } from "@/shared/utils";
 import {
   SpotActionIcon,
   SpotConfirmActionModal,
@@ -50,15 +51,15 @@ export default function SettingsDrawer({
   ] = useDisclosure(false);
 
   const openOnboarding = () => {
-    localStorage.removeItem("onboardingCompleted");
+    resetAllOnboardings();
     onClose();
     navigate("/onboarding");
   };
 
   const settingsOptions: SettingsOption[] = [
     {
-      title: "Пройти обучение заново",
-      description: "Краткий гид по возможностям приложения",
+      title: "Сбросить обучение",
+      description: "Вводный экран и гид по функциям запустятся заново",
       icon: <IconSchool size={24} stroke={1.8} />,
       onClick: openOnboarding,
     },

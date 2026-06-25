@@ -108,6 +108,7 @@ export default function EditProfileDrawer({
             }}
           />
           <SegmentedControl
+            size="md"
             value={form.values.visibility}
             radius="lg"
             onChange={(value) =>

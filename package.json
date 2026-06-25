@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@gfazioli/mantine-onboarding-tour": "^4.0.6",
     "@mantine-bites/lightbox": "^2.0.0",
     "@mantine/core": "^9.3.0",
     "@mantine/dates": "^9.3.0",

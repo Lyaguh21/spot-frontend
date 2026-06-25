@@ -31,7 +31,6 @@ import {
   IconTheater,
   IconTicket,
   IconToolsKitchen2,
-  IconTree,
   IconTrees,
 } from "@tabler/icons-react";
 import type { ReactNode } from "react";

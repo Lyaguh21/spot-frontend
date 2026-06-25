@@ -2,7 +2,7 @@ import Map, { MapRef, Marker } from "react-map-gl/maplibre";
 import { FullScreenButton } from "./components/FullScreenButton";
 import { selectView } from "@/entities/view";
 import { useAppSelector } from "@/shared/lib";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import CreateMarkerButton from "./components/CreateMarkerButton";
 import SpotMarker from "@/shared/ui/SpotMarker";
 import SpotSkeletonLoader from "@/shared/ui/SpotSkeletonLoader";
@@ -230,6 +230,16 @@ export default function MapContainer({
     setSelectedVisit(updatedVisit);
   };
 
+  const mapFrameStyle: CSSProperties = {
+    width: viewState.ui.mapIsFullScreen ? "100vw" : "100%",
+    height: viewState.ui.mapIsFullScreen ? "100dvh" : "100%",
+    flex: 1,
+    minHeight: 0,
+    position: viewState.ui.mapIsFullScreen ? "fixed" : "relative",
+    inset: viewState.ui.mapIsFullScreen ? 0 : undefined,
+    zIndex: viewState.ui.mapIsFullScreen ? 100 : undefined,
+  };
+
   return (
     <>
       {!visited && (
@@ -252,102 +262,100 @@ export default function MapContainer({
         allowCreate={!visited}
       />
 
-      {!isLoaded && (
-        <SpotSkeletonLoader
-          height="100%"
-          width="100%"
-          flex={1}
-          radius="lg"
-          visible={true}
-        />
-      )}
-
-      <Map
-        ref={mapRef}
-        initialViewState={{
-          longitude: 37.6174,
-          latitude: 55.7505,
-          zoom: 12,
-        }}
-        onLoad={() => setIsLoaded(true)}
-        onClick={handleClickOnMap}
-        style={{
-          width: viewState.ui.mapIsFullScreen ? "100vw" : "100%",
-          height: viewState.ui.mapIsFullScreen ? "100dvh" : "100%",
-          flex: 1,
-          position: viewState.ui.mapIsFullScreen ? "fixed" : "relative",
-          inset: viewState.ui.mapIsFullScreen ? 0 : undefined,
-          zIndex: viewState.ui.mapIsFullScreen ? 100 : undefined,
-          borderRadius: viewState.ui.mapIsFullScreen ? undefined : "18px",
-          display: isLoaded ? "block" : "none",
-          cursor: isCreatingMarker ? "crosshair" : "default",
-        }}
-        attributionControl={false}
-        mapStyle="https://api.maptiler.com/maps/019e87aa-d3ec-7283-92ef-32ca572234ae/style.json?key=I45PE7YnKzVVaH92vG7h"
-      >
-        <FullScreenButton />
-        {!visited && (
-          <CreateMarkerButton
-            isCreatingMarker={isCreatingMarker}
-            onClick={handleSwapCrateMode}
+      <div style={mapFrameStyle}>
+        {!isLoaded && (
+          <SpotSkeletonLoader
+            height="100%"
+            width="100%"
+            radius="lg"
+            visible={true}
+            style={{ position: "absolute", inset: 0, zIndex: 1 }}
           />
         )}
 
-        {!visited && marker && (
-          <>
-            <Marker
-              longitude={marker.lng}
-              latitude={marker.lat}
-              anchor="bottom"
-            >
-              <SpotMarker
-                onChildrenClick={handleCreateMarker}
-                isCreating
-                lng={marker.lng}
-                lat={marker.lat}
-              />
-            </Marker>
-          </>
-        )}
+        <Map
+          ref={mapRef}
+          initialViewState={{
+            longitude: 37.6174,
+            latitude: 55.7505,
+            zoom: 12,
+          }}
+          onLoad={() => setIsLoaded(true)}
+          onClick={handleClickOnMap}
+          style={{
+            width: "100%",
+            height: "100%",
+            borderRadius: viewState.ui.mapIsFullScreen ? undefined : "18px",
+            visibility: isLoaded ? "visible" : "hidden",
+            cursor: isCreatingMarker ? "crosshair" : "default",
+          }}
+          attributionControl={false}
+          mapStyle="https://api.maptiler.com/maps/019e87aa-d3ec-7283-92ef-32ca572234ae/style.json?key=I45PE7YnKzVVaH92vG7h"
+        >
+          <FullScreenButton />
+          {!visited && (
+            <CreateMarkerButton
+              isCreatingMarker={isCreatingMarker}
+              onClick={handleSwapCrateMode}
+            />
+          )}
 
-        {dataMarkers?.map((placeVisits, index) => {
-          const primaryVisit = getPrimaryVisit(placeVisits);
+          {!visited && marker && (
+            <>
+              <Marker
+                longitude={marker.lng}
+                latitude={marker.lat}
+                anchor="bottom"
+              >
+                <SpotMarker
+                  onChildrenClick={handleCreateMarker}
+                  isCreating
+                  lng={marker.lng}
+                  lat={marker.lat}
+                />
+              </Marker>
+            </>
+          )}
 
-          if (!primaryVisit) {
-            return null;
-          }
+          {dataMarkers?.map((placeVisits, index) => {
+            const primaryVisit = getPrimaryVisit(placeVisits);
 
-          const markerInfo = {
-            ...primaryVisit,
-            title: placeVisits.place.title,
-            lat: placeVisits.place.lat,
-            lng: placeVisits.place.lng,
-          };
+            if (!primaryVisit) {
+              return null;
+            }
 
-          return (
-            <Marker
-              key={`${placeVisits.place.lat}-${placeVisits.place.lng}-${placeVisits.place.title}-${index}`}
-              longitude={placeVisits.place.lng}
-              latitude={placeVisits.place.lat}
-              anchor="bottom"
-            >
-              <SpotMarker
-                markerInfo={markerInfo}
-                lng={placeVisits.place.lng}
-                lat={placeVisits.place.lat}
-                icon={markersIcons[primaryVisit.icon]}
-                colors={
-                  markerColorOptions.find(
-                    (opt) => opt.key === primaryVisit.color,
-                  )?.colors
-                }
-                visitCount={placeVisits.visits.length}
-                onClick={(e) => handleExistingMarkerClick(e, placeVisits)}
-              />
-            </Marker>
-          );
-        })}
-      </Map>
+            const markerInfo = {
+              ...primaryVisit,
+              title: placeVisits.place.title,
+              lat: placeVisits.place.lat,
+              lng: placeVisits.place.lng,
+            };
+
+            return (
+              <Marker
+                key={`${placeVisits.place.lat}-${placeVisits.place.lng}-${placeVisits.place.title}-${index}`}
+                longitude={placeVisits.place.lng}
+                latitude={placeVisits.place.lat}
+                anchor="bottom"
+              >
+                <SpotMarker
+                  markerInfo={markerInfo}
+                  lng={placeVisits.place.lng}
+                  lat={placeVisits.place.lat}
+                  icon={markersIcons[primaryVisit.icon]}
+                  colors={
+                    markerColorOptions.find(
+                      (opt) => opt.key === primaryVisit.color,
+                    )?.colors
+                  }
+                  visitCount={placeVisits.visits.length}
+                  onClick={(e) => handleExistingMarkerClick(e, placeVisits)}
+                />
+              </Marker>
+            );
+          })}
+        </Map>
+      </div>
     </>
   );
 }

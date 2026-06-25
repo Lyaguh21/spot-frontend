@@ -13,3 +13,4 @@ export { default as SpotAvatar } from "./SpotAvatar/SpotAvatar";
 export { default as SpotTextArea } from "./SpotTextArea/SpotTextArea";
 export { default as SpotSelect } from "./SpotSelect/SpotSelect";
 export { default as SpotPhotoViewer } from "./SpotPhotoViewer/SpotPhotoViewer";
+export { onboardingTourNavigationProps } from "./OnboardingTourControls/onboardingTourNavigation";

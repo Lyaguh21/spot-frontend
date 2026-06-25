@@ -1,5 +1,6 @@
 import { SpotAvatar, SpotButton, SpotGlassCard } from "@/shared/ui";
 import { Box, Flex, Group, Spoiler, Stack, Text } from "@mantine/core";
+import { OnboardingTour } from "@gfazioli/mantine-onboarding-tour";
 import styles from "./HeaderProfile.module.css";
 import { IconChevronRight, IconLock } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
@@ -116,7 +117,11 @@ export default function HeaderProfile({
           </Stack>
         </Flex>
 
-        <StatisticsProfile statistics={statistics} />
+        <OnboardingTour.Target id="app-tour-profile-follows">
+          <Box>
+            <StatisticsProfile statistics={statistics} />
+          </Box>
+        </OnboardingTour.Target>
 
         {!isOwnProfile && (
           <SpotButton
@@ -132,32 +137,38 @@ export default function HeaderProfile({
         )}
 
         {isOwnProfile && !userData?.partner ? (
-          <SpotGlassCard
-            className={coupleCardStyles.pairCard}
-            mt="lg"
-            onClick={handleCoupleClick}
-            isButton={true}
-          >
-            <Group justify="space-between" wrap="nowrap">
-              <Stack gap={2}>
-                <Text c="white" fw={600}>
-                  Создать свою пару
-                </Text>
-                <Text c="dimmed" size="sm">
-                  Нажмите чтобы добавить партнера
-                </Text>
-              </Stack>
-              <IconChevronRight />
-            </Group>
-          </SpotGlassCard>
+          <OnboardingTour.Target id="app-tour-pair-card">
+            <Box mt="lg">
+              <SpotGlassCard
+                className={coupleCardStyles.pairCard}
+                onClick={handleCoupleClick}
+                isButton={true}
+              >
+                <Group justify="space-between" wrap="nowrap">
+                  <Stack gap={2}>
+                    <Text c="white" fw={600}>
+                      Создать свою пару
+                    </Text>
+                    <Text c="dimmed" size="sm">
+                      Нажмите чтобы добавить партнера
+                    </Text>
+                  </Stack>
+                  <IconChevronRight />
+                </Group>
+              </SpotGlassCard>
+            </Box>
+          </OnboardingTour.Target>
         ) : userData?.partner ? (
-          <CoupleCard
-            firstUser={userData}
-            secondUser={userData?.partner}
-            subtitle={isOwnProfile ? "Карточка пары" : "Пара пользователя"}
-            onClick={handleCoupleClick}
-            mt="lg"
-          />
+          <OnboardingTour.Target id="app-tour-pair-card">
+            <Box mt="lg">
+              <CoupleCard
+                firstUser={userData}
+                secondUser={userData?.partner}
+                subtitle={isOwnProfile ? "Карточка пары" : "Пара пользователя"}
+                onClick={handleCoupleClick}
+              />
+            </Box>
+          </OnboardingTour.Target>
         ) : null}
       </Box>
     </>

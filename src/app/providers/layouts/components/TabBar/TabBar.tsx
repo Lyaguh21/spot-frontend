@@ -6,6 +6,20 @@ import { useAppSelector } from "@/shared/lib";
 import { SpotConfirmActionModal } from "@/shared/ui";
 import { useDisclosure } from "@mantine/hooks";
 import { getAuthRedirectPath } from "@/shared/utils";
+import { OnboardingTour } from "@gfazioli/mantine-onboarding-tour";
+
+const tabOnboardingFocusRevealProps = {
+  focusedZIndex: 320,
+  popoverProps: {
+    position: { base: "top", sm: "top" },
+    offset: { base: 18, sm: 18 },
+    width: { base: 320, sm: 360 },
+    zIndex: 330,
+    withArrow: true,
+    shadow: "xl",
+    radius: "lg",
+  },
+} as const;
 
 export default function TabBar() {
   const [opened, { open, close }] = useDisclosure();
@@ -52,8 +66,13 @@ export default function TabBar() {
             const isActive =
               tab.to === "/" ? pathname === "/" : pathname.startsWith(tab.to);
             const Icon = tab.icon;
+            const onboardingTargetId = {
+              feed: "app-tour-tab-feed",
+              map: "app-tour-tab-map",
+              profile: "app-tour-tab-profile",
+            }[tab.key];
 
-            return (
+            const tabLink = (
               <Link
                 onClick={(event) => {
                   if (!isAuth) {
@@ -76,6 +95,20 @@ export default function TabBar() {
                 )}
                 <span className={styles.label}>{tab.label}</span>
               </Link>
+            );
+
+            if (!onboardingTargetId) {
+              return tabLink;
+            }
+
+            return (
+              <OnboardingTour.Target
+                key={tab.key}
+                id={onboardingTargetId}
+                focusRevealProps={tabOnboardingFocusRevealProps}
+              >
+                <span className={styles.onboardingTarget}>{tabLink}</span>
+              </OnboardingTour.Target>
             );
           })}
         </div>

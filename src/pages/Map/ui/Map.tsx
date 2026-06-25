@@ -8,7 +8,8 @@ import { MapCreateMode, selectView, setMapCreateMode } from "@/entities/view";
 import { useAppDispatch, useAppSelector } from "@/shared/lib";
 import { SpotFloatingIndicator } from "@/shared/ui";
 import MapContainer from "@/widgets/map-container";
-import { Flex } from "@mantine/core";
+import { Box, Flex } from "@mantine/core";
+import { OnboardingTour } from "@gfazioli/mantine-onboarding-tour";
 
 export default function Map() {
   const dispatch = useAppDispatch();
@@ -51,20 +52,28 @@ export default function Map() {
       style={{ transition: "all 0.4s ease-in-out" }}
     >
       {!viewState.ui.mapIsFullScreen && (
-        <SpotFloatingIndicator
-          items={navigationItems}
-          value={viewState.map.createMode}
-          setValue={(value) =>
-            dispatch(setMapCreateMode(value as MapCreateMode))
-          }
-          size="lg"
-        />
+        <OnboardingTour.Target id="app-tour-map-modes">
+          <Box>
+            <SpotFloatingIndicator
+              items={navigationItems}
+              value={viewState.map.createMode}
+              setValue={(value) =>
+                dispatch(setMapCreateMode(value as MapCreateMode))
+              }
+              size="lg"
+            />
+          </Box>
+        </OnboardingTour.Target>
       )}
 
-      <MapContainer
-        visited={viewState.map.createMode === "friends" ? true : false}
-        dataMarkers={markers}
-      />
+      <OnboardingTour.Target id="app-tour-map">
+        <Box style={{ flex: 1, minHeight: 200, display: "flex" }}>
+          <MapContainer
+            visited={viewState.map.createMode === "friends" ? true : false}
+            dataMarkers={markers}
+          />
+        </Box>
+      </OnboardingTour.Target>
     </Flex>
   );
 }

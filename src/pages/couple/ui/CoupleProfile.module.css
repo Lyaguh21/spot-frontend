@@ -8,7 +8,9 @@
 }
 
 .mapIsland {
-  flex: 1 0 auto;
+  flex: 0 0 auto;
+  display: flex;
+  height: clamp(400px, 52dvh, 540px);
   min-height: 400px;
   margin: 0 16px 95px 16px;
   overflow: hidden;
@@ -20,6 +22,7 @@
 
 .mapIsland[data-fullscreen] {
   aspect-ratio: auto;
+  height: 100dvh;
   min-height: 100dvh;
   margin: 0;
   border: 0;

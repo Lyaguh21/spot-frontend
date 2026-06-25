@@ -1,4 +1,4 @@
+import { isIntroOnboardingCompleted } from "../onboarding/onboardingStorage";
+
 export const getAuthRedirectPath = () =>
-  localStorage.getItem("onboardingCompleted") === "true"
-    ? "/auth/login"
-    : "/onboarding";
+  isIntroOnboardingCompleted() ? "/auth/login" : "/onboarding";

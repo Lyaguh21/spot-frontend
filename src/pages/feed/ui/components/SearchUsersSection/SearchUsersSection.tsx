@@ -15,6 +15,7 @@ import {
   Transition,
   UnstyledButton,
 } from "@mantine/core";
+import { OnboardingTour } from "@gfazioli/mantine-onboarding-tour";
 import { useDebouncedValue } from "@mantine/hooks";
 import { IconArrowUpRight, IconSearch, IconX } from "@tabler/icons-react";
 import { useEffect, useRef, useState } from "react";
@@ -58,13 +59,15 @@ export default function SearchUsersSection() {
             <Title order={1} className={styles.title}>
               Лента
             </Title>
-            <SpotActionIcon
-              size={52}
-              onClick={() => setIsSearch(true)}
-              aria-label="Найти пользователя"
-            >
-              <IconSearch />
-            </SpotActionIcon>
+            <OnboardingTour.Target id="app-tour-search">
+              <SpotActionIcon
+                size={52}
+                onClick={() => setIsSearch(true)}
+                aria-label="Найти пользователя"
+              >
+                <IconSearch />
+              </SpotActionIcon>
+            </OnboardingTour.Target>
           </>
         )}
 
