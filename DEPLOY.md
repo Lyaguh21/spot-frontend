@@ -5,7 +5,7 @@
 - frontend: `https://github.com/Lyaguh21/spot-frontend.git`
 - backend: `https://github.com/Lyaguh21/spot-backend.git`
 
-На сервере они лежат рядом в `/opt/spot`, а общий env-файл лежит в `/opt/spot/.env`.
+На сервере они лежат рядом в `/opt/spot`, общий env-файл лежит в `/opt/spot/.env`.
 
 ## 1. Установка зависимостей на VPS
 
@@ -65,16 +65,23 @@ git config --global --add safe.directory /opt/spot/spot-backend
 
 Если репозитории приватные, заранее настрой доступ на сервере: GitHub token в credential helper или SSH deploy key.
 
-## 4. Создание `/opt/spot/.env`
+## 4. `/opt/spot/.env`
+
+Твой текущий env почти подходит. В Docker нельзя оставлять `localhost` в `DATABASE_URL`: внутри backend-контейнера это будет сам backend-контейнер, а не Postgres. Для compose host базы должен быть `postgres`.
+
+`POSTGRES_DB`, `POSTGRES_USER` и `POSTGRES_PASSWORD` нужны postgres-контейнеру при первом создании базы. Они должны совпадать с логином, паролем и именем БД в `DATABASE_URL`.
 
 ```bash
 nano /opt/spot/.env
 ```
 
 ```env
-POSTGRES_DB=spot
-POSTGRES_USER=spot_user
+POSTGRES_DB=backend_db
+POSTGRES_USER=admin
 POSTGRES_PASSWORD=replace_with_strong_password
+
+DATABASE_URL="postgresql://admin:replace_with_strong_password@postgres:5432/backend_db?schema=public"
+PORT=3000
 
 FRONTEND_PORT=3000
 VITE_API_URL=/api
@@ -87,13 +94,20 @@ JWT_REFRESH_EXPIRES=7d
 COOKIE_SECURE=true
 COOKIE_SAMESITE=lax
 
-S3_ENDPOINT=https://example.storage.endpoint
-S3_BUCKET=spot-bucket
-S3_ACCESS_KEY=replace_with_access_key
-S3_SECRET_KEY=replace_with_secret_key
+S3_ENDPOINT=https://s3.ru1.storage.beget.cloud
+S3_BUCKET=your_bucket
+S3_ACCESS_KEY=your_s3_access_key
+S3_SECRET_KEY=your_s3_secret_key
+
+SMTP_HOST=smtp.beget.com
+SMTP_PORT=465
+SMTP_USER=your_smtp_user
+SMTP_PASS=your_smtp_password
 ```
 
 Для первой проверки по обычному HTTP через Nginx можно временно поставить `COOKIE_SECURE=false`. После подключения HTTPS верни `COOKIE_SECURE=true` и перезапусти compose.
+
+Если на сервере уже была создана база с другими `POSTGRES_*`, простая смена этих переменных не переименует существующий volume. Для чистого первого деплоя это не проблема; для уже созданной БД нужно мигрировать данные или явно пересоздавать volume.
 
 ## 5. Ручной деплой
 
