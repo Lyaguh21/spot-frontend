@@ -111,21 +111,50 @@ SMTP_PASS=your_smtp_password
 
 ## 5. Ручной деплой
 
+Если на VPS уже лежит старая тестовая база и ее не нужно сохранять, один раз очисти postgres volume до деплоя:
+
 ```bash
 cd /opt/spot/spot-frontend
-
-export BACKEND_DIR=/opt/spot/spot-backend
 export APP_ENV_FILE=/opt/spot/.env
+export BACKEND_DIR=/opt/spot/spot-backend
 
-docker compose --env-file "$APP_ENV_FILE" -f docker-compose.prod.yml build
+docker compose --env-file "$APP_ENV_FILE" -f docker-compose.prod.yml down -v
+```
+
+Потом вводи этот блок целиком в SSH-сессии на VPS. Он обновляет оба репозитория, проверяет, что env и backend Dockerfile на месте, потом собирает и запускает контейнеры.
+
+```bash
+set -e
+
+APP_DIR=/opt/spot
+FRONTEND_DIR="$APP_DIR/spot-frontend"
+BACKEND_DIR="$APP_DIR/spot-backend"
+APP_ENV_FILE="$APP_DIR/.env"
+
+test -f "$APP_ENV_FILE"
+test -f "$FRONTEND_DIR/docker-compose.prod.yml"
+test -f "$BACKEND_DIR/Dockerfile"
+
+cd "$FRONTEND_DIR"
+git pull --ff-only origin main
+
+cd "$BACKEND_DIR"
+git pull --ff-only origin main
+
+export BACKEND_DIR
+export APP_ENV_FILE
+
+cd "$FRONTEND_DIR"
+
+docker compose --env-file "$APP_ENV_FILE" -f docker-compose.prod.yml build frontend backend migrate
 docker compose --env-file "$APP_ENV_FILE" -f docker-compose.prod.yml up -d postgres
+# Это не prisma migrate deploy. Сервис migrate синхронизирует схему через prisma db push --accept-data-loss.
 docker compose --env-file "$APP_ENV_FILE" -f docker-compose.prod.yml --profile migrate run --rm migrate
 docker compose --env-file "$APP_ENV_FILE" -f docker-compose.prod.yml up -d --remove-orphans frontend backend
-
 docker compose --env-file "$APP_ENV_FILE" -f docker-compose.prod.yml ps
 ```
 
-Локально на VPS проверь frontend так:
+Проверка frontend на VPS:
 
 ```bash
 curl -I http://127.0.0.1:3000
@@ -144,7 +173,6 @@ docker compose --env-file "$APP_ENV_FILE" -f docker-compose.prod.yml logs -f fro
 docker compose --env-file "$APP_ENV_FILE" -f docker-compose.prod.yml logs -f backend
 docker compose --env-file "$APP_ENV_FILE" -f docker-compose.prod.yml logs -f postgres
 ```
-
 ## 6. Nginx для домена
 
 ```bash
@@ -205,7 +233,7 @@ Workflow лежит в `spot-frontend/.github/workflows/deploy.yml`. Он по p
 2. Клонирует или обновляет `spot-frontend` и `spot-backend` в `/opt/spot`.
 3. Собирает Docker images.
 4. Поднимает Postgres.
-5. Запускает `prisma migrate deploy`.
+5. Синхронизирует Prisma schema через `prisma db push --accept-data-loss`.
 6. Поднимает frontend и backend.
 
 Создай SSH-ключ для GitHub Actions:
