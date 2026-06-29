@@ -15,6 +15,7 @@ import Onboarding from "@/pages/onboarding";
 import { OnboardingGuard } from "../guards/OnboardingGuard";
 import { AdminGuard } from "../guards/AdminGuard";
 import Admin from "@/pages/admin";
+import Email from "@/pages/email";
 
 const router = createBrowserRouter([
   {
@@ -74,6 +75,14 @@ const router = createBrowserRouter([
         element: <Register />,
       },
     ],
+  },
+  {
+    path: "/confirm-email",
+    element: <Email />,
+  },
+  {
+    path: "/Email",
+    element: <Email />,
   },
   {
     path: "/closed-profile",

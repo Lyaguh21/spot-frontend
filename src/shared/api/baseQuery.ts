@@ -53,5 +53,13 @@ export const baseQueryWithReauth: BaseQueryFn<
     }
   }
 
+  if (
+    //@ts-ignore
+    result.error?.data?.details?.message === "Почта не подтверждена" &&
+    result.error?.status === 403
+  ) {
+    window.location.replace("/confirm-email");
+  }
+
   return result;
 };
