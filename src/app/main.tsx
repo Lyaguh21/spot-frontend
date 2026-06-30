@@ -12,6 +12,7 @@ import { Provider } from "react-redux";
 import { store } from "./providers/store/store";
 import { Router } from "./providers/routes/Router";
 import { theme } from "./theme";
+import PwaInstallPrompt from "./providers/pwa/PwaInstallPrompt";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
@@ -22,6 +23,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
         forceColorScheme="dark"
       >
         <Notifications position="top-center" />
+        <PwaInstallPrompt />
         <Router />
       </MantineProvider>
     </Provider>
