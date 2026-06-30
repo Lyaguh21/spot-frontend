@@ -68,6 +68,11 @@ type PhotoItem = {
   isLocal?: boolean;
 };
 
+type PhotoUrlEntry = {
+  src: string;
+  url: string;
+};
+
 const DEFAULT_MAX_SIZE_MB = 10;
 
 const getFileId = (file: File) =>
@@ -90,22 +95,97 @@ const formatFileSize = (size?: number) => {
   return `${megabytes.toFixed(megabytes >= 10 ? 0 : 1)} МБ`;
 };
 
-const toUrlList = (value: string | string[] | null | undefined) => {
+const unwrapSerializedPhotoValue = (value: string): string | string[] => {
+  const trimmedValue = value.trim();
+
+  if (!trimmedValue.startsWith("{") && !trimmedValue.startsWith("[")) {
+    return value;
+  }
+
+  try {
+    const parsed = JSON.parse(trimmedValue) as unknown;
+
+    if (typeof parsed === "string" || Array.isArray(parsed)) {
+      return parsed as string | string[];
+    }
+
+    if (parsed && typeof parsed === "object" && "data" in parsed) {
+      const data = (parsed as { data?: unknown }).data;
+
+      if (typeof data === "string" || Array.isArray(data)) {
+        return data as string | string[];
+      }
+    }
+  } catch {
+    return value;
+  }
+
+  return value;
+};
+
+const removeUrlTransientParts = (url: string) => {
+  try {
+    const parsedUrl = new URL(url);
+    parsedUrl.search = "";
+    parsedUrl.hash = "";
+
+    return parsedUrl.toString();
+  } catch {
+    return url.split("#")[0].split("?")[0];
+  }
+};
+
+const toPhotoEntries = (
+  value: string | string[] | null | undefined,
+): PhotoUrlEntry[] => {
   if (!value) {
     return [];
   }
 
-  return Array.isArray(value) ? value : [value];
+  if (Array.isArray(value)) {
+    return value.flatMap(toPhotoEntries);
+  }
+
+  const unwrappedValue = unwrapSerializedPhotoValue(value);
+
+  if (Array.isArray(unwrappedValue)) {
+    return unwrappedValue.flatMap(toPhotoEntries);
+  }
+
+  const src = unwrappedValue.trim();
+
+  if (!src) {
+    return [];
+  }
+
+  return [
+    {
+      src,
+      url: removeUrlTransientParts(src),
+    },
+  ];
 };
 
-const createItemsFromValue = (value: string | string[] | null | undefined) =>
-  toUrlList(value).map((url, index) => ({
-    id: `${url}-${index}`,
-    name: getFileNameFromUrl(url),
-    src: url,
-    status: "uploaded" as const,
-    url,
-  }));
+const toUrlList = (value: string | string[] | null | undefined) =>
+  toPhotoEntries(value).map((entry) => entry.url);
+
+const createItemsFromValue = (
+  value: string | string[] | null | undefined,
+  reusableItems: PhotoItem[] = [],
+) =>
+  toPhotoEntries(value).map(({ src, url }, index) => {
+    const reusableItem = reusableItems.find((item) => item.url === url);
+    const shouldKeepLocalPreview = reusableItem?.isLocal && reusableItem.src;
+
+    return {
+      id: reusableItem?.id ?? `${url}-${index}`,
+      isLocal: shouldKeepLocalPreview ? true : undefined,
+      name: getFileNameFromUrl(url),
+      src: shouldKeepLocalPreview ? reusableItem.src : src,
+      status: "uploaded" as const,
+      url,
+    };
+  });
 
 export default function SpotPhotoInput({
   accept = "image/*",
@@ -165,9 +245,40 @@ export default function SpotPhotoInput({
     localPreviewUrlsRef.current = [];
   };
 
+  const revokeLocalPreview = (previewUrl: string) => {
+    if (!localPreviewUrlsRef.current.includes(previewUrl)) {
+      return;
+    }
+
+    URL.revokeObjectURL(previewUrl);
+    localPreviewUrlsRef.current = localPreviewUrlsRef.current.filter(
+      (currentPreviewUrl) => currentPreviewUrl !== previewUrl,
+    );
+  };
+
+  const revokeUnusedLocalPreviews = (
+    currentItems: PhotoItem[],
+    nextItems: PhotoItem[],
+  ) => {
+    currentItems.forEach((item) => {
+      if (
+        item.isLocal &&
+        !nextItems.some((nextItem) => nextItem.src === item.src)
+      ) {
+        revokeLocalPreview(item.src);
+      }
+    });
+  };
+
   useEffect(() => {
     if (value !== undefined) {
-      setItems(createItemsFromValue(value));
+      setItems((current) => {
+        const nextItems = createItemsFromValue(value, current);
+
+        revokeUnusedLocalPreviews(current, nextItems);
+
+        return nextItems;
+      });
     }
   }, [value]);
 
@@ -240,10 +351,15 @@ export default function SpotPhotoInput({
 
   const removeItem = (id: string) => {
     setItems((current) => {
+      const removedItem = current.find((item) => item.id === id);
       const nextItems = current.filter((item) => item.id !== id);
       const nextValue = nextItems
         .filter((item) => item.status === "uploaded" && item.url)
         .map((item) => item.url as string);
+
+      if (removedItem?.isLocal) {
+        revokeLocalPreview(removedItem.src);
+      }
 
       commitValue(multiple ? nextValue : (nextValue[0] ?? null));
 
@@ -309,6 +425,10 @@ export default function SpotPhotoInput({
       return;
     }
 
+    if (!multiple) {
+      revokeLocalPreviews();
+    }
+
     const uploading = createUploadingItems(files);
     const baseItems = multiple ? items : [];
     const nextUploadingItems = multiple
@@ -324,9 +444,9 @@ export default function SpotPhotoInput({
       const uploadedUrls = toUrlList(uploadedValue);
       const uploaded = uploading.map((item, index) => ({
         ...item,
-        isLocal: false,
+        isLocal: true,
         status: "uploaded" as const,
-        src: uploadedUrls[index] ?? item.src,
+        src: item.src,
         url: uploadedUrls[index] ?? item.src,
       }));
       const nextItems = multiple ? [...baseItems, ...uploaded] : uploaded;
@@ -336,7 +456,6 @@ export default function SpotPhotoInput({
 
       setItems(nextItems);
       commitValue(multiple ? nextValue : (nextValue[0] ?? null));
-      revokeLocalPreviews();
     } catch (caughtError) {
       setItems((current) =>
         current.map((item) =>

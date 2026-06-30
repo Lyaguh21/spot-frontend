@@ -8,6 +8,13 @@ export type UploadImgRequest =
       fieldName?: string;
     };
 
+type UploadImgResponse =
+  | string
+  | string[]
+  | {
+      data: string | string[];
+    };
+
 const buildUploadFormData = (request: UploadImgRequest) => {
   const formData = new FormData();
   const files =
@@ -32,8 +39,11 @@ const imgApi = baseApi.injectEndpoints({
         url: "/storage/upload",
         method: "POST",
         body: buildUploadFormData(files),
-        responseHandler: "text",
       }),
+      transformResponse: (response: UploadImgResponse) =>
+        typeof response === "object" && !Array.isArray(response)
+          ? response.data
+          : response,
     }),
   }),
 });
