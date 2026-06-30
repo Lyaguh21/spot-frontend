@@ -16,6 +16,10 @@
   -webkit-backdrop-filter: blur(24px) saturate(1.18);
 }
 
+:global([data-onboarding-tour-overlay]) {
+  transition: none !important;
+}
+
 :global(
     .mantine-Popover-dropdown:has(
         .mantine-OnboardingTourPopoverContent-popoverContent

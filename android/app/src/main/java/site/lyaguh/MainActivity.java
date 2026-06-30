@@ -1,23 +1,31 @@
 package site.lyaguh;
 
+import android.content.pm.ApplicationInfo;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
+import android.webkit.WebView;
 
 import androidx.core.view.WindowCompat;
 
 import com.getcapacitor.BridgeActivity;
 
 public class MainActivity extends BridgeActivity {
-    private static final int SPOT_BACKGROUND_COLOR = Color.parseColor("#040B1A");
+    private static final int SPOT_BACKGROUND_COLOR = Color.parseColor("#051634");
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppTheme_NoActionBar);
+        configureWebViewDebugging();
         super.onCreate(savedInstanceState);
         configureSystemBars();
+    }
+
+    private void configureWebViewDebugging() {
+        boolean isDebuggable = (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
+        WebView.setWebContentsDebuggingEnabled(isDebuggable);
     }
 
     private void configureSystemBars() {

@@ -169,6 +169,34 @@ export default function AppOnboardingTour({
     }
   }, [canRun, started]);
 
+  useEffect(() => {
+    if (!started) {
+      return;
+    }
+
+    const scrollY = window.scrollY;
+    const previousHtmlOverflow = document.documentElement.style.overflow;
+    const previousBodyOverflow = document.body.style.overflow;
+    const previousBodyPosition = document.body.style.position;
+    const previousBodyTop = document.body.style.top;
+    const previousBodyWidth = document.body.style.width;
+
+    document.documentElement.style.overflow = "hidden";
+    document.body.style.overflow = "hidden";
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.width = "100%";
+
+    return () => {
+      document.documentElement.style.overflow = previousHtmlOverflow;
+      document.body.style.overflow = previousBodyOverflow;
+      document.body.style.position = previousBodyPosition;
+      document.body.style.top = previousBodyTop;
+      document.body.style.width = previousBodyWidth;
+      window.scrollTo(0, scrollY);
+    };
+  }, [started]);
+
   const finishFeaturesOnboarding = () => {
     completeFeaturesOnboarding();
     setStarted(false);
@@ -194,8 +222,17 @@ export default function AppOnboardingTour({
         popoverContent: styles.popoverContent,
       }}
       focusRevealProps={{
-        withReveal: true,
+        withReveal: false,
         disableTargetInteraction: true,
+        revealProps: {
+          duration: 0,
+          cancelable: false,
+          offset: 0,
+        },
+        transitionProps: {
+          duration: 0,
+          exitDuration: 0,
+        },
         overlayProps: {
           color: "#061225",
           backgroundOpacity: 0.68,

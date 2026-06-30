@@ -1,7 +1,11 @@
-const CACHE_NAME = "spot-cache-v4";
+const CACHE_NAME = "spot-cache-v6";
 const ASSETS = [
   "/index.html",
   "/manifest.webmanifest",
+  "/icons/Logo.svg",
+  "/icons/FullLogo.svg",
+  "/icons/MainAppLogo.png",
+  "/icons/MainAppLogo-192.png",
   "/icons/favicon-16.png",
   "/icons/favicon-32.png",
   "/icons/apple-touch-icon.png",
@@ -13,6 +17,27 @@ const ASSETS = [
   "/icons/icon-256.png",
   "/icons/icon-512.png",
 ];
+
+async function precacheAssets() {
+  const cache = await caches.open(CACHE_NAME);
+
+  await Promise.all(
+    ASSETS.map(async (asset) => {
+      try {
+        const response = await fetch(asset, { cache: "reload" });
+
+        if (!response.ok) {
+          console.warn(`[sw] skip precache ${asset}: ${response.status}`);
+          return;
+        }
+
+        await cache.put(asset, response);
+      } catch (error) {
+        console.warn(`[sw] skip precache ${asset}`, error);
+      }
+    }),
+  );
+}
 
 async function fetchAndCache(request) {
   const response = await fetch(request);
@@ -49,10 +74,7 @@ async function cacheFirst(request) {
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches
-      .open(CACHE_NAME)
-      .then((cache) => cache.addAll(ASSETS))
-      .then(() => self.skipWaiting()),
+    precacheAssets().then(() => self.skipWaiting()),
   );
 });
 
