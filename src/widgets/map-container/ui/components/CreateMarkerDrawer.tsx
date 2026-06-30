@@ -367,7 +367,7 @@ export default function CreateMarkerDrawer({
 
           <TextInput
             label="Название места"
-            placeholder="Например, Уютное кафе"
+            placeholder="Шаурма от души"
             maxLength={80}
             rightSection={
               <Text c="#7f91c4" size="xs">

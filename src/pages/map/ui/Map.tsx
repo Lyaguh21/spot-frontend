@@ -34,8 +34,8 @@ export default function Map() {
     viewState.map.createMode === "couple"
       ? coupleMarkers
       : viewState.map.createMode === "friends"
-        ? followingMarkers
-        : userMarkers;
+      ? followingMarkers
+      : userMarkers;
 
   const navigationItems = [
     { label: "Своя", value: "my" },
