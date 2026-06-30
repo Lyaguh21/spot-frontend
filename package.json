@@ -6,11 +6,14 @@
   "scripts": {
     "dev": "vite --host",
     "build": "vite build",
+    "build:mobile": "vite build --mode mobile",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "build:strict": "npm run typecheck && vite build"
   },
   "dependencies": {
+    "@capacitor/android": "^8.4.1",
+    "@capacitor/core": "^8.4.1",
     "@gfazioli/mantine-onboarding-tour": "^4.0.6",
     "@mantine-bites/lightbox": "^2.0.0",
     "@mantine/core": "^9.3.0",
@@ -31,6 +34,8 @@
     "react-router-dom": "^7.8.2"
   },
   "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
+    "@capacitor/cli": "^8.4.1",
     "@types/node": "^25.3.3",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",

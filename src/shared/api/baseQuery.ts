@@ -4,15 +4,47 @@ import type {
   FetchArgs,
   FetchBaseQueryError,
 } from "@reduxjs/toolkit/query";
+import { Capacitor } from "@capacitor/core";
 import { userLogout } from "@/entities/user/model/userSlice";
 
-const runtimeBaseUrl =
-  typeof window !== "undefined"
-    ? `${window.location.protocol}//${window.location.hostname}:3000`
-    : "http://localhost:3000";
+const getRuntimeWebBaseUrl = () => {
+  if (typeof window === "undefined") {
+    return "http://localhost:3000";
+  }
+
+  return `${window.location.protocol}//${window.location.hostname}:3000`;
+};
+
+const getWebApiBaseUrl = () => {
+  const configuredApiUrl = import.meta.env.VITE_API_URL;
+
+  if (import.meta.env.DEV) {
+    return configuredApiUrl && configuredApiUrl !== "/api"
+      ? configuredApiUrl
+      : getRuntimeWebBaseUrl();
+  }
+
+  return configuredApiUrl ?? "/api";
+};
+
+const getApiBaseUrl = () => {
+  if (Capacitor.isNativePlatform()) {
+    const mobileApiUrl = import.meta.env.VITE_MOBILE_API_URL;
+
+    if (!mobileApiUrl) {
+      throw new Error(
+        "VITE_MOBILE_API_URL is required for Capacitor builds. Example: https://api.example.com",
+      );
+    }
+
+    return mobileApiUrl;
+  }
+
+  return getWebApiBaseUrl();
+};
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: import.meta.env.VITE_API_URL ?? runtimeBaseUrl,
+  baseUrl: getApiBaseUrl(),
   credentials: "include",
 });
 

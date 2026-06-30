@@ -1,13 +1,10 @@
-import { Box, Center, Group, Modal, Stack, Text, Title } from "@mantine/core";
+import { Box, Group, Modal, Stack, Text, Title } from "@mantine/core";
 import {
   IconBook,
   IconChevronRightFilled,
   IconDeviceMobile,
   IconDownload,
-  IconPlus,
-  IconShare,
   IconShare2,
-  IconSquareChevronRight,
 } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 
