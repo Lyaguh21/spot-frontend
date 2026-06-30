@@ -1,7 +1,13 @@
 import { createTheme } from "@mantine/core";
 
+const fontFamily = '"Nunito", sans-serif';
+
 export const theme = createTheme({
   primaryColor: "primary",
+  fontFamily,
+  headings: {
+    fontFamily,
+  },
 
   colors: {
     dimmedColor: [
@@ -31,7 +37,7 @@ export const theme = createTheme({
       "#60109c",
     ],
 
-    blue: [
+    spotBlue: [
       //6
       "#e5f5ff",
       "#d0e5ff",

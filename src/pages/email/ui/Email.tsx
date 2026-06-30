@@ -1,19 +1,30 @@
 import { Anchor, Box, Center, Group, Stack, Text, Title } from "@mantine/core";
 import { IconCheck, IconShieldCheck } from "@tabler/icons-react";
-import { type FormEvent, useState } from "react";
-import { useSearchParams } from "react-router-dom";
-
+import { useState } from "react";
 import { SpotButton, SpotCodeInput, SpotGlassCard } from "@/shared/ui";
-
 import classes from "./Email.module.css";
+import { selectUser } from "@/entities/user";
+import { useAppSelector, useNotifications } from "@/shared/lib";
+import { useConfirmEmailMutation } from "@/entities/auth";
+import { useNavigate } from "react-router-dom";
 
 export default function Email() {
+  const navigate = useNavigate();
+  const { showSuccess, showError } = useNotifications();
+  const [confirmEmail] = useConfirmEmailMutation();
+  const user = useAppSelector(selectUser);
   const [code, setCode] = useState("");
-  const [searchParams] = useSearchParams();
-  const email = "example@mail.com";
+  const email = user.email || "";
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    try {
+      const data = await confirmEmail({ email, code }).unwrap();
+      showSuccess("Почта успешно подтверждена");
+      navigate("/", { replace: true });
+    } catch (error) {
+      showError("Что-то пошло не так");
+    }
   };
 
   return (
@@ -33,7 +44,10 @@ export default function Email() {
                 <Box className={classes.envelopeRight} />
                 <Box className={classes.envelopeFront} />
               </Box>
-              <Center className={classes.checkBadge}>
+              <Center
+                className={classes.checkBadge}
+                bg={"var(--mantine-color-spotBlue-5)"}
+              >
                 <IconCheck size={30} stroke={3.4} />
               </Center>
             </Box>
@@ -87,9 +101,9 @@ export default function Email() {
             >
               Отправить снова
             </Anchor>{" "}
-            <Text component="span" inherit>
+            {/* <Text component="span" inherit>
               (00:45)
-            </Text>
+            </Text> */}
           </Text>
         </Stack>
       </SpotGlassCard>

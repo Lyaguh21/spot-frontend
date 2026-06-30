@@ -1,5 +1,6 @@
 import { baseApi } from "@/shared/api";
 import {
+  IConfirmEmailRequest,
   ILoginRequest,
   IRegisterRequest,
   IStatusResponse,
@@ -48,6 +49,15 @@ export const authApi = baseApi.injectEndpoints({
       query: () => "/auth/status",
       providesTags: [{ type: "User" }],
     }),
+
+    confirmEmail: build.mutation<void, IConfirmEmailRequest>({
+      query: (data) => ({
+        url: "/auth/verify-email",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: [{ type: "User" }],
+    }),
   }),
 });
 
@@ -56,4 +66,5 @@ export const {
   useLoginMutation,
   useLogoutMutation,
   useStatusQuery,
+  useConfirmEmailMutation,
 } = authApi;

@@ -3,4 +3,5 @@ export {
   useLoginMutation,
   useLogoutMutation,
   useStatusQuery,
+  useConfirmEmailMutation,
 } from "./api/authApi";

@@ -4,7 +4,7 @@ import { setUser } from "@/entities/user";
 
 import { ILoginRequest } from "@/entities/auth/model/type";
 import { useAppDispatch, useNotifications } from "@/shared/lib";
-import { Box, Center, Anchor, Stack, Text } from "@mantine/core";
+import { Box, Center, Anchor, Stack, Text, Title } from "@mantine/core";
 import { useLoginMutation } from "@/entities/auth";
 import { SpotButton, SpotTextInput } from "@/shared/ui";
 import SpotPasswordInput from "@/shared/ui/SpotPasswordInput/SpotPasswordInput";
@@ -52,13 +52,18 @@ export default function Login() {
     >
       <Stack gap="xl">
         <Center>
-          <img src="/icons/FullLogo.svg" alt="Logo" width={"80%"} />
+          <img src="/icons/FullLogo.svg" alt="Logo" width={"90%"} />
         </Center>
 
         <Stack gap={0}>
-          <Text fz="28" c="white" ta="center" style={{ letterSpacing: "1px" }}>
+          <Title
+            c="white"
+            ta="center"
+            style={{ letterSpacing: "1px" }}
+            order={1}
+          >
             Вход в аккаунт
-          </Text>
+          </Title>
           <Text
             fz="16"
             fw={600}
@@ -66,7 +71,7 @@ export default function Login() {
             ta="center"
             style={{ letterSpacing: "1px" }}
           >
-            С возвращением! Пожалуйста, войдите в свой аккаунт.
+            С возвращением в SPOT!
           </Text>
         </Stack>
 

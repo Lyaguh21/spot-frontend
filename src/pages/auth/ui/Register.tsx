@@ -3,7 +3,7 @@ import { setUser } from "@/entities/user/model/userSlice";
 
 import { useAppDispatch, useNotifications } from "@/shared/lib";
 import { SpotTextInput, SpotPasswordInput, SpotButton } from "@/shared/ui";
-import { Box, Center, Anchor, Stack, Text } from "@mantine/core";
+import { Box, Center, Anchor, Stack, Text, Title } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useState } from "react";
 
@@ -121,9 +121,14 @@ export default function Register() {
         </Center>
 
         <Stack gap={0}>
-          <Text fz="28" c="white" ta="center" style={{ letterSpacing: "1px" }}>
+          <Title
+            c="white"
+            ta="center"
+            style={{ letterSpacing: "1px" }}
+            order={1}
+          >
             Создание аккаунта
-          </Text>
+          </Title>
           <Text
             fz="16"
             fw={600}

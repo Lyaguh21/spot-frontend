@@ -13,7 +13,9 @@ interface IUserSliceState extends Partial<
     | "partner"
     | "role"
   >
-> {}
+> {
+  isEmailVerified?: boolean;
+}
 
 const initialState: IUserSliceState = {
   id: undefined,
@@ -24,6 +26,7 @@ const initialState: IUserSliceState = {
   role: undefined,
   coupleId: null,
   partner: null,
+  isEmailVerified: undefined,
 };
 
 export const userSlice = createSlice({
@@ -39,6 +42,7 @@ export const userSlice = createSlice({
       state.coupleId = action.payload.coupleId;
       state.partner = action.payload.partner;
       state.role = action.payload.role;
+      state.isEmailVerified = action.payload.isEmailVerified;
     },
 
     userLogout: (state) => {
@@ -50,6 +54,7 @@ export const userSlice = createSlice({
       state.coupleId = null;
       state.partner = null;
       state.role = undefined;
+      state.isEmailVerified = undefined;
     },
   },
 });
