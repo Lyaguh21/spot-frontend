@@ -1,4 +1,4 @@
-const CACHE_NAME = "spot-cache-v1";
+const CACHE_NAME = "spot-cache-v2";
 const ASSETS = ["/", "/index.html", "/manifest.webmanifest"];
 
 self.addEventListener("install", (event) => {
@@ -36,6 +36,10 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
+  if (url.pathname.startsWith("/api/") || url.pathname.startsWith("/auth/")) {
+    return;
+  }
+
   event.respondWith(
     caches.match(request).then((cached) => {
       if (cached) {
@@ -44,6 +48,10 @@ self.addEventListener("fetch", (event) => {
 
       return fetch(request)
         .then((response) => {
+          if (!response.ok) {
+            return response;
+          }
+
           const responseClone = response.clone();
           caches.open(CACHE_NAME).then((cache) => {
             cache.put(request, responseClone);

@@ -283,12 +283,6 @@
 
 .submitButton:hover {
   filter: brightness(1.06);
-  background: linear-gradient(
-    135deg,
-    #c072ff 0%,
-    #9457ef 52%,
-    #7947e4 100%
-  ) !important;
   box-shadow:
     0 20px 38px rgba(95, 43, 190, 0.48),
     inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;

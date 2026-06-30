@@ -46,7 +46,10 @@ export const authApi = baseApi.injectEndpoints({
     }),
 
     status: build.query<IStatusResponse, void>({
-      query: () => "/auth/status",
+      query: () => ({
+        url: "/auth/status",
+        cache: "no-store",
+      }),
       providesTags: [{ type: "User" }],
     }),
 

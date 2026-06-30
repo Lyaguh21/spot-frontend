@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 export default function Email() {
   const navigate = useNavigate();
   const { showSuccess, showError } = useNotifications();
-  const [confirmEmail] = useConfirmEmailMutation();
+  const [confirmEmail, { isLoading }] = useConfirmEmailMutation();
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
   const [code, setCode] = useState("");
@@ -88,6 +88,8 @@ export default function Email() {
               fullWidth
               size="lg"
               type="submit"
+              loading={isLoading}
+              disabled={isLoading}
             >
               Подтвердить
             </SpotButton>
