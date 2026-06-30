@@ -45,6 +45,10 @@ export const userSlice = createSlice({
       state.isEmailVerified = action.payload.isEmailVerified;
     },
 
+    confirmUserEmail: (state) => {
+      state.isEmailVerified = true;
+    },
+
     userLogout: (state) => {
       state.id = undefined;
       state.name = undefined;
@@ -59,5 +63,5 @@ export const userSlice = createSlice({
   },
 });
 
-export const { setUser, userLogout } = userSlice.actions;
+export const { setUser, userLogout, confirmUserEmail } = userSlice.actions;
 export const userReducer = userSlice.reducer;

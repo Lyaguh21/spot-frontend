@@ -3,8 +3,8 @@ import { IconCheck, IconShieldCheck } from "@tabler/icons-react";
 import { useState } from "react";
 import { SpotButton, SpotCodeInput, SpotGlassCard } from "@/shared/ui";
 import classes from "./Email.module.css";
-import { selectUser } from "@/entities/user";
-import { useAppSelector, useNotifications } from "@/shared/lib";
+import { confirmUserEmail, selectUser } from "@/entities/user";
+import { useAppDispatch, useAppSelector, useNotifications } from "@/shared/lib";
 import { useConfirmEmailMutation } from "@/entities/auth";
 import { useNavigate } from "react-router-dom";
 
@@ -12,6 +12,7 @@ export default function Email() {
   const navigate = useNavigate();
   const { showSuccess, showError } = useNotifications();
   const [confirmEmail] = useConfirmEmailMutation();
+  const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
   const [code, setCode] = useState("");
   const email = user.email || "";
@@ -19,7 +20,8 @@ export default function Email() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-      const data = await confirmEmail({ email, code }).unwrap();
+      await confirmEmail({ email, code }).unwrap();
+      dispatch(confirmUserEmail());
       showSuccess("Почта успешно подтверждена");
       navigate("/", { replace: true });
     } catch (error) {

@@ -1,4 +1,10 @@
-export { userLogout, setUser, userReducer, userSlice } from "./model/userSlice";
+export {
+  userLogout,
+  setUser,
+  confirmUserEmail,
+  userReducer,
+  userSlice,
+} from "./model/userSlice";
 export {
   useGetProfileQuery,
   useGetUserByUsernameQuery,
