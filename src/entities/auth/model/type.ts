@@ -27,3 +27,7 @@ export interface IConfirmEmailRequest {
   email: string;
   code: string;
 }
+
+export interface IConfirmEmailResponse {
+  message: string;
+}

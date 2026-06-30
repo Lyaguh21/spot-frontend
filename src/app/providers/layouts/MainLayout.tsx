@@ -3,6 +3,7 @@ import TabBar from "./components/TabBar/TabBar";
 import { selectView } from "@/entities/view";
 import { useAppSelector } from "@/shared/lib";
 import AppOnboardingTour from "../onboarding/AppOnboardingTour";
+import PwaInstallPrompt from "../pwa/PwaInstallPrompt";
 
 export default function MainLayout() {
   const viewState = useAppSelector(selectView);
@@ -10,6 +11,7 @@ export default function MainLayout() {
     <AppOnboardingTour>
       <Outlet />
       {viewState.ui.mapIsFullScreen ? undefined : <TabBar />}
+      <PwaInstallPrompt />
     </AppOnboardingTour>
   );
 }

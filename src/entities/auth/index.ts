@@ -1,4 +1,5 @@
 export {
+  authApi,
   useRegisterMutation,
   useLoginMutation,
   useLogoutMutation,

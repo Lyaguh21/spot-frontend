@@ -3,9 +3,9 @@ import { IconCheck, IconShieldCheck } from "@tabler/icons-react";
 import { useCallback, useRef, useState } from "react";
 import { SpotButton, SpotCodeInput, SpotGlassCard } from "@/shared/ui";
 import classes from "./Email.module.css";
-import { confirmUserEmail, selectUser } from "@/entities/user";
+import { confirmUserEmail, selectUser, setUser } from "@/entities/user";
 import { useAppDispatch, useAppSelector, useNotifications } from "@/shared/lib";
-import { useConfirmEmailMutation } from "@/entities/auth";
+import { authApi, useConfirmEmailMutation } from "@/entities/auth";
 
 export default function Email() {
   const { showSuccess, showError } = useNotifications();
@@ -31,6 +31,20 @@ export default function Email() {
       try {
         await confirmEmail({ email, code: nextCode }).unwrap();
         dispatch(confirmUserEmail());
+        try {
+          const status = await dispatch(
+            authApi.endpoints.status.initiate(undefined, {
+              forceRefetch: true,
+              subscribe: false,
+            }),
+          ).unwrap();
+
+          if (status.authenticated) {
+            dispatch(setUser(status.user));
+          }
+        } catch {
+          // Local state is already verified; the next page load will refetch status.
+        }
         showSuccess("Почта успешно подтверждена");
         window.location.replace("/");
       } catch (error) {
