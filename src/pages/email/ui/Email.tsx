@@ -1,32 +1,49 @@
 import { Anchor, Box, Center, Group, Stack, Text, Title } from "@mantine/core";
 import { IconCheck, IconShieldCheck } from "@tabler/icons-react";
-import { useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { SpotButton, SpotCodeInput, SpotGlassCard } from "@/shared/ui";
 import classes from "./Email.module.css";
 import { confirmUserEmail, selectUser } from "@/entities/user";
 import { useAppDispatch, useAppSelector, useNotifications } from "@/shared/lib";
 import { useConfirmEmailMutation } from "@/entities/auth";
-import { useNavigate } from "react-router-dom";
 
 export default function Email() {
-  const navigate = useNavigate();
   const { showSuccess, showError } = useNotifications();
   const [confirmEmail, { isLoading }] = useConfirmEmailMutation();
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
   const [code, setCode] = useState("");
+  const submittedCodeRef = useRef<string | null>(null);
   const email = user.email || "";
+
+  const confirmCode = useCallback(
+    async (nextCode: string) => {
+      if (nextCode.length !== 6 || isLoading) {
+        return;
+      }
+
+      if (submittedCodeRef.current === nextCode) {
+        return;
+      }
+
+      submittedCodeRef.current = nextCode;
+
+      try {
+        await confirmEmail({ email, code: nextCode }).unwrap();
+        dispatch(confirmUserEmail());
+        showSuccess("Почта успешно подтверждена");
+        window.location.replace("/");
+      } catch (error) {
+        submittedCodeRef.current = null;
+        showError("Что-то пошло не так");
+      }
+    },
+    [confirmEmail, dispatch, email, isLoading, showError, showSuccess],
+  );
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    try {
-      await confirmEmail({ email, code }).unwrap();
-      dispatch(confirmUserEmail());
-      showSuccess("Почта успешно подтверждена");
-      navigate("/", { replace: true });
-    } catch (error) {
-      showError("Что-то пошло не так");
-    }
+    void confirmCode(code);
   };
 
   return (
@@ -75,9 +92,11 @@ export default function Email() {
             <SpotCodeInput
               value={code}
               onChange={setCode}
+              onComplete={(nextCode) => void confirmCode(nextCode)}
               length={6}
               type="number"
               autoFocus
+              disabled={isLoading}
             />
 
             <Text className={classes.expires}>Код действует 10 минут</Text>
