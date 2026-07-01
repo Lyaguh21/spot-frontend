@@ -39,7 +39,7 @@ services:
       dockerfile: Dockerfile
       target: migrate
     image: spot-backend-migrate
-    command: ["npx", "prisma", "db", "push", "--accept-data-loss"]
+    command: ["npx", "prisma", "migrate", "deploy"]
     restart: "no"
     env_file:
       - ${APP_ENV_FILE:-.env}
