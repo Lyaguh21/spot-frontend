@@ -90,7 +90,7 @@ export default function HeaderProfile({
 
         <Flex gap="lg" align="center" mt="lg">
           <SpotAvatar size="100" src={userData?.avatarUrl}>
-            {userData?.username.charAt(0)}
+            {userData?.name.charAt(0)}
           </SpotAvatar>
 
           <Stack gap={0}>

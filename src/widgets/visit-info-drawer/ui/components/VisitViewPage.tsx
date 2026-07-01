@@ -122,8 +122,8 @@ export function VisitViewPage({
             {selectedVisit.status === "PLANNED"
               ? "В планах"
               : isCoupleMode
-                ? "Посетили"
-                : "Посетил(а)"}
+              ? "Посетили"
+              : "Посетил(а)"}
           </Badge>
           {selectedVisit.isFavorite && <Badge c="pink">Любимое</Badge>}
         </Group>

@@ -13,7 +13,7 @@ export default function UserIdentity({
   const content = (
     <Group gap={10} wrap="nowrap" className={styles.identity}>
       <SpotAvatar src={user?.avatarUrl} alt={user?.username} size={42}>
-        {user?.username?.[0]?.toUpperCase()}
+        {user?.name?.[0]?.toUpperCase()}
       </SpotAvatar>
       <Stack gap={1} className={styles.identityCopy}>
         <Text className={styles.username}>

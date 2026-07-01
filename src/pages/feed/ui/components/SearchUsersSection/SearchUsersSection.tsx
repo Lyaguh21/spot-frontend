@@ -161,7 +161,7 @@ export default function SearchUsersSection() {
                             src={user.avatarUrl}
                             alt={user.username}
                           >
-                            {user.username.charAt(0)}
+                            {user.name.charAt(0)}
                           </SpotAvatar>
                           <Stack className={styles.userText} gap={1}>
                             <Text className={styles.userName} truncate>

@@ -36,13 +36,13 @@ export default function CoupleCard({
               size={52}
               src={firstUser?.avatarUrl}
             >
-              {firstUser?.username?.charAt(0)}
+              {firstUser?.name?.charAt(0)}
             </SpotAvatar>
             <SpotAvatar
               size={52}
               src={secondUser?.avatarUrl}
             >
-              {secondUser?.username?.charAt(0)}
+              {secondUser?.name?.charAt(0)}
             </SpotAvatar>
           </Avatar.Group>
           <Stack gap={2}>

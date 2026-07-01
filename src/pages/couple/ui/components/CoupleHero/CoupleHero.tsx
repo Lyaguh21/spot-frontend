@@ -28,7 +28,7 @@ export default function CoupleHero({ members }: { members?: ICoupleMember[] }) {
               navigate(`/profile/${first?.username}`);
             }}
           >
-            {first?.username?.charAt(0)}
+            {first?.name?.charAt(0)}
           </SpotAvatar>
           <Text className={styles.memberName}>{first?.name ?? ""}</Text>
         </Stack>
@@ -43,7 +43,7 @@ export default function CoupleHero({ members }: { members?: ICoupleMember[] }) {
               navigate(`/profile/${second?.username}`);
             }}
           >
-            {second?.username?.charAt(0)}
+            {second?.name?.charAt(0)}
           </SpotAvatar>
           <Text className={styles.memberName}>{second?.name ?? ""}</Text>
         </Stack>

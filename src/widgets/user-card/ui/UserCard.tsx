@@ -14,8 +14,12 @@ export default function UserCard({ userData }: { userData: IUserState }) {
     >
       <Flex justify="space-between" align="center">
         <Flex gap="md" align="center">
-          <SpotAvatar size="48" src={userData.avatarUrl} alt={userData.username}>
-            {userData.username.charAt(0)}
+          <SpotAvatar
+            size="48"
+            src={userData.avatarUrl}
+            alt={userData.username}
+          >
+            {userData.name.charAt(0)}
           </SpotAvatar>
 
           <Stack gap={0}>

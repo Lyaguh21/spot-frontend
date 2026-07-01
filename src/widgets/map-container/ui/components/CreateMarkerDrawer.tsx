@@ -421,9 +421,9 @@ export default function CreateMarkerDrawer({
                         size={40}
                         radius="xl"
                         src={participant?.avatarUrl}
-                        alt={participant?.nickname ?? rating.nickname}
+                        alt={participant?.name ?? rating.nickname}
                       >
-                        {(participant?.nickname ?? rating.nickname)
+                        {(participant?.name ?? rating.nickname)
                           .charAt(0)
                           .toUpperCase()}
                       </SpotAvatar>
