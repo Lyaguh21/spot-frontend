@@ -15,6 +15,16 @@ type UploadImgResponse =
       data: string | string[];
     };
 
+const isWrappedUploadResponse = (
+  response: UploadImgResponse,
+): response is { data: string | string[] } =>
+  Boolean(
+    response &&
+      typeof response === "object" &&
+      !Array.isArray(response) &&
+      "data" in response,
+  );
+
 const buildUploadFormData = (request: UploadImgRequest) => {
   const formData = new FormData();
   const files =
@@ -41,9 +51,7 @@ const imgApi = baseApi.injectEndpoints({
         body: buildUploadFormData(files),
       }),
       transformResponse: (response: UploadImgResponse) =>
-        typeof response === "object" && !Array.isArray(response)
-          ? response.data
-          : response,
+        isWrappedUploadResponse(response) ? response.data : response,
     }),
   }),
 });

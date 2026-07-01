@@ -62,6 +62,15 @@ export const authApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [{ type: "User" }],
     }),
+
+    resendEmailCode: build.mutation<void, { email: string }>({
+      query: (data) => ({
+        url: "/auth/resend-email-code",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: [{ type: "User" }],
+    }),
   }),
 });
 
@@ -71,4 +80,5 @@ export const {
   useLogoutMutation,
   useStatusQuery,
   useConfirmEmailMutation,
+  useResendEmailCodeMutation,
 } = authApi;

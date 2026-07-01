@@ -123,18 +123,6 @@ const unwrapSerializedPhotoValue = (value: string): string | string[] => {
   return value;
 };
 
-const removeUrlTransientParts = (url: string) => {
-  try {
-    const parsedUrl = new URL(url);
-    parsedUrl.search = "";
-    parsedUrl.hash = "";
-
-    return parsedUrl.toString();
-  } catch {
-    return url.split("#")[0].split("?")[0];
-  }
-};
-
 const toPhotoEntries = (
   value: string | string[] | null | undefined,
 ): PhotoUrlEntry[] => {
@@ -161,7 +149,7 @@ const toPhotoEntries = (
   return [
     {
       src,
-      url: removeUrlTransientParts(src),
+      url: src,
     },
   ];
 };
@@ -441,14 +429,18 @@ export default function SpotPhotoInput({
       const uploadedValue = multiple
         ? await uploadPhotos(files)
         : await uploadPhotos(files[0]);
-      const uploadedUrls = toUrlList(uploadedValue);
-      const uploaded = uploading.map((item, index) => ({
-        ...item,
-        isLocal: true,
-        status: "uploaded" as const,
-        src: item.src,
-        url: uploadedUrls[index] ?? item.src,
-      }));
+      const uploadedEntries = toPhotoEntries(uploadedValue);
+      const uploaded = uploading.map((item, index) => {
+        const uploadedEntry = uploadedEntries[index];
+
+        return {
+          ...item,
+          isLocal: true,
+          status: "uploaded" as const,
+          src: item.src,
+          url: uploadedEntry?.url ?? item.src,
+        };
+      });
       const nextItems = multiple ? [...baseItems, ...uploaded] : uploaded;
       const nextValue = nextItems
         .filter((item) => item.status === "uploaded" && item.url)

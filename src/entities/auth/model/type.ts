@@ -13,7 +13,14 @@ export interface IRegisterRequest extends Pick<
 
 interface UserStatus extends Pick<
   IUserState,
-  "id" | "name" | "username" | "email" | "coupleId" | "partner" | "role"
+  | "id"
+  | "name"
+  | "username"
+  | "email"
+  | "avatarUrl"
+  | "coupleId"
+  | "partner"
+  | "role"
 > {
   isEmailVerified: boolean;
 }
