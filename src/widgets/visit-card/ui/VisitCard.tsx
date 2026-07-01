@@ -108,7 +108,7 @@ export default function VisitCard({
       <Group gap={10} wrap="nowrap" align="center">
         <Avatar.Group className={styles.avatars} spacing={13}>
           {displayOwners.slice(0, 2).map((owner, index) => {
-            const displayName = owner.name || owner.username || "Пользователь";
+            const displayName = owner.username || owner.name || "Пользователь";
 
             return (
               <SpotAvatar

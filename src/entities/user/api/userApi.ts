@@ -48,7 +48,10 @@ export const userApi = baseApi.injectEndpoints({
         url: `/users/${username}/follow`,
         method: "POST",
       }),
-      invalidatesTags: [{ type: "User", id: "PROFILE" }],
+      invalidatesTags: [
+        { type: "User", id: "PROFILE" },
+        { type: "Feed", id: "LIST" },
+      ],
     }),
 
     unfollowUser: build.mutation<void, { username: string }>({
@@ -56,7 +59,10 @@ export const userApi = baseApi.injectEndpoints({
         url: `/users/${username}/follow`,
         method: "DELETE",
       }),
-      invalidatesTags: [{ type: "User", id: "PROFILE" }],
+      invalidatesTags: [
+        { type: "User", id: "PROFILE" },
+        { type: "Feed", id: "LIST" },
+      ],
     }),
 
     // Подписчики

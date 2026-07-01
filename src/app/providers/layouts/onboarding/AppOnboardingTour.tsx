@@ -49,7 +49,7 @@ const getFeatureTourSteps = (profileRoute: string): FeatureTourStep[] => [
     id: "app-tour-tab-map",
     route: "/map",
     title: "Карта",
-    content: "Здесь отображаются метки оставленные на карте",
+    content: "Здесь отображаются метки оставленные на карте.",
     cutoutPadding: 10,
     cutoutRadius: 18,
     focusRevealProps: {
@@ -86,7 +86,7 @@ const getFeatureTourSteps = (profileRoute: string): FeatureTourStep[] => [
     id: "app-tour-tab-profile",
     route: profileRoute,
     title: "Профиль",
-    content: "Это ваш профиль, здесь отображается основная информация о вас",
+    content: "Это ваш профиль, здесь отображается основная информация о вас.",
     cutoutPadding: 12,
     cutoutRadius: 18,
     focusRevealProps: {
@@ -125,7 +125,7 @@ const getFeatureTourSteps = (profileRoute: string): FeatureTourStep[] => [
     id: "app-tour-pair-card",
     route: profileRoute,
     title: "Пара",
-    content: "Добавьте пару, что бы создавать метки вместе",
+    content: "Добавьте пару, что бы создавать метки вместе.",
     popoverProps: {
       position: { base: "bottom", sm: "bottom" },
     },
