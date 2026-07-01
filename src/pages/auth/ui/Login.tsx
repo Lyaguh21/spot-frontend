@@ -83,6 +83,7 @@ export default function Login() {
           <Stack gap="md">
             <SpotTextInput
               label="Почта"
+              type="email"
               placeholder="Введите ваш email"
               size="lg"
               radius="lg"
@@ -91,6 +92,7 @@ export default function Login() {
 
             <SpotPasswordInput
               label="Пароль"
+              type="password"
               placeholder="Введите ваш пароль"
               size="lg"
               radius="lg"

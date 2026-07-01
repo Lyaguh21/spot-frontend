@@ -148,6 +148,7 @@ export default function Register() {
                 <SpotTextInput
                   label="Почта"
                   placeholder="Введите ваш email"
+                  type="email"
                   size="lg"
                   radius="lg"
                   {...form.getInputProps("email")}
@@ -156,6 +157,7 @@ export default function Register() {
                 <SpotPasswordInput
                   label="Пароль"
                   placeholder="Введите ваш пароль"
+                  type="password"
                   size="lg"
                   radius="lg"
                   {...form.getInputProps("password")}
@@ -185,6 +187,7 @@ export default function Register() {
                 <SpotTextInput
                   label="Логин"
                   placeholder="Введите логин"
+                  type="text"
                   size="lg"
                   radius="lg"
                   {...form.getInputProps("username")}
