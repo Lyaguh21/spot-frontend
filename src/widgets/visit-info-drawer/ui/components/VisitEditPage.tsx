@@ -61,7 +61,6 @@ type VisitEditPageProps = {
   visit: IMapMarker;
   participants: VisitRatingParticipant[];
   isCoupleMode: boolean;
-  userCoupleId?: number | null;
   onCancel: () => void;
   onSaved: (visit: IMapMarker) => void;
 };
@@ -86,7 +85,6 @@ export function VisitEditPage({
   visit,
   participants,
   isCoupleMode,
-  userCoupleId,
   onCancel,
   onSaved,
 }: VisitEditPageProps) {
@@ -137,15 +135,9 @@ export function VisitEditPage({
     }
 
     const payload: IUpdateVisitRequest = {
-      externalId: visit.externalId,
       title: values.title.trim(),
-      address: values.address.trim() || undefined,
+      address: values.address.trim(),
       photos: values.photos,
-      coupleId:
-        visit.ownerType === "COUPLE"
-          ? (visit.coupleId ??
-            (userCoupleId ? String(userCoupleId) : undefined))
-          : undefined,
       description: values.description.trim(),
       ratings: values.ratings,
       visitDate: new Date(values.visitDate ?? new Date()).toISOString(),
@@ -156,9 +148,12 @@ export function VisitEditPage({
     };
 
     try {
-      await updateVisit({ visitId: visit.id, body: payload }).unwrap();
+      const updatedVisit = await updateVisit({
+        visitId: visit.id,
+        body: payload,
+      }).unwrap();
       showSuccess("Метка обновлена");
-      onSaved({ ...visit, ...payload, id: visit.id });
+      onSaved({ ...visit, ...updatedVisit, id: visit.id });
     } catch (error: any) {
       showError(error.message ?? "Не удалось обновить метку");
     }
@@ -299,7 +294,7 @@ export function VisitEditPage({
 
         <SpotPhotoInput
           multiple
-          maxPhoto={3}
+          maxPhoto={5}
           title="Фото"
           description="Добавьте фото места или перетащите их сюда"
           value={form.values.photos}

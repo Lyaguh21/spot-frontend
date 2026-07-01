@@ -1,5 +1,6 @@
 import type { IListBugReportResponse } from "@/entities/admin";
 import { SpotButton, SpotDrawer, SpotGlassCard } from "@/shared/ui";
+import { toPhotoUrlEntries } from "@/shared/utils";
 import { Badge, Group, Image, SimpleGrid, Stack, Text } from "@mantine/core";
 import { formatDate, getBugReportTypeLabel } from "../../lib/formatters";
 import styles from "../Admin.module.css";
@@ -17,6 +18,8 @@ export default function BugReportDrawer({
   onDelete: (report: IListBugReportResponse) => void;
   onNavigateUser: (username?: string) => void;
 }) {
+  const photoEntries = toPhotoUrlEntries(report?.photos);
+
   return (
     <SpotDrawer
       opened={Boolean(report)}
@@ -55,15 +58,15 @@ export default function BugReportDrawer({
             </Stack>
           </SpotGlassCard>
 
-          {report.photos?.length ? (
+          {photoEntries.length ? (
             <Stack gap={8}>
               <Text className={styles.drawerLabel}>Фото</Text>
               <SimpleGrid cols={{ base: 2, xs: 3 }} spacing={8}>
-                {report.photos.map((photoUrl) => (
+                {photoEntries.map(({ src, url }) => (
                   <Image
-                    key={photoUrl}
+                    key={url}
                     className={styles.reportImage}
-                    src={photoUrl}
+                    src={src}
                     alt={report.title}
                     radius="lg"
                     fit="cover"

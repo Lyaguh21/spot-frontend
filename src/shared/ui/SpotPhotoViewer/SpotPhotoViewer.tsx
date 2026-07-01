@@ -1,11 +1,12 @@
 import { Box, Center, Image, Text } from "@mantine/core";
 import { Lightbox } from "@mantine-bites/lightbox";
+import { toPhotoUrlEntries } from "@/shared/utils";
 import { IconPhoto } from "@tabler/icons-react";
 import { useState } from "react";
 import styles from "./SpotPhotoViewer.module.css";
 
 type SpotPhotoViewerProps = {
-  photos: string[];
+  photos: unknown[];
   alt?: string;
   className?: string;
 };
@@ -17,17 +18,22 @@ export default function SpotPhotoViewer({
 }: SpotPhotoViewerProps) {
   const [opened, setOpened] = useState(false);
   const [initialSlide, setInitialSlide] = useState(0);
-  const visiblePhotos = photos.slice(0, 3);
-  const hiddenCount = Math.max(0, photos.length - visiblePhotos.length);
+  const photoEntries = toPhotoUrlEntries(photos);
+  const visiblePhotos = photoEntries.slice(0, 3);
+  const hiddenCount = Math.max(0, photoEntries.length - visiblePhotos.length);
   const layoutVariant =
-    photos.length === 1 ? "single" : photos.length === 2 ? "double" : "triple";
+    photoEntries.length === 1
+      ? "single"
+      : photoEntries.length === 2
+        ? "double"
+        : "triple";
 
   const open = (index: number) => {
     setInitialSlide(index);
     setOpened(true);
   };
 
-  if (!photos.length) {
+  if (!photoEntries.length) {
     return null;
   }
 
@@ -37,7 +43,7 @@ export default function SpotPhotoViewer({
         className={[styles.root, className].filter(Boolean).join(" ")}
         data-layout={layoutVariant}
       >
-        {visiblePhotos.map((src, index) => {
+        {visiblePhotos.map(({ src, url }, index) => {
           const isLastVisible = index === visiblePhotos.length - 1;
           const position =
             index === 0 ? "hero" : index === 1 ? "top" : "bottom";
@@ -45,7 +51,7 @@ export default function SpotPhotoViewer({
           return (
             <Box
               component="button"
-              key={`${src}-${index}`}
+              key={`${url}-${index}`}
               type="button"
               className={styles.photoButton}
               data-position={position}
@@ -80,7 +86,7 @@ export default function SpotPhotoViewer({
       </Box>
 
       <Lightbox
-        images={photos.map((src) => ({ src }))}
+        images={photoEntries.map(({ src }) => ({ src }))}
         opened={opened}
         onClose={() => setOpened(false)}
         initialSlide={initialSlide}

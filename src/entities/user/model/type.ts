@@ -28,8 +28,10 @@ export interface IUserProfileResponse extends IUserState {}
 
 export interface IUpdateProfileRequest
   extends Partial<
-    Pick<IUserState, "name" | "avatarUrl" | "bio" | "visibility">
-  > {}
+    Pick<IUserState, "name" | "bio" | "visibility">
+  > {
+  avatarUrl?: string | null;
+}
 
 export interface IFollowersResponse {
   items: IUserState[];

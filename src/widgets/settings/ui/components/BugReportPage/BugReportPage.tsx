@@ -81,7 +81,7 @@ export default function BugReportPage({
         />
         <SpotPhotoInput
           multiple
-          maxPhoto={3}
+          maxPhoto={5}
           title="Фото"
           description="Добавьте скриншоты или перетащите их сюда"
           value={form.values.photos}

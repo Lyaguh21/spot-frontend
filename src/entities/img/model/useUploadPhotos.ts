@@ -1,13 +1,14 @@
 import { useCallback } from "react";
 import { useUploadImgMutation } from "./imgApi";
+import type { PhotoUrlReference } from "@/shared/utils";
 
 type UseUploadPhotosOptions = {
   fieldName?: string;
 };
 
 type UploadPhotos = {
-  (files: File): Promise<string>;
-  (files: File[]): Promise<string[]>;
+  (files: File): Promise<string | PhotoUrlReference>;
+  (files: File[]): Promise<(string | PhotoUrlReference)[]>;
 };
 
 export const useUploadPhotos = (options?: UseUploadPhotosOptions) => {

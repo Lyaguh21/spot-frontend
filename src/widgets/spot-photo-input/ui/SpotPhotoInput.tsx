@@ -1,4 +1,5 @@
 import { useUploadPhotos } from "@/entities/img";
+import { toPhotoUrlEntries } from "@/shared/utils";
 import {
   ActionIcon,
   Button,
@@ -12,6 +13,7 @@ import {
   IconCloudUpload,
   IconPhoto,
   IconPhotoPlus,
+  IconRefresh,
   IconX,
 } from "@tabler/icons-react";
 import { useEffect, useId, useRef, useState } from "react";
@@ -66,11 +68,7 @@ type PhotoItem = {
   progress?: number;
   status: "uploaded" | "uploading" | "error";
   isLocal?: boolean;
-};
-
-type PhotoUrlEntry = {
-  src: string;
-  url: string;
+  file?: File;
 };
 
 const DEFAULT_MAX_SIZE_MB = 10;
@@ -95,73 +93,14 @@ const formatFileSize = (size?: number) => {
   return `${megabytes.toFixed(megabytes >= 10 ? 0 : 1)} МБ`;
 };
 
-const unwrapSerializedPhotoValue = (value: string): string | string[] => {
-  const trimmedValue = value.trim();
-
-  if (!trimmedValue.startsWith("{") && !trimmedValue.startsWith("[")) {
-    return value;
-  }
-
-  try {
-    const parsed = JSON.parse(trimmedValue) as unknown;
-
-    if (typeof parsed === "string" || Array.isArray(parsed)) {
-      return parsed as string | string[];
-    }
-
-    if (parsed && typeof parsed === "object" && "data" in parsed) {
-      const data = (parsed as { data?: unknown }).data;
-
-      if (typeof data === "string" || Array.isArray(data)) {
-        return data as string | string[];
-      }
-    }
-  } catch {
-    return value;
-  }
-
-  return value;
-};
-
-const toPhotoEntries = (
-  value: string | string[] | null | undefined,
-): PhotoUrlEntry[] => {
-  if (!value) {
-    return [];
-  }
-
-  if (Array.isArray(value)) {
-    return value.flatMap(toPhotoEntries);
-  }
-
-  const unwrappedValue = unwrapSerializedPhotoValue(value);
-
-  if (Array.isArray(unwrappedValue)) {
-    return unwrappedValue.flatMap(toPhotoEntries);
-  }
-
-  const src = unwrappedValue.trim();
-
-  if (!src) {
-    return [];
-  }
-
-  return [
-    {
-      src,
-      url: src,
-    },
-  ];
-};
-
 const toUrlList = (value: string | string[] | null | undefined) =>
-  toPhotoEntries(value).map((entry) => entry.url);
+  toPhotoUrlEntries(value).map((entry) => entry.url);
 
 const createItemsFromValue = (
   value: string | string[] | null | undefined,
   reusableItems: PhotoItem[] = [],
 ) =>
-  toPhotoEntries(value).map(({ src, url }, index) => {
+  toPhotoUrlEntries(value).map(({ src, url }, index) => {
     const reusableItem = reusableItems.find((item) => item.url === url);
     const shouldKeepLocalPreview = reusableItem?.isLocal && reusableItem.src;
 
@@ -213,6 +152,7 @@ export default function SpotPhotoInput({
 
   const uploadedItems = items.filter((item) => item.status === "uploaded");
   const uploadingItems = items.filter((item) => item.status === "uploading");
+  const transferItems = items.filter((item) => item.status !== "uploaded");
   const hasPhotos = items.length > 0;
   const maxPhotoLimit =
     multiple && typeof maxPhoto === "number"
@@ -355,6 +295,14 @@ export default function SpotPhotoInput({
     });
   };
 
+  const commitItemsValue = (nextItems: PhotoItem[]) => {
+    const nextValue = nextItems
+      .filter((item) => item.status === "uploaded" && item.url)
+      .map((item) => item.url as string);
+
+    commitValue(multiple ? nextValue : (nextValue[0] ?? null));
+  };
+
   const validateFiles = (files: File[]) => {
     const maxSize = maxSizeMb * 1024 * 1024;
     const photoSlots =
@@ -402,8 +350,60 @@ export default function SpotPhotoInput({
         size: file.size,
         src,
         status: "uploading" as const,
+        file,
       };
     });
+
+  const retryItem = async (id: string) => {
+    const item = items.find((currentItem) => currentItem.id === id);
+
+    if (!item?.file) {
+      return;
+    }
+
+    setLocalError(null);
+    setItems((current) =>
+      current.map((currentItem) =>
+        currentItem.id === id
+          ? { ...currentItem, progress: 1, status: "uploading" as const }
+          : currentItem,
+      ),
+    );
+
+    try {
+      const uploadedValue = await uploadPhotos(item.file);
+      const uploadedEntry = toPhotoUrlEntries(uploadedValue)[0];
+
+      setItems((current) => {
+        const nextItems = current.map((currentItem) =>
+          currentItem.id === id
+            ? {
+                ...currentItem,
+                progress: undefined,
+                status: "uploaded" as const,
+                url: uploadedEntry?.url ?? currentItem.src,
+              }
+            : currentItem,
+        );
+
+        commitItemsValue(nextItems);
+
+        return nextItems;
+      });
+    } catch (caughtError) {
+      setItems((current) =>
+        current.map((currentItem) =>
+          currentItem.id === id
+            ? { ...currentItem, status: "error" as const }
+            : currentItem,
+        ),
+      );
+      setLocalError("Не удалось загрузить фото");
+      onUploadError?.(caughtError);
+    } finally {
+      clearInputValue();
+    }
+  };
 
   const uploadFiles = async (selectedFiles: File[]) => {
     const files = validateFiles(selectedFiles);
@@ -429,7 +429,7 @@ export default function SpotPhotoInput({
       const uploadedValue = multiple
         ? await uploadPhotos(files)
         : await uploadPhotos(files[0]);
-      const uploadedEntries = toPhotoEntries(uploadedValue);
+      const uploadedEntries = toPhotoUrlEntries(uploadedValue);
       const uploaded = uploading.map((item, index) => {
         const uploadedEntry = uploadedEntries[index];
 
@@ -441,13 +441,19 @@ export default function SpotPhotoInput({
           url: uploadedEntry?.url ?? item.src,
         };
       });
-      const nextItems = multiple ? [...baseItems, ...uploaded] : uploaded;
-      const nextValue = nextItems
-        .filter((item) => item.status === "uploaded" && item.url)
-        .map((item) => item.url as string);
+      setItems((current) => {
+        const nextItems = current.map((currentItem) => {
+          const uploadedIndex = uploading.findIndex(
+            (uploadingItem) => uploadingItem.id === currentItem.id,
+          );
 
-      setItems(nextItems);
-      commitValue(multiple ? nextValue : (nextValue[0] ?? null));
+          return uploadedIndex === -1 ? currentItem : uploaded[uploadedIndex];
+        });
+
+        commitItemsValue(nextItems);
+
+        return nextItems;
+      });
     } catch (caughtError) {
       setItems((current) =>
         current.map((item) =>
@@ -563,11 +569,13 @@ export default function SpotPhotoInput({
         </>
       )}
 
-      {uploadingItems.length > 0 && (
+      {transferItems.length > 0 && (
         <Stack gap={14}>
-          <Text className={styles.title}>Загрузка...</Text>
+          <Text className={styles.title}>
+            {uploadingItems.length > 0 ? "Загрузка..." : "Не удалось загрузить"}
+          </Text>
           <Stack gap={12}>
-            {uploadingItems.map((item) => (
+            {transferItems.map((item) => (
               <Group
                 key={item.id}
                 className={styles.uploadRow}
@@ -598,8 +606,24 @@ export default function SpotPhotoInput({
                     size={5}
                   />
                 </Stack>
+                {item.status === "error" && (
+                  <Button
+                    className={styles.retryButton}
+                    disabled={isLoading}
+                    leftSection={<IconRefresh size={16} />}
+                    onClick={() => retryItem(item.id)}
+                    type="button"
+                    variant="transparent"
+                  >
+                    Попробовать снова
+                  </Button>
+                )}
                 <ActionIcon
-                  aria-label="Удалить фото"
+                  aria-label={
+                    item.status === "uploading"
+                      ? "Остановить загрузку"
+                      : "Удалить фото"
+                  }
                   className={styles.rowAction}
                   onClick={() => removeItem(item.id)}
                   size={34}

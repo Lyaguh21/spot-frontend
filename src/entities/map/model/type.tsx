@@ -245,9 +245,17 @@ export interface IMapPlaceVisits {
 
 export interface ICreateVisitRequest extends IMapMarker {}
 
-export interface IUpdateVisitRequest extends Omit<
-  IMapMarker,
-  "lat" | "lng" | "ownerType"
-> {}
+export interface IUpdateVisitRequest {
+  title?: string;
+  description?: string;
+  address?: string;
+  ratings?: IMapMarker["ratings"];
+  isFavorite?: boolean;
+  photos?: string[];
+  icon?: MarkerIconKey;
+  color?: MarkerColorKey;
+  status?: visitStatus;
+  visitDate?: string;
+}
 
 export type IVisitsResponse = IMapPlaceVisits[];

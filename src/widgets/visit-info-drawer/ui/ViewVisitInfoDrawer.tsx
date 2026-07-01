@@ -268,7 +268,6 @@ export default function ViewVisitInfoDrawer({
             visit={selectedVisit}
             participants={participants}
             isCoupleMode={isCoupleMode}
-            userCoupleId={user.coupleId}
             onCancel={() => setPage("view")}
             onSaved={handleVisitSaved}
           />

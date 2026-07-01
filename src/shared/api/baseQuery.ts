@@ -93,5 +93,12 @@ export const baseQueryWithReauth: BaseQueryFn<
     window.location.replace("/confirm-email");
   }
 
+  if (
+    //@ts-ignore
+    result.error?.data?.details?.code === "USER_BANNED"
+  ) {
+    window.location.replace("/banned");
+  }
+
   return result;
 };

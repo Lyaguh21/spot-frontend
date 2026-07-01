@@ -121,9 +121,20 @@
   background: rgba(139, 92, 246, 0.12);
 }
 
+.pickButton:disabled,
+.secondaryButton:disabled {
+  color: rgba(194, 205, 234, 0.42);
+  background: rgba(12, 23, 50, 0.24);
+  border-color: rgba(122, 151, 220, 0.14);
+  cursor: not-allowed;
+  opacity: 0.58;
+}
+
 .uploadRow,
 .singleRow {
   width: 100%;
+  min-width: 0;
+  flex-wrap: nowrap;
 }
 
 .uploadThumb {
@@ -137,7 +148,7 @@
 
 .fileInfo {
   min-width: 0;
-  flex: 1 1 170px;
+  flex: 0 1 170px;
 }
 
 .fileName {
@@ -152,7 +163,8 @@
 }
 
 .progressCell {
-  width: min(36%, 260px);
+  min-width: 96px;
+  flex: 1 1 0;
 }
 
 .progress {
@@ -166,6 +178,31 @@
 .rowAction {
   flex: 0 0 auto;
   color: rgba(194, 205, 234, 0.72);
+}
+
+.retryButton {
+  min-height: 34px;
+  flex: 0 0 auto;
+  padding-inline: 12px;
+  border-radius: 9px;
+  color: #f2f6ff;
+  background: rgba(139, 92, 246, 0.13);
+  border: 1px solid rgba(139, 92, 246, 0.32);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.retryButton:hover {
+  color: #ffffff;
+  background: rgba(139, 92, 246, 0.22);
+}
+
+.retryButton:disabled {
+  color: rgba(194, 205, 234, 0.42);
+  background: rgba(12, 23, 50, 0.22);
+  border-color: rgba(122, 151, 220, 0.14);
+  cursor: not-allowed;
+  opacity: 0.58;
 }
 
 .rowAction:hover {
@@ -298,14 +335,14 @@
     padding: 20px 14px;
   }
 
-  .uploadRow {
-    align-items: flex-start;
-    flex-wrap: wrap;
+  .uploadThumb {
+    width: 58px;
+    height: 58px;
+    flex-basis: 58px;
   }
 
   .progressCell {
-    width: calc(100% - 86px);
-    margin-left: 86px;
+    min-width: 72px;
   }
 
   .previewGrid {

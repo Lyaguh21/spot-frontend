@@ -40,6 +40,16 @@ type FollowingVisitsItem = {
   places?: IMapPlaceVisits[];
 };
 
+type VisitMutationResponse =
+  | IMapMarker
+  | {
+      data: IMapMarker;
+    };
+
+const unwrapVisitMutationResponse = (
+  response: VisitMutationResponse,
+): IMapMarker => ("data" in response ? response.data : response);
+
 const isPlaceVisits = (
   item: IMapMarker | IMapPlaceVisits | FollowingVisitsItem,
 ): item is IMapPlaceVisits => "place" in item && Array.isArray(item.visits);
@@ -268,7 +278,7 @@ export const mapApi = baseApi.injectEndpoints({
     }),
 
     updateVisit: build.mutation<
-      void,
+      IMapMarker,
       { visitId: string; body: IUpdateVisitRequest }
     >({
       query: ({ visitId, body }) => ({
@@ -276,6 +286,7 @@ export const mapApi = baseApi.injectEndpoints({
         method: "PATCH",
         body,
       }),
+      transformResponse: unwrapVisitMutationResponse,
       invalidatesTags: [
         { type: "User", id: "VISITS" },
         { type: "Couple", id: "VISITS" },

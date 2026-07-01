@@ -6,6 +6,8 @@ import { LoadingOverlay } from "@mantine/core";
 import { useEffect, useRef } from "react";
 import { Navigate, matchPath, useLocation } from "react-router-dom";
 
+import classes from "./AuthGuard.module.css";
+
 const PUBLIC_ROUTES = [
   "/auth/login",
   "/auth/register",
@@ -48,7 +50,14 @@ export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
   }, [data]);
 
   if (!isPublicRoute && !userId && (isLoading || isUninitialized)) {
-    return <LoadingOverlay visible pos="fixed" />;
+    return (
+      <LoadingOverlay
+        visible
+        pos="fixed"
+        classNames={{ overlay: classes.overlay }}
+        loaderProps={{ color: "white", type: "dots", size: "xl" }}
+      />
+    );
   }
 
   if (
@@ -56,7 +65,14 @@ export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
     !userId &&
     (isLoading || isUninitialized || data?.authenticated)
   ) {
-    return <LoadingOverlay visible pos="fixed" />;
+    return (
+      <LoadingOverlay
+        visible
+        pos="fixed"
+        classNames={{ overlay: classes.overlay }}
+        loaderProps={{ color: "white", type: "dots", size: "xl" }}
+      />
+    );
   }
 
   if (!isPublicRoute && !userId && (isError || !data?.authenticated)) {

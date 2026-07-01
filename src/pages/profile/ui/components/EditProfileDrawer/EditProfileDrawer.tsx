@@ -10,12 +10,13 @@ import {
 import styles from "./EditProfileDrawer.module.css";
 import { SpotPhotoInput } from "@/widgets/spot-photo-input";
 import { useNotifications } from "@/shared/lib";
+import { toPhotoUrlEntries } from "@/shared/utils";
 
 type EditProfileFormValues = {
   name?: string;
   bio?: string;
   visibility: UserVisibility;
-  avatarUrl?: string;
+  avatarUrl?: string | null;
 };
 
 const initialValues: EditProfileFormValues = {
@@ -56,11 +57,12 @@ export default function EditProfileDrawer({
   }, [opened, profile]);
 
   const handleSubmit = async (values: EditProfileFormValues) => {
+    const avatarUrl = toPhotoUrlEntries(values.avatarUrl)[0]?.url ?? null;
     const payload = {
       name: values.name?.trim(),
       bio: values.bio?.trim(),
       visibility: values.visibility,
-      avatarUrl: values.avatarUrl,
+      avatarUrl,
     };
 
     try {
