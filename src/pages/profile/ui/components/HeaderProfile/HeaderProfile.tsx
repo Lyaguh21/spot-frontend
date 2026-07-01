@@ -1,8 +1,8 @@
 import { SpotAvatar, SpotButton, SpotGlassCard } from "@/shared/ui";
-import { Box, Flex, Group, Spoiler, Stack, Text } from "@mantine/core";
+import { Box, Flex, Group, Popover, Spoiler, Stack, Text } from "@mantine/core";
 import { OnboardingTour } from "@gfazioli/mantine-onboarding-tour";
 import styles from "./HeaderProfile.module.css";
-import { IconChevronRight, IconLock } from "@tabler/icons-react";
+import { IconBan, IconChevronRight, IconLock } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
 import CoupleCard from "@/widgets/couple-card";
 import {
@@ -98,7 +98,24 @@ export default function HeaderProfile({
               <Text fz="32px" c="white" lh={1}>
                 {userData?.name}
               </Text>
-              {userData?.visibility === "PRIVATE" && <IconLock />}
+              {userData?.visibility === "PRIVATE" && (
+                <Popover>
+                  <Popover.Target>
+                    <IconLock />
+                  </Popover.Target>
+                  <Popover.Dropdown>Это приватный профиль</Popover.Dropdown>
+                </Popover>
+              )}
+              {userData?.isBanned && (
+                <Popover>
+                  <Popover.Target>
+                    <IconBan />
+                  </Popover.Target>
+                  <Popover.Dropdown>
+                    Этот пользователь заблокирован
+                  </Popover.Dropdown>
+                </Popover>
+              )}
             </Group>
 
             <Spoiler

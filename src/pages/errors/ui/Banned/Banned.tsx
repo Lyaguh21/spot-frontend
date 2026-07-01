@@ -1,18 +1,18 @@
 import { Text } from "@mantine/core";
-import styles from "./ClosedProfile.module.css";
+import styles from "./Banned.module.css";
 import { SpotButton } from "@/shared/ui";
 import { Link } from "react-router-dom";
-import { IconLock } from "@tabler/icons-react";
+import { IconMoodSadDizzy } from "@tabler/icons-react";
 
-export default function ClosedProfile() {
+export default function Banned() {
   return (
     <div className={styles.page}>
       <div className={styles.card}>
-        <IconLock size="64" />
-        <Text className={styles.title}>Это приватный профиль</Text>
+        <IconMoodSadDizzy size="64" />
+        <Text className={styles.title}>Вы были заблокированы</Text>
         <Text className={styles.description}>
-          Упс... у вас нет доступа к этому профилю. Вероятно, он закрыт
-          владельцем.
+          Ой... похоже ваш аккаунт был заблокирован. Если вы считаете, что это
+          ошибка, пожалуйста, свяжитесь с нашей поддержкой.
         </Text>
         <SpotButton
           component={Link}

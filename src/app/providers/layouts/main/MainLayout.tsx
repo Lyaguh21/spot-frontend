@@ -1,9 +1,11 @@
 import { Outlet } from "react-router-dom";
-import TabBar from "./components/TabBar/TabBar";
+
 import { selectView } from "@/entities/view";
 import { useAppSelector } from "@/shared/lib";
+
+import PwaInstallPrompt from "@/widgets/pwa";
+import TabBar from "./components/TabBar/TabBar";
 import AppOnboardingTour from "../onboarding/AppOnboardingTour";
-import PwaInstallPrompt from "../pwa/PwaInstallPrompt";
 
 export default function MainLayout() {
   const viewState = useAppSelector(selectView);

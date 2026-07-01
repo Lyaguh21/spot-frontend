@@ -12,4 +12,8 @@ export {
   useGetCouplesStatisticsQuery,
   useGetUsersStatisticsQuery,
   useDeleteBugReportMutation,
+  useDeleteUserMutation,
+  useRestoreUserMutation,
+  useBanUserMutation,
+  useUnbanUserMutation,
 } from "./api/adminApi";

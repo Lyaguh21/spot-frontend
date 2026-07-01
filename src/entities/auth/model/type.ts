@@ -4,24 +4,24 @@ export interface ILoginRequest extends Pick<IUserState, "email"> {
   password: string;
 }
 
-export interface IRegisterRequest extends Pick<
-  IUserState,
-  "email" | "name" | "username"
-> {
+export interface IRegisterRequest
+  extends Pick<IUserState, "email" | "name" | "username"> {
   password: string;
 }
 
-interface UserStatus extends Pick<
-  IUserState,
-  | "id"
-  | "name"
-  | "username"
-  | "email"
-  | "avatarUrl"
-  | "coupleId"
-  | "partner"
-  | "role"
-> {
+interface UserStatus
+  extends Pick<
+    IUserState,
+    | "id"
+    | "name"
+    | "username"
+    | "email"
+    | "avatarUrl"
+    | "coupleId"
+    | "partner"
+    | "role"
+    | "isBanned"
+  > {
   isEmailVerified: boolean;
 }
 

@@ -7,8 +7,15 @@ type SpotActionIconProps = ActionIconProps & ComponentPropsWithoutRef<"button">;
 
 const SpotActionIcon = forwardRef<HTMLButtonElement, SpotActionIconProps>(
   function SpotActionIcon(props, ref) {
-    const { className, radius, variant, size = 44, classNames, ...rest } =
-      props;
+    const {
+      className,
+      radius,
+      variant,
+      size = 44,
+      classNames,
+      color,
+      ...rest
+    } = props;
 
     return (
       <ActionIcon
@@ -19,6 +26,7 @@ const SpotActionIcon = forwardRef<HTMLButtonElement, SpotActionIconProps>(
         variant={variant ?? "transparent"}
         className={[styles.root, className].filter(Boolean).join(" ")}
         classNames={classNames}
+        c={color}
       />
     );
   },

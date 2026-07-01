@@ -3,7 +3,7 @@ import { ICoupleState } from "@/entities/couple";
 export type UserVisibility = "PUBLIC" | "PRIVATE";
 
 export interface IUserState {
-  id: number;
+  id: string;
   name: string;
   role: "USER" | "ADMIN";
   email: string;
@@ -20,13 +20,16 @@ export interface IUserState {
     following: number;
   };
   isFollowing?: boolean;
+  isBanned?: boolean;
+  isDeleted?: boolean;
 }
 
 export interface IUserProfileResponse extends IUserState {}
 
-export interface IUpdateProfileRequest extends Partial<
-  Pick<IUserState, "name" | "avatarUrl" | "bio" | "visibility">
-> {}
+export interface IUpdateProfileRequest
+  extends Partial<
+    Pick<IUserState, "name" | "avatarUrl" | "bio" | "visibility">
+  > {}
 
 export interface IFollowersResponse {
   items: IUserState[];

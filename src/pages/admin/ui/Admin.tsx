@@ -1,11 +1,18 @@
 import {
+  useBanUserMutation,
   useDeleteBugReportMutation,
+  useDeleteUserMutation,
   useGetAdminStatisticsQuery,
   useGetBugReportsQuery,
   useGetCouplesStatisticsQuery,
   useGetUsersStatisticsQuery,
+  useRestoreUserMutation,
+  useUnbanUserMutation,
 } from "@/entities/admin";
-import type { IListBugReportResponse } from "@/entities/admin";
+import type {
+  IListBugReportResponse,
+  IUserStatisticsResponse,
+} from "@/entities/admin";
 import { useNotifications } from "@/shared/lib";
 import { SpotActionIcon, SpotConfirmActionModal } from "@/shared/ui";
 import { Group, Stack, Text, Title } from "@mantine/core";
@@ -25,6 +32,15 @@ export default function Admin() {
     useState<IListBugReportResponse | null>(null);
   const [bugReportToDelete, setBugReportToDelete] =
     useState<IListBugReportResponse | null>(null);
+  const [userToDelete, setUserToDelete] =
+    useState<IUserStatisticsResponse | null>(null);
+  const [userToBan, setUserToBan] = useState<IUserStatisticsResponse | null>(
+    null,
+  );
+  const [deleteUser] = useDeleteUserMutation();
+  const [restoreUser] = useRestoreUserMutation();
+  const [banUser] = useBanUserMutation();
+  const [unbanUser] = useUnbanUserMutation();
 
   const {
     data: statistics,
@@ -79,6 +95,65 @@ export default function Admin() {
     }
   };
 
+  const openDeleteUserConfirm = (user?: IUserStatisticsResponse) => {
+    if (!user) return;
+
+    setUserToDelete(user);
+  };
+
+  const openBanUserConfirm = (user?: IUserStatisticsResponse) => {
+    if (!user) return;
+
+    setUserToBan(user);
+  };
+
+  const handleDeleteUser = (user?: IUserStatisticsResponse) => {
+    if (!user) return;
+
+    if (user.isDeleted) {
+      restoreUser(user.id)
+        .unwrap()
+        .then(() => {
+          showSuccess("Пользователь восстановлен");
+        })
+        .catch(() => {
+          showError("Не удалось восстановить пользователя");
+        });
+    } else {
+      deleteUser(user.id)
+        .unwrap()
+        .then(() => {
+          showSuccess("Пользователь удален");
+        })
+        .catch(() => {
+          showError("Не удалось удалить пользователя");
+        });
+    }
+  };
+  const handleBanUser = (user?: IUserStatisticsResponse) => {
+    if (!user) return;
+
+    if (user.isBanned) {
+      unbanUser(user.id)
+        .unwrap()
+        .then(() => {
+          showSuccess("Пользователь разбанен");
+        })
+        .catch(() => {
+          showError("Не удалось разбанить пользователя");
+        });
+    } else {
+      banUser(user.id)
+        .unwrap()
+        .then(() => {
+          showSuccess("Пользователь забанен");
+        })
+        .catch(() => {
+          showError("Не удалось забанить пользователя");
+        });
+    }
+  };
+
   return (
     <main className={styles.page}>
       <Stack gap={18}>
@@ -112,6 +187,8 @@ export default function Admin() {
           couplesIsError={couplesIsError}
           onNavigateUser={navigateToUser}
           onNavigateCouple={navigateToCouple}
+          handleDeleteUser={openDeleteUserConfirm}
+          handleBanUser={openBanUserConfirm}
         />
 
         <BugReportsSection
@@ -138,6 +215,36 @@ export default function Admin() {
         question="Удалить обращение пользователя? Это действие нельзя отменить."
         confirmText="Удалить"
         confirmLoading={deleteIsLoading}
+      />
+
+      <SpotConfirmActionModal
+        opened={Boolean(userToDelete)}
+        onClose={() => setUserToDelete(null)}
+        onConfirm={() => {
+          handleDeleteUser(userToDelete ?? undefined);
+          setUserToDelete(null);
+        }}
+        question={
+          userToDelete?.isDeleted
+            ? `Восстановить пользователя ${userToDelete?.username}?`
+            : `Удалить пользователя ${userToDelete?.username}?`
+        }
+        confirmText={userToDelete?.isDeleted ? "Восстановить" : "Удалить"}
+      />
+
+      <SpotConfirmActionModal
+        opened={Boolean(userToBan)}
+        onClose={() => setUserToBan(null)}
+        onConfirm={() => {
+          handleBanUser(userToBan ?? undefined);
+          setUserToBan(null);
+        }}
+        question={
+          userToBan?.isBanned
+            ? `Разбанить пользователя ${userToBan?.username}?`
+            : `Забанить пользователя ${userToBan?.username}?`
+        }
+        confirmText={userToBan?.isBanned ? "Разбанить" : "Забанить"}
       />
     </main>
   );

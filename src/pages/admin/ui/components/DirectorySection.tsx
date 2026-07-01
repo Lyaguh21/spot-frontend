@@ -24,6 +24,8 @@ export default function DirectorySection({
   couplesIsError,
   onNavigateUser,
   onNavigateCouple,
+  handleDeleteUser,
+  handleBanUser,
 }: {
   users: IUserStatisticsResponse[];
   usersIsLoading: boolean;
@@ -33,6 +35,8 @@ export default function DirectorySection({
   couplesIsError: boolean;
   onNavigateUser: (username?: string) => void;
   onNavigateCouple: (id?: string) => void;
+  handleDeleteUser: (user?: IUserStatisticsResponse) => void;
+  handleBanUser: (user?: IUserStatisticsResponse) => void;
 }) {
   const [directoryView, setDirectoryView] = useState<DirectoryView>("users");
 
@@ -56,6 +60,12 @@ export default function DirectorySection({
             isLoading={usersIsLoading}
             isError={usersIsError}
             onNavigateUser={onNavigateUser}
+            handleDeleteUser={(user?: IUserStatisticsResponse) =>
+              handleDeleteUser(user)
+            }
+            handleBanUser={(user?: IUserStatisticsResponse) =>
+              handleBanUser(user)
+            }
           />
         ) : (
           <CouplesTable

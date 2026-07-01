@@ -41,6 +41,15 @@ export const adminApi = baseApi.injectEndpoints({
       providesTags: [{ type: "Admin", id: "BUG_REPORTS_LIST" }],
     }),
 
+    createBugReport: build.mutation<void, ICreateBugReportRequest>({
+      query: (data) => ({
+        url: "/users/bug-reports",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: [{ type: "Admin", id: "BUG_REPORTS_LIST" }],
+    }),
+
     deleteBugReport: build.mutation<void, string>({
       query: (id) => ({
         url: `/admin/bug-reports/${id}`,
@@ -49,13 +58,36 @@ export const adminApi = baseApi.injectEndpoints({
       invalidatesTags: [{ type: "Admin", id: "BUG_REPORTS_LIST" }],
     }),
 
-    createBugReport: build.mutation<void, ICreateBugReportRequest>({
-      query: (data) => ({
-        url: "/users/bug-reports",
-        method: "POST",
-        body: data,
+    deleteUser: build.mutation<void, string>({
+      query: (id) => ({
+        url: `/admin/users/${id}`,
+        method: "DELETE",
       }),
-      invalidatesTags: [{ type: "Admin", id: "BUG_REPORTS_LIST" }],
+      invalidatesTags: [{ type: "Admin", id: "USERS_LIST" }],
+    }),
+
+    restoreUser: build.mutation<void, string>({
+      query: (id) => ({
+        url: `/admin/users/${id}/restore`,
+        method: "PATCH",
+      }),
+      invalidatesTags: [{ type: "Admin", id: "USERS_LIST" }],
+    }),
+
+    banUser: build.mutation<void, string>({
+      query: (id) => ({
+        url: `/admin/users/${id}/ban`,
+        method: "PATCH",
+      }),
+      invalidatesTags: [{ type: "Admin", id: "USERS_LIST" }],
+    }),
+
+    unbanUser: build.mutation<void, string>({
+      query: (id) => ({
+        url: `/admin/users/${id}/unban`,
+        method: "PATCH",
+      }),
+      invalidatesTags: [{ type: "Admin", id: "USERS_LIST" }],
     }),
   }),
 });
@@ -67,4 +99,8 @@ export const {
   useGetCouplesStatisticsQuery,
   useGetUsersStatisticsQuery,
   useDeleteBugReportMutation,
+  useDeleteUserMutation,
+  useRestoreUserMutation,
+  useBanUserMutation,
+  useUnbanUserMutation,
 } = adminApi;

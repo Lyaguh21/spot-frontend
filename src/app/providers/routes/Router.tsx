@@ -1,11 +1,8 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-
 import { Login, Register } from "@/pages/auth";
-import MainLayout from "../layouts/MainLayout";
 import { Box, Flex } from "@mantine/core";
 import Feed from "@/pages/feed";
-import Error404 from "@/pages/errors";
-import ClosedProfile from "@/pages/errors/ui/ClosedProfile/ClosedProfile";
+import { Banned, ClosedProfile, Error404 } from "@/pages/errors";
 import { AuthGuard } from "../guards/AuthGuard";
 import Map from "@/pages/map";
 import Profile from "@/pages/profile";
@@ -17,6 +14,8 @@ import { AdminGuard } from "../guards/AdminGuard";
 import Admin from "@/pages/admin";
 import { EmailConfirmGuard } from "../guards/EmailConfirmGuard";
 import Email from "@/pages/email";
+import MainLayout from "../layouts/main/MainLayout";
+import { BannedGuard } from "../guards/BannedGuard";
 
 const router = createBrowserRouter([
   {
@@ -25,7 +24,9 @@ const router = createBrowserRouter([
       <OnboardingGuard>
         <AuthGuard>
           <EmailConfirmGuard>
-            <MainLayout />
+            <BannedGuard>
+              <MainLayout />
+            </BannedGuard>
           </EmailConfirmGuard>
         </AuthGuard>
       </OnboardingGuard>
@@ -90,6 +91,10 @@ const router = createBrowserRouter([
   {
     path: "/closed-profile",
     element: <ClosedProfile />,
+  },
+  {
+    path: "/banned",
+    element: <Banned />,
   },
   {
     path: "/404",

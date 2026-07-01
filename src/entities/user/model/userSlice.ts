@@ -1,19 +1,21 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { IUserState } from "./type";
 
-interface IUserSliceState extends Partial<
-  Pick<
-    IUserState,
-    | "id"
-    | "name"
-    | "email"
-    | "username"
-    | "avatarUrl"
-    | "coupleId"
-    | "partner"
-    | "role"
-  >
-> {
+interface IUserSliceState
+  extends Partial<
+    Pick<
+      IUserState,
+      | "id"
+      | "name"
+      | "email"
+      | "username"
+      | "avatarUrl"
+      | "coupleId"
+      | "partner"
+      | "role"
+      | "isBanned"
+    >
+  > {
   isEmailVerified?: boolean;
 }
 
@@ -27,6 +29,7 @@ const initialState: IUserSliceState = {
   coupleId: null,
   partner: null,
   isEmailVerified: undefined,
+  isBanned: undefined,
 };
 
 export const userSlice = createSlice({
@@ -43,6 +46,7 @@ export const userSlice = createSlice({
       state.partner = action.payload.partner;
       state.role = action.payload.role;
       state.isEmailVerified = action.payload.isEmailVerified;
+      state.isBanned = action.payload.isBanned;
     },
 
     confirmUserEmail: (state) => {
@@ -59,6 +63,7 @@ export const userSlice = createSlice({
       state.partner = null;
       state.role = undefined;
       state.isEmailVerified = undefined;
+      state.isBanned = undefined;
     },
   },
 });

@@ -21,7 +21,7 @@ const getFeatureTourSteps = (profileRoute: string): FeatureTourStep[] => [
     route: "/",
     title: "Лента",
     content:
-      "Здесь показываются новые места пользователей на которых вы подписаны.",
+      "На этой странице показываются обновления пользователей на которых вы подписаны.",
     cutoutPadding: 10,
     cutoutRadius: 18,
     focusRevealProps: {

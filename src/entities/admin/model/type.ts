@@ -27,6 +27,11 @@ export const typeBugReportOptions = [
     color: "blue",
   },
   {
+    value: "bans",
+    label: "Жалоба на пользователя",
+    color: "brown",
+  },
+  {
     value: "idea",
     label: "Предложить идею",
     color: "green",
@@ -51,7 +56,16 @@ export interface IStatisticsResponse {
 }
 
 export interface IUserStatisticsResponse
-  extends Pick<IUserState, "id" | "username" | "email" | "name" | "avatarUrl"> {
+  extends Pick<
+    IUserState,
+    | "id"
+    | "username"
+    | "email"
+    | "name"
+    | "avatarUrl"
+    | "isBanned"
+    | "isDeleted"
+  > {
   createdAt: string;
   places: number;
 }
