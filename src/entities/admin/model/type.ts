@@ -8,7 +8,7 @@ export const typeBugReportOptions = [
   },
   {
     value: "performance",
-    label: "Производительность",
+    label: "Проблемы производительности",
     color: "yellow",
   },
   {
@@ -18,17 +18,17 @@ export const typeBugReportOptions = [
   },
   {
     value: "security",
-    label: "Безопасность",
+    label: "Проблемы безопасности",
     color: "red",
   },
   {
     value: "account",
-    label: "Аккаунт",
+    label: "Проблемы с аккаунтом",
     color: "blue",
   },
   {
     value: "idea",
-    label: "Идея",
+    label: "Предложить идею",
     color: "green",
   },
 ];
@@ -50,10 +50,8 @@ export interface IStatisticsResponse {
   places: number;
 }
 
-export interface IUserStatisticsResponse extends Pick<
-  IUserState,
-  "id" | "username" | "email" | "name" | "avatarUrl"
-> {
+export interface IUserStatisticsResponse
+  extends Pick<IUserState, "id" | "username" | "email" | "name" | "avatarUrl"> {
   createdAt: string;
   places: number;
 }
@@ -65,9 +63,7 @@ export interface ICouplesStatisticsResponse {
   members: Pick<IUserState, "id" | "username" | "name" | "avatarUrl">[];
 }
 
-export interface ICreateBugReportRequest extends Pick<
-  IBugReport,
-  "title" | "description" | "type" | "photos"
-> {}
+export interface ICreateBugReportRequest
+  extends Pick<IBugReport, "title" | "description" | "type" | "photos"> {}
 
 export interface IListBugReportResponse extends IBugReport {}

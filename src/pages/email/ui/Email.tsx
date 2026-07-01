@@ -1,20 +1,57 @@
 import { Anchor, Box, Center, Group, Stack, Text, Title } from "@mantine/core";
 import { IconCheck, IconShieldCheck } from "@tabler/icons-react";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { SpotButton, SpotCodeInput, SpotGlassCard } from "@/shared/ui";
 import classes from "./Email.module.css";
 import { confirmUserEmail, selectUser, setUser } from "@/entities/user";
 import { useAppDispatch, useAppSelector, useNotifications } from "@/shared/lib";
-import { authApi, useConfirmEmailMutation } from "@/entities/auth";
+import {
+  authApi,
+  useConfirmEmailMutation,
+  useResendEmailCodeMutation,
+} from "@/entities/auth";
 
 export default function Email() {
   const { showSuccess, showError } = useNotifications();
   const [confirmEmail, { isLoading }] = useConfirmEmailMutation();
+  const [resendEmailCode] = useResendEmailCodeMutation();
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
   const [code, setCode] = useState("");
   const submittedCodeRef = useRef<string | null>(null);
   const email = user.email || "";
+
+  const [isRunning, setIsRunning] = useState(false);
+  const [timer, setTimer] = useState(10);
+  const [isResending, setIsResending] = useState(false);
+
+  const handleResendCode = useCallback(async () => {
+    setIsRunning(true);
+    resendEmailCode({ email });
+    setTimer(60);
+    setIsResending(false);
+  }, [email, isResending, resendEmailCode]);
+
+  useEffect(() => {
+    if (!isRunning) return;
+
+    const interval = setInterval(() => {
+      setTimer((prev) => {
+        if (prev > 0) return prev - 1;
+        else {
+          setIsRunning(false);
+          setIsResending(true);
+          return 0;
+        }
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [isRunning, timer]);
+
+  useEffect(() => {
+    setIsRunning(true);
+  }, []);
 
   const confirmCode = useCallback(
     async (nextCode: string) => {
@@ -135,12 +172,20 @@ export default function Email() {
               type="button"
               className={classes.linkButton}
               underline="never"
+              c={!isResending ? "dimmed" : "var(--mantine-primary-color-4)"}
+              onClick={handleResendCode}
             >
               Отправить снова
-            </Anchor>{" "}
-            {/* <Text component="span" inherit>
-              (00:45)
-            </Text> */}
+            </Anchor>
+          </Text>
+          <Text
+            className={classes.resend}
+            mt="0"
+            ta="center"
+            component="span"
+            inherit
+          >
+            ({timer})
           </Text>
         </Stack>
       </SpotGlassCard>
