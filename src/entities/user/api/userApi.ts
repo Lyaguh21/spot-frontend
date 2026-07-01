@@ -38,8 +38,8 @@ export const userApi = baseApi.injectEndpoints({
       providesTags: [{ type: "User", id: "PROFILE" }],
     }),
 
-    getUserById: build.query<IUserState, { id: number }>({
-      query: ({ id }) => `/users/${id}`,
+    getUserById: build.query<IUserState, { id: string | number }>({
+      query: ({ id }) => `/users/id/${id}`,
       providesTags: [{ type: "User", id: "PROFILE" }],
     }),
 

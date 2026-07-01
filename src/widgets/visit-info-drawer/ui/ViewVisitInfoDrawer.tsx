@@ -84,17 +84,17 @@ export default function ViewVisitInfoDrawer({
   const visitHasRatingFrom = (username?: string) =>
     Boolean(
       username &&
-      selectedVisit?.ratings.some((rating) => rating.nickname === username),
+        selectedVisit?.ratings.some((rating) => rating.nickname === username),
     );
   const canManageSelectedVisit = Boolean(
     selectedVisit &&
-    ((selectedVisit.ownerType === "USER" &&
-      visitHasRatingFrom(user.username)) ||
-      (selectedVisit.ownerType === "COUPLE" &&
-        Boolean(user.coupleId) &&
-        (selectedVisit.coupleId === String(user.coupleId) ||
-          visitHasRatingFrom(user.username) ||
-          visitHasRatingFrom(user.partner?.username)))),
+      ((selectedVisit.ownerType === "USER" &&
+        visitHasRatingFrom(user.username)) ||
+        (selectedVisit.ownerType === "COUPLE" &&
+          Boolean(user.coupleId) &&
+          (selectedVisit.coupleId === String(user.coupleId) ||
+            visitHasRatingFrom(user.username) ||
+            visitHasRatingFrom(user.partner?.username)))),
   );
   // const canAddVisitFromSelectedPlace = Boolean(
   //   selectedPlace && canCreateVisit && onCreateVisit,
@@ -126,7 +126,14 @@ export default function ViewVisitInfoDrawer({
       return;
     }
 
-    dispatch(setMapCreateMode("friends"));
+    if (selectedVisit?.author?.username === user.username) {
+      dispatch(setMapCreateMode("my"));
+    } else if (selectedVisit?.coupleId === user.coupleId) {
+      dispatch(setMapCreateMode("couple"));
+    } else {
+      dispatch(setMapCreateMode("friends"));
+    }
+    console.log(selectedVisit, selectedPlace, user.username, user.coupleId);
     navigate("/map", {
       state: {
         focusVisit: visitCoordinates,
@@ -233,8 +240,8 @@ export default function ViewVisitInfoDrawer({
     page === "edit"
       ? editBackButton
       : selectedVisit
-        ? visitActionsMenu
-        : createVisitButton;
+      ? visitActionsMenu
+      : createVisitButton;
 
   return (
     <>
