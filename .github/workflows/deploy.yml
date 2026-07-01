@@ -59,8 +59,8 @@ jobs:
             export APP_ENV_FILE="$ENV_FILE"
 
             cd "$FRONTEND_DIR"
-            docker compose --env-file "$ENV_FILE" -f docker-compose.prod.yml build
+            docker compose --env-file "$ENV_FILE" -f docker-compose.prod.yml build frontend backend migrate
             docker compose --env-file "$ENV_FILE" -f docker-compose.prod.yml up -d postgres
-            docker compose --env-file "$ENV_FILE" -f docker-compose.prod.yml --profile migrate run --rm migrate
+            docker compose --env-file "$ENV_FILE" -f docker-compose.prod.yml --profile migrate run --rm --build migrate
             docker compose --env-file "$ENV_FILE" -f docker-compose.prod.yml up -d --remove-orphans frontend backend
             docker compose --env-file "$ENV_FILE" -f docker-compose.prod.yml ps
